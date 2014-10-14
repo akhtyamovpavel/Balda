@@ -1,69 +1,28 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include <QObject>
 
-
-#include <QToolButton>
-#include <QMenu>
-#include <QAction>
-#include <QSignalMapper>
-#include <vector>
-
-
-
-class Cell: public QToolButton{
-    /*
-     * Class Cell
-     */
+class Cell : public QObject
+{
     Q_OBJECT
-private:
     QChar letter_;
-    bool isChoosen_;
-    std::vector<QAction*> actions;
-    QSignalMapper* signalMapper;
-
-
-    QMenu* createMenu(){
-        signalMapper = new QSignalMapper(this);
-        QMenu* menu = new QMenu(tr("Set of lettesrs"));
-        for(char c = 'a'; c <= 'z'; ++c){
-            actions.push_back(new QAction(QString(c), this));
-            menu->addAction(actions.back());
-            signalMapper->setMapping(actions.back(), QString(c));
-            connect(actions.back(), SIGNAL(triggered()), signalMapper, SLOT(map()));
-        }
-        connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(setLetter(QString)));
-        return menu;
-    }
-
+    bool isMarked_;
 
 public:
-    Cell(const QString& text, QWidget *parent = 0)
-        :QToolButton(parent)
-    {
-        letter_ = QChar();
-        isChoosen_ = false;
-        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        setMenu(createMenu());
-    }
+    explicit Cell(QChar let = QChar(), QObject *parent = 0);
+    QChar getLetter();
 
+    void setLetter(QChar c);
 
+    bool isMarked();
 
-    QChar getLetter(){
-        return letter_;
-    }
-private slots:
-    void setLetter(QString letter){
+    void setMarked(bool value);
 
-        letter_ = letter.at(0);
-        QToolButton::setText(letter_);
-    }
+signals:
 
-
+public slots:
 
 };
-
-
-
 
 #endif // CELL_H

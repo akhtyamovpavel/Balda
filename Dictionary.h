@@ -6,28 +6,30 @@
 #include <QFile>
 #include <QTextStream>
 #include <iostream>
+#include <QObject>
 
-class Dictionary{
+
+/*
+ *This is the simplest realization of Directory and it doesn't read dictionary from file or database
+ **/
+class Dictionary : public QObject
+{
+    Q_OBJECT
     std::set<QString> setOfWords;
-
+    void loadDictionary();
 public:
-    void loadDictionary(){
-        QFile file("library.txt");
-        if(!file.open(QIODevice::ReadOnly)){
-            std::cerr << file.error() << std::endl;
-        }
+    explicit Dictionary(QObject *parent = 0);
 
-        QTextStream in(&file);
-        while(!in.atEnd()){
-            setOfWords.insert(in.readLine());
-        }
-        file.close();
-    }
 
-    QBool checkWord(const QString& word){
-        return setOfWords.find(word) != setOfWords.end();
+    void setUpConnection (QObject* wordCollector);
 
-    }
-}
+
+signals:
+    void sendCheckResult(int value);
+
+public slots:
+    void checkWord(const QString& word);
+};
+
 
 #endif // DICTIONARY_H

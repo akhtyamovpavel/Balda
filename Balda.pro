@@ -1,27 +1,28 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2014-09-28T17:35:47
+# Project created by QtCreator 2014-10-15T00:25:12
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       -= gui
 
 TARGET = Balda
+CONFIG   += console
+CONFIG   -= app_bundle
+
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    Table.cpp
+SOURCES += main.cpp \
+    board.cpp \
+    cell.cpp \
+    dictionary.cpp \
+    wordcollector.cpp
 
-HEADERS  += mainwindow.h \
-    GameManager.h \
-    Cell.h \
-    Table.h \
-    GameDataStorage.h \
+HEADERS += \
+    board.h \
+    cell.h \
     Dictionary.h \
-    LetterMenu.h
-
-FORMS    += mainwindow.ui
+    wordcollector.h
