@@ -23,7 +23,7 @@ class WordCollector : public QObject
 
     void endMove();
 public:
-    explicit WordCollector(QObject* dictionary, QObject *parent = 0);
+    explicit WordCollector(QObject *parent = 0);
 
 
     void connectToDictionary(QObject* dictionary);
@@ -35,7 +35,8 @@ public:
 signals:
     void sendToDictionary(const QString& word);
     void clearState(const QPair<int, int>& coordinates);
-    void endOfTransaction();
+    void endOfTransaction(const QString& word);
+    void approveWord();
 
 
 public slots:

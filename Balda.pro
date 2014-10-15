@@ -19,10 +19,14 @@ SOURCES += main.cpp \
     board.cpp \
     cell.cpp \
     dictionary.cpp \
-    wordcollector.cpp
+    wordcollector.cpp \
+    player.cpp \
+    gamemanager.cpp
 
 HEADERS += \
     board.h \
     cell.h \
     Dictionary.h \
-    wordcollector.h
+    wordcollector.h \
+    player.h \
+    gamemanager.h
