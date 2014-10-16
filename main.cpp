@@ -8,8 +8,5 @@ int main(int argc, char *argv[])
     GameManager gm;
     gm.runGame();
 
-
-
-
-    return a.exec();
+    return 0;
 }

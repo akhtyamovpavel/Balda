@@ -12,6 +12,7 @@ Board::Board(QObject *parent) :
             board_[i][j] = new Cell(QChar('-'));
         }
     }
+    currentPlayer = 1;
 }
 
 
@@ -26,10 +27,12 @@ void Board::setUpConnection(QObject* wordCollector) {
 }
 
 void Board::connectToPlayers(QObject* player1, QObject* player2) {
-    connect(this, SIGNAL(moveEnded(QString)), player1, SLOT(approveWord()));
+    connect(this, SIGNAL(moveEnded(QString)), player1, SLOT(approveWord(QString)));
     connect(this, SIGNAL(chooseError(QString)), player1, SLOT(badChooseLetter(QString)));
     connect(this, SIGNAL(letterChosen()), player1, SLOT(letterChosen()));
-
+    connect(this, SIGNAL(moveEndedSecond(QString)), player2, SLOT(approveWord(QString)));
+    connect(this, SIGNAL(chooseErrorSecond(QString)), player2, SLOT(badChooseLetter(QString)));
+    connect(this, SIGNAL(letterChosenSecond()), player2, SLOT(letterChosen()));
 }
 
 void Board::connectToGameManager(QObject* gameManager) {
@@ -128,8 +131,15 @@ void Board::remakeMove(const QString& word) {
         }
     }
     if (isApproved) {
+        //switchPlayer;
         isApproved = false;
-        emit moveEnded(word);
+        currentPlayer = 3 - currentPlayer;
+        if (currentPlayer == 2) {
+            emit moveEnded(word);
+        } else {
+            emit moveEndedSecond(word);
+        }
+
     }
 }
 

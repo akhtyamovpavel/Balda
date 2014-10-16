@@ -9,13 +9,16 @@ GameManager::GameManager(QObject *parent) :
     board.setUpConnection(&wc);
     player1.connectToBoard(&board);
     player1.connectToManager(this);
+    player2.connectToBoard(&board);
+    player2.connectToManager(this);
 
     currentPlayer = &player1;
     currentID = FIRST_PLAYER;
     numberOfSpareCells = 25;
     board.connectToPlayers(&player1, &player2);
     connect(this, SIGNAL(askForCells()), &board, SLOT(getNumberOfCells()));
-    connect(this, SIGNAL(startMove()), &player1, SLOT(beginStep()));
+    connect(this, SIGNAL(startMoveFirst()), &player1, SLOT(beginStep()));
+    connect(this, SIGNAL(startMoveSecond()), &player2, SLOT(beginStep()));
 }
 
 bool GameManager::isGameEnded() {
@@ -27,7 +30,13 @@ bool GameManager::isGameEnded() {
 
 void GameManager::runGame() {
     while (!isGameEnded()) {
-        emit startMove();
+        if (currentID == FIRST_PLAYER) {
+            std::cout << "First player: your move" << std::endl;
+            emit startMoveFirst();
+        } else {
+            std::cout << "Second player: your move" << std::endl;
+            emit startMoveSecond();
+        }
         --numberOfSpareCells;
         //needs QSignalMapper to solve this problem
     }
@@ -36,9 +45,9 @@ void GameManager::runGame() {
 
 void GameManager::stepEnded() {
     if (currentID == FIRST_PLAYER) {
-        //switch to the other player
+        currentID = SECOND_PLAYER;
     } else {
-
+        currentID = FIRST_PLAYER;
     }
 
 }

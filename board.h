@@ -12,6 +12,7 @@ class Board : public QObject
 {
     Q_OBJECT
     std::vector<std::vector<Cell*> > board_;
+    int currentPlayer;
     bool isChanged;
     bool isApproved;
     const int FIRST_PLAYER = 1;
@@ -63,6 +64,10 @@ signals:
     void moveEnded(QString word);
     void chooseError(QString message);
     void letterChosen();
+
+    void moveEndedSecond(QString word);
+    void chooseErrorSecond(QString message);
+    void letterChosenSecond();
 
     /*
      *  Signals to GameManager

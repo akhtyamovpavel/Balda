@@ -27,7 +27,8 @@ public:
     void runGame();
 
 signals:
-    void startMove();
+    void startMoveFirst();
+    void startMoveSecond();
     void askForCells();
 
 public slots:

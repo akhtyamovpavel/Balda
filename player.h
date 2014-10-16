@@ -11,6 +11,7 @@ class Player : public QObject
     std::vector<QString> listOfWords;
     bool isChosen;
     bool isCommited;
+    int score;
 
 public:
     explicit Player(QObject *parent = 0);
@@ -36,7 +37,7 @@ public slots:
      */
     void badChooseLetter(QString message);
     void letterChosen();
-    void approveWord();
+    void approveWord(QString word);
 };
 
 #endif // PLAYER_H

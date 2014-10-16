@@ -8,6 +8,7 @@ Player::Player(QObject *parent) :
 {
     isChosen = false;
     isCommited = false;
+    score = 0;
 }
 
 
@@ -83,8 +84,12 @@ void Player::letterChosen() {
     isChosen = true;
 }
 
-void Player::approveWord() {
+void Player::approveWord(QString word) {
     isCommited = true;
+    score += word.size();
+    listOfWords.push_back(word);
+    std::cout << "Word approved: " << word.toStdString() << std::endl;
+    std::cout << "Your current score is " << score << std::endl;
     //send to GameManager;
 }
 

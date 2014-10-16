@@ -22,7 +22,12 @@ void Dictionary::setUpConnection (QObject* wordCollector) {
 
 void Dictionary::checkWord(const QString& word) {
     if (setOfWords.find(word) != setOfWords.end()) {
-        emit sendCheckResult(1);
+        if (usedWords.find(word) == usedWords.end()) {
+            usedWords.insert(word);
+            emit sendCheckResult(1);
+        } else {
+            emit sendCheckResult(0);
+        }
     } else {
         emit sendCheckResult(0);
     }

@@ -16,6 +16,7 @@ class Dictionary : public QObject
 {
     Q_OBJECT
     std::set<QString> setOfWords;
+    std::set<QString> usedWords;
     void loadDictionary();
 public:
     explicit Dictionary(QObject *parent = 0);
