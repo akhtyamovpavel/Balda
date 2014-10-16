@@ -24,6 +24,12 @@ void Player::connectToManager(QObject* gameManager) {
     connect(this, SIGNAL(moveEnded()), gameManager, SLOT(stepEnded()));
 }
 
+
+//Public methods
+
+int Player::getScore() {
+    return score;
+}
 //Private methods
 
 
@@ -81,6 +87,7 @@ void Player::badChooseLetter(QString message) {
 }
 
 void Player::letterChosen() {
+    std::cout << "Letter chosen" << std::endl;
     isChosen = true;
 }
 

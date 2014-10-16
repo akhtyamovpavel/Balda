@@ -18,6 +18,8 @@ class Board : public QObject
     const int FIRST_PLAYER = 1;
     const int SECOND_PLAYER = 2;
 
+    void setFirstWord();
+
 public:
     explicit Board(QObject *parent = 0);
 
@@ -56,6 +58,7 @@ signals:
     void commitY(int y);
     void commitWord();
     void commitNew(int flag);
+    void addNewLetter(QPair<int,int> cell);
 
     /*
      *  Signals to Player
@@ -103,6 +106,8 @@ public slots:
      */
 
     void getNumberOfCells();
+    void showBoardToManager();
+
 };
 
 #endif // BOARD_H

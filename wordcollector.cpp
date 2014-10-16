@@ -25,11 +25,7 @@ void WordCollector::connectToBoard(QObject* board) {
 
 void WordCollector::clearWord() {
     if (!isApproved) {
-        for (int i = 0; i < isNew.size(); ++i) {
-            if (isNew[i]) {
-                emit clearState(QPair<int,int>(xList[i], yList[i]));
-            }
-        }
+        emit clearState(changedCell);
     }
     QString sentWord = word_;
     word_.clear();
@@ -72,6 +68,10 @@ void WordCollector::addNew(int isNewValue) {
     std::cout.flush();
 }
 
+void WordCollector::addChangedCell(QPair<int,int> cell) {
+    changedCell = cell;
+}
+
 void WordCollector::checkWord() {
     if (xList.empty()) {
         clearWord();
@@ -85,12 +85,20 @@ void WordCollector::checkWord() {
         }
     }
     for(int i = 0; i < xList.size(); ++i) {
-        if(isNew[i]) {
+        if(xList[i] == changedCell.first && yList[i] == changedCell.second) {
             ++cntNew;
         }
     }
     if (cntNew != 1) {
         isApproved = false;
+    }
+
+    for (int i = 0; i < xList.size(); ++i) {
+        for (int j = i+1; j < yList.size(); ++j) {
+            if (xList[i] == xList[j] && yList[i] == yList[j]) {
+                isApproved = false;
+            }
+        }
     }
 
     if (isApproved) {

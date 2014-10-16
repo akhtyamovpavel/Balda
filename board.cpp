@@ -13,6 +13,7 @@ Board::Board(QObject *parent) :
         }
     }
     currentPlayer = 1;
+    setFirstWord();
 }
 
 
@@ -24,6 +25,7 @@ void Board::setUpConnection(QObject* wordCollector) {
     connect(this, SIGNAL(commitY(int)), wordCollector, SLOT(addY(int)));
     connect(this, SIGNAL(commitWord()), wordCollector, SLOT(checkWord()));
     connect(this, SIGNAL(commitNew(int)), wordCollector, SLOT(addNew(int)));
+    connect(this, SIGNAL(addNewLetter(QPair<int,int>)), wordCollector, SLOT(addChangedCell(QPair<int,int>)));
 }
 
 void Board::connectToPlayers(QObject* player1, QObject* player2) {
@@ -42,6 +44,14 @@ void Board::connectToGameManager(QObject* gameManager) {
 
 //Methods
 
+void Board::setFirstWord() {
+    board_[2][0]->setLetter(QChar('b'));
+    board_[2][1]->setLetter(QChar('a'));
+    board_[2][2]->setLetter(QChar('l'));
+    board_[2][3]->setLetter(QChar('d'));
+    board_[2][4]->setLetter(QChar('a'));
+}
+
 void Board::showBoard(){
     for(int i = 0; i < 5; ++i){
         for(int j = 0; j < 5; ++j) {
@@ -58,7 +68,7 @@ void Board::changeLetter(int x, int y, QChar letter) {
         return;
     }
     if (getLetter(x, y) != QChar('-')) {
-        emit chooseError(tr("Error cell chhosen"));
+        emit chooseError(tr("Error cell chosen"));
         return;
     }
     board_[x][y]->setLetter(letter);
@@ -66,6 +76,7 @@ void Board::changeLetter(int x, int y, QChar letter) {
     setMarked(x, y, true);
     setChanged(true);
     showBoard();
+    emit addNewLetter(QPair<int,int>(x, y));
     emit letterChosen();
 
 }
@@ -140,6 +151,8 @@ void Board::remakeMove(const QString& word) {
             emit moveEndedSecond(word);
         }
 
+    } else {
+        showBoard();
     }
 }
 
@@ -181,3 +194,10 @@ void Board::getNumberOfCells() {
     }
     emit sendCellsNumber(cnt);
 }
+
+void Board::showBoardToManager() {
+    showBoard();
+}
+
+
+

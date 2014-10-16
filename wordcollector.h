@@ -17,6 +17,7 @@ class WordCollector : public QObject
     std::vector<int> xList;
     std::vector<int> yList;
     std::vector<int> isNew;
+    QPair<int,int> changedCell;
     bool isApproved;
 
     Q_OBJECT
@@ -45,6 +46,8 @@ public slots:
     void addX(int x);
 
     void addY(int y);
+
+    void addChangedCell(QPair<int,int> cell);
 
     int hasApproved();
 

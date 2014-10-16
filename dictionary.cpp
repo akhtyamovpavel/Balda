@@ -1,4 +1,7 @@
 #include "dictionary.h"
+#include <fstream>
+#include <string>
+#include <iostream>
 
 Dictionary::Dictionary(QObject *parent) :
     QObject(parent)
@@ -9,9 +12,18 @@ Dictionary::Dictionary(QObject *parent) :
 void Dictionary::loadDictionary(){
 
 
-    setOfWords.insert("a");
-    setOfWords.insert("b");
-    setOfWords.insert("c");
+    std::fstream input("dictionary.txt", std::fstream::in);
+    if (!input.is_open()) {
+        std::cout << "No library found" << std::endl;
+    }
+    std::string s;
+    while(std::getline(input, s)) {
+        QString currentWord(s.c_str());
+        setOfWords.insert(currentWord);
+    }
+    input.close();
+    std::cout << "Dictionary loaded" << std::endl;
+
 }
 
 void Dictionary::setUpConnection (QObject* wordCollector) {

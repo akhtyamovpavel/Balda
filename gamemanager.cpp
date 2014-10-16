@@ -14,11 +14,12 @@ GameManager::GameManager(QObject *parent) :
 
     currentPlayer = &player1;
     currentID = FIRST_PLAYER;
-    numberOfSpareCells = 25;
+    numberOfSpareCells = 20;
     board.connectToPlayers(&player1, &player2);
     connect(this, SIGNAL(askForCells()), &board, SLOT(getNumberOfCells()));
     connect(this, SIGNAL(startMoveFirst()), &player1, SLOT(beginStep()));
     connect(this, SIGNAL(startMoveSecond()), &player2, SLOT(beginStep()));
+    connect(this, SIGNAL(showBoard()), &board, SLOT(showBoardToManager()));
 }
 
 bool GameManager::isGameEnded() {
@@ -30,6 +31,7 @@ bool GameManager::isGameEnded() {
 
 void GameManager::runGame() {
     while (!isGameEnded()) {
+        emit showBoard();
         if (currentID == FIRST_PLAYER) {
             std::cout << "First player: your move" << std::endl;
             emit startMoveFirst();
@@ -38,8 +40,18 @@ void GameManager::runGame() {
             emit startMoveSecond();
         }
         --numberOfSpareCells;
-        //needs QSignalMapper to solve this problem
+
     }
+    int score1 = player1.getScore();
+    int score2 = player2.getScore();
+    if (score1 > score2) {
+        std::cout << "First player wins" << std::endl;
+    } else if (score1 == score2){
+        std::cout << "Draw" << std::endl;
+    } else {
+        std::cout << "Second player wins" << std::endl;
+    }
+    std::cout << "Game over" << std::endl;
 }
 //Slots
 

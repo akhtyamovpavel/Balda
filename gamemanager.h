@@ -31,6 +31,12 @@ signals:
     void startMoveSecond();
     void askForCells();
 
+    /*
+     * Signals to Board
+     * */
+
+    void showBoard();
+
 public slots:
     void stepEnded();
     void getNumberOfCells(int value);

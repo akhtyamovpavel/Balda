@@ -13,11 +13,13 @@ class Player : public QObject
     bool isCommited;
     int score;
 
+
 public:
     explicit Player(QObject *parent = 0);
     void connectToBoard(QObject* board);
     void connectToManager(QObject* gameManager);
     void runProcess();
+    int getScore();
 
 signals:
     void chooseLetter(QPair<QPair<int,int>, QChar>& letter);
