@@ -12,7 +12,7 @@ Board::Board(QObject *parent) :
             board_[i][j] = new Cell(QChar('-'));
         }
     }
-    currentPlayer = 1;
+    currentPlayer = FIRST_PLAYER;
     setFirstWord();
 }
 
@@ -77,7 +77,11 @@ void Board::changeLetter(int x, int y, QChar letter) {
     setChanged(true);
     showBoard();
     emit addNewLetter(QPair<int,int>(x, y));
-    emit letterChosen();
+    if (currentPlayer == FIRST_PLAYER) {
+        emit letterChosen();
+    } else {
+        emit letterChosenSecond();
+    }
 
 }
 
