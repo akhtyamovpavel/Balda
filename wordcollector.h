@@ -41,7 +41,7 @@ signals:
 
 
 public slots:
-    void addLetter(int c);
+    void addLetter(QChar letter);
 
     void addX(int x);
 

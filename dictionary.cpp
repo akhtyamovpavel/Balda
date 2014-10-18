@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <QTextStream>
 
 Dictionary::Dictionary(QObject *parent) :
     QObject(parent)
@@ -11,17 +12,25 @@ Dictionary::Dictionary(QObject *parent) :
 
 void Dictionary::loadDictionary(){
 
+    QFile file ("dictionary.txt");
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QTextStream stream(&file);
+        QString word;
+        while (!stream.atEnd())
+        {
+            word = stream.readLine();
+            //QTextStream out(stdout);
+            //out << word << tr("\n");
+            setOfWords.insert(word);
 
-    std::fstream input("dictionary.txt", std::fstream::in);
-    if (!input.is_open()) {
-        std::cout << "No library found" << std::endl;
+        }
+        if(stream.status()!= QTextStream::Ok)
+        {
+            std::cout << "Read file error";
+        }
+        file.close();
     }
-    std::string s;
-    while(std::getline(input, s)) {
-        QString currentWord(s.c_str());
-        setOfWords.insert(currentWord);
-    }
-    input.close();
     std::cout << "Dictionary loaded" << std::endl;
 
 }

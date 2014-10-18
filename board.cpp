@@ -1,5 +1,6 @@
 #include "board.h"
 #include <iostream>
+#include <QTextStream>
 
 Board::Board(QObject *parent) :
     QObject(parent)
@@ -20,7 +21,7 @@ Board::Board(QObject *parent) :
 //Connections
 
 void Board::setUpConnection(QObject* wordCollector) {
-    connect(this, SIGNAL(commitLetter(int)), wordCollector, SLOT(addLetter(int)));
+    connect(this, SIGNAL(commitLetter(QChar)), wordCollector, SLOT(addLetter(QChar)));
     connect(this, SIGNAL(commitX(int)), wordCollector, SLOT(addX(int)));
     connect(this, SIGNAL(commitY(int)), wordCollector, SLOT(addY(int)));
     connect(this, SIGNAL(commitWord()), wordCollector, SLOT(checkWord()));
@@ -45,21 +46,21 @@ void Board::connectToGameManager(QObject* gameManager) {
 //Methods
 
 void Board::setFirstWord() {
-    board_[2][0]->setLetter(QChar('b'));
-    board_[2][1]->setLetter(QChar('a'));
-    board_[2][2]->setLetter(QChar('l'));
-    board_[2][3]->setLetter(QChar('d'));
-    board_[2][4]->setLetter(QChar('a'));
+    board_[2][0]->setLetter(tr("б")[0]);
+    board_[2][1]->setLetter(tr("а")[0]);
+    board_[2][2]->setLetter(tr("л")[0]);
+    board_[2][3]->setLetter(tr("д")[0]);
+    board_[2][4]->setLetter(tr("а")[0]);
 }
 
 void Board::showBoard(){
+    QTextStream out(stdout);
     for(int i = 0; i < 5; ++i){
         for(int j = 0; j < 5; ++j) {
-            std::cout << QString(board_[i][j]->getLetter()).toStdString() <<" ";
+            out << board_[i][j]->getLetter()<<" ";
         }
-        std::cout <<"\n";
+        out <<"\n";
     }
-    std::cout.flush();
 }
 
 void Board::changeLetter(int x, int y, QChar letter) {
@@ -89,7 +90,7 @@ void Board::pushLetter(QPair<int, int>& coordinates) {
     if (getLetter(coordinates.first, coordinates.second) == QChar('-')) {
         return;
     }
-    emit commitLetter(getLetter(coordinates.first, coordinates.second).toLatin1() - 'a');
+    emit commitLetter(getLetter(coordinates.first, coordinates.second));
     emit commitX(coordinates.first);
     emit commitY(coordinates.second);
     if (isMarked(coordinates.first, coordinates.second)) {

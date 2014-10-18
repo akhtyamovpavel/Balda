@@ -53,7 +53,7 @@ signals:
     /*
      *  Signals to WordCollector
      */
-    void commitLetter(int value);
+    void commitLetter(QChar letter);
     void commitX(int x);
     void commitY(int y);
     void commitWord();

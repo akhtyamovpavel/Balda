@@ -95,8 +95,9 @@ void Player::approveWord(QString word) {
     isCommited = true;
     score += word.size();
     listOfWords.push_back(word);
-    std::cout << "Word approved: " << word.toStdString() << std::endl;
-    std::cout << "Your current score is " << score << std::endl;
+    QTextStream out(stdout);
+    out << "Word approved: " << word << "\n";
+    out << "Your current score is " << score << "\n";
     //send to GameManager;
 }
 

@@ -14,7 +14,7 @@ GameManager::GameManager(QObject *parent) :
 
     currentPlayer = &player1;
     currentID = FIRST_PLAYER;
-    numberOfSpareCells = 20;
+    numberOfSpareCells = 4;
     board.connectToPlayers(&player1, &player2);
     connect(this, SIGNAL(askForCells()), &board, SLOT(getNumberOfCells()));
     connect(this, SIGNAL(startMoveFirst()), &player1, SLOT(beginStep()));

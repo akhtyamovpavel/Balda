@@ -1,4 +1,5 @@
 #include "wordcollector.h"
+#include <QTextStream>
 
 WordCollector::WordCollector(QObject *parent) :
     QObject(parent)
@@ -7,8 +8,9 @@ WordCollector::WordCollector(QObject *parent) :
 }
 
 void WordCollector::endMove() {
-    std::cout << "move ended"<<std::endl;
-    std::cout << "approved word "<< word_.toStdString()<<std::endl;
+    QTextStream out(stdout);
+    out << "move ended\n";
+    out << "approved word "<< word_ <<"\n";
     emit approveWord();
 
 }
@@ -39,8 +41,8 @@ void WordCollector::clearWord() {
 
 //slots
 
-void WordCollector::addLetter(int c) {
-    word_ += QChar(c+'a');
+void WordCollector::addLetter(QChar letter) {
+    word_ += letter;
 
 }
 
@@ -64,8 +66,8 @@ int WordCollector::hasApproved() {
 
 void WordCollector::addNew(int isNewValue) {
     isNew.push_back(isNewValue);
-    std::cout << word_.toStdString() << "\n";
-    std::cout.flush();
+    QTextStream out(stdout);
+    out << word_ << "\n";
 }
 
 void WordCollector::addChangedCell(QPair<int,int> cell) {
