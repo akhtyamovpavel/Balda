@@ -1,6 +1,8 @@
 #include "wordcollector.h"
 #include <QTextStream>
 
+#include "logger.h"
+
 WordCollector::WordCollector(QObject *parent) :
     QObject(parent)
 {
@@ -8,9 +10,9 @@ WordCollector::WordCollector(QObject *parent) :
 }
 
 void WordCollector::endMove() {
-    QTextStream out(stdout);
-    out << "move ended\n";
-    out << "approved word "<< word_ <<"\n";
+    Logger l;
+    l.printLog(INFO, tr("move ended"));
+    l.printLog(INFO, tr("approved word ") + word_);
     emit approveWord();
 
 }
@@ -34,8 +36,6 @@ void WordCollector::clearWord() {
     xList.clear();
     yList.clear();
     isNew.clear();
-    std::cout << "Word ended\n";
-    std::cout.flush();
     emit endOfTransaction(sentWord);
 }
 
