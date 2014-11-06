@@ -56,9 +56,15 @@ void Player::runProcess() {
         } else if (text == "new") {
             int x,y;
             in>>x>>y;
-            QChar c;
-            in>>c;
-            QPair<QPair<int, int>, QChar> sendLetter(QPair<int,int>(x,y), c);
+            --x;
+            --y;
+            QString letter;
+            in>>letter;
+            if (letter.size() != 1) {
+                out << "Not letter\n";
+                out.flush();
+            }
+            QPair<QPair<int, int>, QChar> sendLetter(QPair<int,int>(x,y), letter[0]);
             emit chooseLetter(sendLetter);
 
         } else if (text == "push") {
@@ -68,6 +74,8 @@ void Player::runProcess() {
                 out << "Choose letter first\n";
                 out.flush();
             }
+            --x;
+            --y;
             QPair<int,int> coordinates(x,y);
             emit pushLetter(coordinates);
         } else if (text == "commit"){
