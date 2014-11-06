@@ -39,6 +39,10 @@ void Dictionary::setUpConnection (QObject* wordCollector) {
     connect(this, SIGNAL(sendCheckResult(int)), wordCollector, SLOT(setWordApproved(int)));
 }
 
+void Dictionary::connectToBot(QObject *bot) {
+    connect(this, SIGNAL(sendDictionary(QVector<QString>)), bot, SLOT(setupDictionary(QVector<QString>)));
+}
+
 //slots
 
 void Dictionary::checkWord(const QString& word) {
@@ -52,4 +56,13 @@ void Dictionary::checkWord(const QString& word) {
     } else {
         emit sendCheckResult(0);
     }
+}
+
+
+void Dictionary::sendDictionary() {
+    QVector<QString> words;
+    for (std::set<QString>::iterator it = setOfWords.begin(); it != setOfWords.end(); ++it) {
+        words.push_back(*it);
+    }
+    emit sendDictionary(words);
 }

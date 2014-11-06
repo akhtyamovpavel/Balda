@@ -7,18 +7,39 @@ GameManager::GameManager(QObject *parent) :
     wc.connectToBoard(&board);
     dict.setUpConnection(&wc);
     board.setUpConnection(&wc);
-    player1.connectToBoard(&board);
-    player1.connectToManager(this);
-    player2.connectToBoard(&board);
-    player2.connectToManager(this);
 
+    std::cout << "How many players\n";
+    int playersNumber;
+    std::cin>> playersNumber;
+
+    if (playersNumber == 2) {
+        player1.connectToBoard(&board);
+        player1.connectToManager(this);
+        player2.connectToBoard(&board);
+        player2.connectToManager(this);
+    }
+    else {
+        player1.connectToBoard(&board);
+        player1.connectToManager(this);
+        bot.connectToBoard(&board);
+        bot.connectToManager(this);
+        bot.connectToDictionary(&dict);
+    }
     currentPlayer = &player1;
     currentID = FIRST_PLAYER;
     numberOfSpareCells = 4;
-    board.connectToPlayers(&player1, &player2);
+    if (playersNumber == 2) {
+        board.connectToPlayers(&player1, &player2);
+    } else {
+        board.connectToPlayers(&player1, &bot);
+    }
     connect(this, SIGNAL(askForCells()), &board, SLOT(getNumberOfCells()));
     connect(this, SIGNAL(startMoveFirst()), &player1, SLOT(beginStep()));
-    connect(this, SIGNAL(startMoveSecond()), &player2, SLOT(beginStep()));
+    if (playersNumber == 2) {
+        connect(this, SIGNAL(startMoveSecond()), &player2, SLOT(beginStep()));
+    } else {
+        connect(this, SIGNAL(startMoveSecond()), &bot, SLOT(beginStep()));
+    }
     connect(this, SIGNAL(showBoard()), &board, SLOT(showBoardToManager()));
 }
 

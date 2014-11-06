@@ -13,10 +13,11 @@ class Player : public QObject
     bool isChosen;
     bool isCommited;
     int score;
-    QVector<QVector<QChar> > board;
+
 
 
 public:
+    QVector<QVector<QChar> > board;
     explicit Player(QObject *parent = 0);
     void connectToBoard(QObject* board);
     void connectToManager(QObject* gameManager);

@@ -6,6 +6,7 @@
 #include "Dictionary.h"
 #include "Player.h"
 #include "wordcollector.h"
+#include "bot/bot.h"
 
 class GameManager : public QObject
 {
@@ -15,6 +16,7 @@ class GameManager : public QObject
     WordCollector wc;
     Player player1;
     Player player2;
+    Bot bot;
     int numberOfSpareCells;
     Player* currentPlayer;
     const int FIRST_PLAYER = 1;
