@@ -18,6 +18,7 @@ void Player::connectToBoard(QObject* board) {
             SLOT(chooseLetterFirst(QPair<QPair<int,int>,QChar>&)));
     connect(this, SIGNAL(pushLetter(QPair<int,int>&)), board, SLOT(pushLetterFirst(QPair<int,int>&)));
     connect(this, SIGNAL(commitWord()), board, SLOT(gotCommitQuery()));
+    connect(this, SIGNAL(showBoard()), board, SLOT(showBoardToPlayer()));
 }
 
 void Player::connectToManager(QObject* gameManager) {
@@ -43,7 +44,15 @@ void Player::runProcess() {
             //do some;
         }
         if(text == "show") {
-
+            emit showBoard();
+            out << tr("Current board:\n");
+            for (int i = 0; i < 5; ++i) {
+                for (int j = 0; j < 5; ++j) {
+                    out << board[i][j]<<tr(" ");
+                }
+                out << "\n";
+            }
+            out.flush();
         } else if (text == "new") {
             int x,y;
             in>>x>>y;
@@ -101,4 +110,7 @@ void Player::approveWord(QString word) {
     //send to GameManager;
 }
 
+void Player::setCurrentBoard(QVector<QVector<QChar> > data) {
+    board = data;
+}
 

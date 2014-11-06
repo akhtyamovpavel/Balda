@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QPair>
 #include <vector>
+#include <QVector>
 
 class Player : public QObject
 {
@@ -12,6 +13,7 @@ class Player : public QObject
     bool isChosen;
     bool isCommited;
     int score;
+    QVector<QVector<QChar> > board;
 
 
 public:
@@ -27,6 +29,8 @@ signals:
     void commitWord();
     void moveEnded();
 
+    void showBoard();
+
 public slots:
     /**
      * slots from GameManager
@@ -35,11 +39,11 @@ public slots:
 
     /**
      * slots from Board
-
      */
     void badChooseLetter(QString message);
     void letterChosen();
     void approveWord(QString word);
+    void setCurrentBoard(QVector<QVector<QChar> > data);
 };
 
 #endif // PLAYER_H

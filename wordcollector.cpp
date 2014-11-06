@@ -48,7 +48,6 @@ void WordCollector::addLetter(QChar letter) {
 
 void WordCollector::addX(int x) {
     xList.push_back(x);
-
 }
 
 void WordCollector::addY(int y) {
@@ -76,6 +75,7 @@ void WordCollector::addChangedCell(QPair<int,int> cell) {
 
 void WordCollector::checkWord() {
     if (xList.empty()) {
+        isApproved = false;
         clearWord();
         return;
     }

@@ -1,13 +1,14 @@
 #include "board.h"
 #include <iostream>
 #include <QTextStream>
+#include <QVector>
 
 Board::Board(QObject *parent) :
     QObject(parent)
 {
     isChanged = false;
     isApproved = false;
-    board_.resize(5, std::vector<Cell*>(5));
+    board_.resize(HEIGHT, std::vector<Cell*>(WIDTH));
     for (int i = 0; i < 5; ++i){
         for(int j = 0; j <5; ++j) {
             board_[i][j] = new Cell(QChar('-'));
@@ -33,9 +34,13 @@ void Board::connectToPlayers(QObject* player1, QObject* player2) {
     connect(this, SIGNAL(moveEnded(QString)), player1, SLOT(approveWord(QString)));
     connect(this, SIGNAL(chooseError(QString)), player1, SLOT(badChooseLetter(QString)));
     connect(this, SIGNAL(letterChosen()), player1, SLOT(letterChosen()));
+    connect(this, SIGNAL(sendBoardFirst(QVector<QVector<QChar> >)), player1, SLOT(setCurrentBoard(QVector<QVector<QChar> >)));
+
     connect(this, SIGNAL(moveEndedSecond(QString)), player2, SLOT(approveWord(QString)));
     connect(this, SIGNAL(chooseErrorSecond(QString)), player2, SLOT(badChooseLetter(QString)));
     connect(this, SIGNAL(letterChosenSecond()), player2, SLOT(letterChosen()));
+    connect(this, SIGNAL(sendBoardSecond(QVector<QVector<QChar> >)), player2, SLOT(setCurrentBoard(QVector<QVector<QChar> >)));
+
 }
 
 void Board::connectToGameManager(QObject* gameManager) {
@@ -53,10 +58,26 @@ void Board::setFirstWord() {
     board_[2][4]->setLetter(tr("а")[0]);
 }
 
+void Board::sendError(QString message) {
+    if (currentPlayer == FIRST_PLAYER) {
+        emit chooseError(message);
+    } else {
+        emit chooseErrorSecond(message);
+    }
+}
+
+bool Board::rangeCheck(int x, int y) {
+    if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
+        sendError(tr("Wrong range of cell"));
+        return false;
+    }
+    return true;
+}
+
 void Board::showBoard(){
     QTextStream out(stdout);
-    for(int i = 0; i < 5; ++i){
-        for(int j = 0; j < 5; ++j) {
+    for(int i = 0; i < HEIGHT; ++i){
+        for(int j = 0; j < WIDTH; ++j) {
             out << board_[i][j]->getLetter()<<" ";
         }
         out <<"\n";
@@ -65,13 +86,18 @@ void Board::showBoard(){
 
 void Board::changeLetter(int x, int y, QChar letter) {
     if (hasChanged()) {
-        emit chooseError(tr("Cell has already choosen"));
+        sendError(tr("Cell has already choosen"));
+        return;
+    }
+    if (!rangeCheck(x, y)) {
         return;
     }
     if (getLetter(x, y) != QChar('-')) {
-        emit chooseError(tr("Error cell chosen"));
+        sendError(tr("Error cell chosen"));
         return;
     }
+    std::cout << x << " " << y << std::endl;
+
     board_[x][y]->setLetter(letter);
     isChanged = true;
     setMarked(x, y, true);
@@ -87,6 +113,9 @@ void Board::changeLetter(int x, int y, QChar letter) {
 }
 
 void Board::pushLetter(QPair<int, int>& coordinates) {
+    if (!rangeCheck(coordinates.first, coordinates.second)) {
+        return;
+    }
     if (getLetter(coordinates.first, coordinates.second) == QChar('-')) {
         return;
     }
@@ -183,6 +212,22 @@ void Board::pushLetterFirst(QPair<int, int>& coordinates) {
 void Board::pushLetterSecond(QPair<int, int>& coordinates) {
     pushLetter(coordinates);
 }
+
+void Board::showBoardToPlayer() {
+    QVector<QVector<QChar> > result(5, QVector<QChar>(5));
+    for (int i = 0; i < 5; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            result[i][j] = getLetter(i,j);
+        }
+    }
+    if (currentPlayer == FIRST_PLAYER) {
+        emit sendBoardFirst(result);
+    } else {
+        emit sendBoardSecond(result);
+    }
+
+}
+
 
 void Board::gotCommitQuery() {
    emit commitWord();

@@ -6,6 +6,7 @@
 #include <vector>
 #include <QPair>
 #include <QString>
+#include <QVector>
 #include "cell.h"
 
 class Board : public QObject
@@ -18,7 +19,11 @@ class Board : public QObject
     const int FIRST_PLAYER = 1;
     const int SECOND_PLAYER = 2;
 
+    const int WIDTH = 5;
+    const int HEIGHT = 5;
     void setFirstWord();
+    void sendError(QString message);
+    bool rangeCheck(int x, int y);
 
 public:
     explicit Board(QObject *parent = 0);
@@ -67,10 +72,12 @@ signals:
     void moveEnded(QString word);
     void chooseError(QString message);
     void letterChosen();
+    void sendBoardFirst(QVector<QVector<QChar> >);
 
     void moveEndedSecond(QString word);
     void chooseErrorSecond(QString message);
     void letterChosenSecond();
+    void sendBoardSecond(QVector<QVector<QChar> >);
 
     /*
      *  Signals to GameManager
@@ -95,6 +102,7 @@ public slots:
     void chooseLetterFirst(QPair<QPair<int,int>,QChar>& letter);
     void chooseLetterSecond(QPair<QPair<int,int>,QChar>& letter);
 
+    void showBoardToPlayer();
 
     void pushLetterFirst(QPair<int, int>& coordinates);
     void pushLetterSecond(QPair<int, int>& coordinates);
@@ -107,6 +115,8 @@ public slots:
 
     void getNumberOfCells();
     void showBoardToManager();
+
+
 
 };
 
