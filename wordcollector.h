@@ -10,6 +10,8 @@
 #include <cmath>
 #include <QPair>
 
+#include "logger.h"
+
 
 class WordCollector : public QObject
 {

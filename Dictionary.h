@@ -9,6 +9,8 @@
 #include <QObject>
 #include <QVector>
 
+#include "logger.h"
+
 
 /*
  *This is the simplest realization of Directory and it doesn't read dictionary from file or database

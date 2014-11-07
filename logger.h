@@ -16,6 +16,10 @@ public:
 
     void printLog(int level, QString message);
 
+    void printLog(int level, int value);
+
+    void printLog(int level, QChar letter);
+
     ~Logger() {
         delete outLog;
     }

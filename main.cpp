@@ -3,6 +3,8 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include "gamemanager.h"
+
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);

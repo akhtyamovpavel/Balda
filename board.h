@@ -9,6 +9,9 @@
 #include <QVector>
 #include "cell.h"
 
+#include "logger.h"
+
+
 class Board : public QObject
 {
     Q_OBJECT

@@ -1,8 +1,10 @@
 #include "dictionary.h"
+
 #include <fstream>
 #include <string>
 #include <iostream>
 #include <QTextStream>
+#include "logger.h"
 
 Dictionary::Dictionary(QObject *parent) :
     QObject(parent)
@@ -60,6 +62,8 @@ void Dictionary::checkWord(const QString& word) {
 
 
 void Dictionary::sendDictionary() {
+    Logger l;
+    l.printLog(DEBUG, "Connected dictionary from bot");
     QVector<QString> words;
     for (std::set<QString>::iterator it = setOfWords.begin(); it != setOfWords.end(); ++it) {
         words.push_back(*it);

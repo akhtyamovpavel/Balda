@@ -6,6 +6,8 @@
 #include <vector>
 #include <QVector>
 
+#include "logger.h"
+
 class Player : public QObject
 {
     Q_OBJECT

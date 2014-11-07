@@ -3,6 +3,7 @@
 
 #include <Qobject>
 #include <QVector>
+#include <QPair>
 #include <QString>
 #include "../player.h"
 #include "letter.h"
@@ -10,6 +11,7 @@
 #include <vector>
 #include <utility>
 
+#include "logger.h"
 
 
 
@@ -24,7 +26,10 @@ public:
     std::vector<std::pair<int, int> > MOVES;
     explicit Bot(QObject* parent = 0);
 
+
     void connectToDictionary(QObject* dictionary);
+
+    void runProcess() Q_DECL_OVERRIDE;
 
     bool notBelong(std::vector<QString> not_allowed_words, QString &check_in);
 
@@ -47,9 +52,12 @@ public:
 signals:
     void getDictionary();
 
-public slots:
-    void runProcess();
 
+
+
+public slots:
+
+    void beginStep() Q_DECL_OVERRIDE;
     void setupDictionary(QVector<QString> words);
 };
 

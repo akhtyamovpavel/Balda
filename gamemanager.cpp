@@ -21,10 +21,13 @@ GameManager::GameManager(QObject *parent) :
     else {
         player1.connectToBoard(&board);
         player1.connectToManager(this);
+        dict.connectToBot(&bot);
         bot.connectToBoard(&board);
         bot.connectToManager(this);
         bot.connectToDictionary(&dict);
     }
+
+
     currentPlayer = &player1;
     currentID = FIRST_PLAYER;
     numberOfSpareCells = 4;
