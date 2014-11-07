@@ -13,13 +13,14 @@ class Player : public QObject
     Q_OBJECT
     std::vector<QString> listOfWords;
     bool isChosen;
-    bool isCommited;
+
     int score;
 
 
 
 public:
     QVector<QVector<QChar> > board;
+    bool isCommited;
     explicit Player(QObject *parent = 0);
     void connectToBoard(QObject* board);
     void connectToManager(QObject* gameManager);

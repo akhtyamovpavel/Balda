@@ -33,7 +33,7 @@ public:
 
     bool notBelong(std::vector<QString> not_allowed_words, QString &check_in);
 
-    void dfs(std::vector<Word> &Words, int x, int y, int cur_position,
+    void dfs(QVector<QVector<QChar> >  table, std::vector<Word> &Words, int x, int y, int cur_position,
              std::vector<std::vector<bool> > cur_used,
              QString &cur_string,
              std::vector<std::pair<int, int> > &cur_coords,
@@ -47,7 +47,7 @@ public:
         return char('а' + code);
     }
 
-    std::vector<Word> possibleVariants(std::vector<QString> not_allowed_words);
+    std::vector<Word> possibleVariants(QVector<QVector<QChar> >& table, std::vector<QString> not_allowed_words);
 
 signals:
     void getDictionary();

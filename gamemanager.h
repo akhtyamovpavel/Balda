@@ -18,6 +18,7 @@ class GameManager : public QObject
     Player player2;
     Bot bot;
     int numberOfSpareCells;
+    int playersNumber;
     Player* currentPlayer;
     const int FIRST_PLAYER = 1;
     const int SECOND_PLAYER = 2;

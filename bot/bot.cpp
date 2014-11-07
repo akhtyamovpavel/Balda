@@ -3,6 +3,8 @@
 #include <iostream>
 #include <QTextStream>
 #include "logger.h"
+#include <algorithm>
+#include <cstdlib>
 
 Bot::Bot(QObject* parent) :
 Player(parent)
@@ -52,18 +54,79 @@ void Bot::runProcess() {
             symbols[i][j] = board[i-1][j-1];
         }
     }
-    board = symbols;
+
 
     std::cout << "OK" << std::endl;
-    std::vector<Word> variants = possibleVariants(std::vector<QString>(0));
+    std::vector<Word> variants = possibleVariants(symbols, std::vector<QString>(0));
 
-    QTextStream out(stdout);
+    emit showBoard();
 
-    std::cout << "OK" << std::endl;
-    std::cout << variants.size() << std::endl;
-    for (int i = 0; i < variants.size(); ++i, out << "\n")
-        out << variants[i].possibleWord;
-    out.flush();
+    Logger l;
+
+    l.printLog(INFO, variants.size());
+
+    /*for (int i = 0; i < variants.size(); ++ i) {
+        l.printLog(DEBUG, variants[i].possibleWord);
+        for (int j = 0; j < variants[i].coordinates.size(); ++j) {
+            l.printLog(DEBUG, variants[i].coordinates[j].first);
+            l.printLog(DEBUG, variants[i].coordinates[j].second);
+        }
+    }*/
+
+    isCommited = false;
+
+    int usedX = -1;
+    int usedY = -1;
+    QChar c;
+    int id = -1;
+    int maxLength = -1;
+    /*for (int i = 0; i < variants.size(); ++i) {
+        if (variants[i].possibleWord.length() > maxLength) {
+            id = i;
+            maxLength = variants[i].possibleWord.length();
+        }
+    }*/
+
+    while(!isCommited) {
+        id = 0;
+        //id = std::max(rand(), (int)variants.size());
+        l.printLog(DEBUG, variants[id].possibleWord);
+        for (int i = 0; i < variants[id].coordinates.size(); ++i) {
+            int x = variants[id].coordinates[i].first - 1;
+            int y = variants[id].coordinates[i].second - 1;
+            if (board[x][y] == QChar('-')) {
+                usedX = x;
+                usedY = y;
+                c = variants[id].possibleWord[i];
+            }
+        }
+
+        l.printLog(DEBUG, usedX);
+        l.printLog(DEBUG, usedY);
+        l.printLog(DEBUG, c);
+        QPair<QPair<int,int>, QChar> res(QPair<int,int>(usedX,usedY), c);
+        emit chooseLetter(res);
+
+        for (int i = 0; i < variants[id].coordinates.size(); ++i) {
+            int x = variants[id].coordinates[i].first - 1;
+            int y = variants[id].coordinates[i].second - 1;
+            QPair<int,int> coords(x, y);
+            l.printLog(DEBUG, "push");
+            l.printLog(DEBUG, x);
+            l.printLog(DEBUG, y);
+            emit pushLetter(coords);
+        }
+        emit commitWord();
+
+        if (isCommited) {
+            emit moveEnded();
+        }
+        ++id;
+    }
+
+    //std::cout << "OK" << std::endl;
+    //std::cout << variants.size() << std::endl;
+
 
     //sendAnswer(possibleVariants);
 
@@ -78,7 +141,7 @@ bool Bot::notBelong(std::vector<QString> notAllowedWords, QString &checkIn)
     return true;
 }
 
-void Bot::dfs(std::vector<Word> &words,
+void Bot::dfs(QVector<QVector<QChar> >  table, std::vector<Word> &words,
               int x, int y, int curPosition, std::vector<std::vector<bool> > curUsed,
               QString &curString,
               std::vector<std::pair<int, int> > &curCoords, bool usedEmpty)
@@ -88,7 +151,7 @@ void Bot::dfs(std::vector<Word> &words,
     if (borVocabulary.borVertices[curPosition].isLeaf() && usedEmpty)  // Если мы пришли в такую позицию, что слово уже готово. Проверяется использованность хоть какой-то пустой клетки.
     {
         curCoords.push_back(std::make_pair(x, y));
-        curString += board[x][y];
+        curString += table[x][y];
 
         words.push_back(Word(curString, curCoords));
 
@@ -97,13 +160,17 @@ void Bot::dfs(std::vector<Word> &words,
         curCoords.pop_back();
     }
 
-    if (board[x][y] == QChar('-') && !usedEmpty)  // Если мы пришли в пустую клетку во время работы дфса, то ставим туда всевозможные буквы и пытаемся продлить слово.
+    if (table[x][y] == QChar('-') && !usedEmpty)  // Если мы пришли в пустую клетку во время работы дфса, то ставим туда всевозможные буквы и пытаемся продлить слово.
     {
 
-        for (char c = 'а'; c <= 'я'; ++c) {
-            QChar cc = QChar(c);
+
+        for (int i = 0; i < 32; ++i) {
+            //Logger l;
+            QChar cc = QChar(1072 + i);
+            table[x][y] = cc;
+            //l.printLog(DEBUG, cc);
             if (borVocabulary.borVertices[curPosition].findChildren(cc) != -1)
-                dfs(words, x, y, borVocabulary.borVertices[curPosition].findChildren(cc), curUsed, curString, curCoords, true);
+                dfs(table, words, x, y, borVocabulary.borVertices[curPosition].findChildren(cc), curUsed, curString, curCoords, true);
         }
         /*
          * for (int i = 0; i<32; ++i)
@@ -112,7 +179,7 @@ void Bot::dfs(std::vector<Word> &words,
             if (borVocabulary.borVertices[curPosition].findChildren(getChar(i)) != -1)
                 dfs(words, x, y, borVocabulary.borVertices[curPosition].findChildren(getChar(i)), curUsed, curString, curCoords, true);
         }*/
-        board[x][y] = QChar('-');
+        table[x][y] = QChar('-');
     }
     else
         for (size_t i = 0; i<MOVES.size(); ++i)  // Иначе мы пытаемся пройти в одном из четырех направлений и продлить слово.
@@ -123,26 +190,26 @@ void Bot::dfs(std::vector<Word> &words,
         int xx = x + dx;
         int yy = y + dy;
 
-        if (board[xx][yy] == QChar('#'))
+        if (table[xx][yy] == QChar('#'))
             continue;
 
-        if (board[xx][yy] == QChar('-') && usedEmpty)
+        if (table[xx][yy] == QChar('-') && usedEmpty)
             continue;
 
         if (curUsed[xx][yy])
             continue;
 
         curCoords.push_back(std::make_pair(x, y));
-        curString += board[x][y];
+        curString += table[x][y];
 
-        if (board[xx][yy] != QChar('-'))
+        if (table[xx][yy] != QChar('-'))
         {
-            if (borVocabulary.borVertices[curPosition].findChildren(board[xx][yy]) != NOT_FOUND)
-                dfs(words, xx, yy, borVocabulary.borVertices[curPosition].findChildren(board[xx][yy]), curUsed, curString, curCoords, usedEmpty);
+            if (borVocabulary.borVertices[curPosition].findChildren(table[xx][yy]) != NOT_FOUND)
+                dfs(table, words, xx, yy, borVocabulary.borVertices[curPosition].findChildren(table[xx][yy]), curUsed, curString, curCoords, usedEmpty);
         }
         else
         {
-            dfs(words, xx, yy, curPosition, curUsed, curString, curCoords, usedEmpty);
+            dfs(table, words, xx, yy, curPosition, curUsed, curString, curCoords, usedEmpty);
         }
 
         curString = curString.left((int)curString.size() - 1);
@@ -153,18 +220,19 @@ void Bot::dfs(std::vector<Word> &words,
     curUsed[x][y] = false;
 }
 
-std::vector<Word> Bot::possibleVariants (std::vector<QString> notAllowedWords)
+std::vector<Word> Bot::possibleVariants (QVector<QVector<QChar> >& table, std::vector<QString> notAllowedWords)
 {
     int N, M;
-    N = board.size() - 2;
-    M = board[0].size() - 2;
+    N = table.size() - 2;
+    M = table[0].size() - 2;
     Logger l;
-    l.printLog(DEBUG, board.size());
+    l.printLog(DEBUG, table.size());
 
 
     for (int i = 0; i < 7; ++i) {
         for (int j = 0; j < 7; ++j) {
-            l.printLog(DEBUG, board[i][j]);
+            l.printLog(DEBUG, table[i][j]);
+            l.printLog(DEBUG, table[i][j].unicode());
         }
     }
     //cerr << N << " " << M << "\n";
@@ -173,7 +241,7 @@ std::vector<Word> Bot::possibleVariants (std::vector<QString> notAllowedWords)
     //std::vector<std::vector<std::pair<int, int> > > coordinates;
     std::vector <Word> words;
 
-    std::cout << "OK" << std::endl;
+    //std::cout << "OK" << std::endl;
     for (int i = 1; i <= N; ++i)
         for (int j = 1; j <= M; ++j)
         {														// Пытаемся запустить дфс из всех клеток таблицы.
@@ -183,12 +251,12 @@ std::vector<Word> Bot::possibleVariants (std::vector<QString> notAllowedWords)
         curUsed.assign(N + 2, std::vector<bool>(M + 2, false));
 
         int curPosition = 0;
-        std::cout << "OK" << std::endl;
-        if (board[i][j] != QChar('-') && borVocabulary.borVertices[curPosition].findChildren(board[i][j]) != -1)
-            dfs(words, i, j, borVocabulary.borVertices[curPosition].findChildren(board[i][j]), curUsed, curString, curCoords, false);
+        //std::cout << "OK" << std::endl;
+        if (table[i][j] != QChar('-') && borVocabulary.borVertices[curPosition].findChildren(table[i][j]) != -1)
+            dfs(table, words, i, j, borVocabulary.borVertices[curPosition].findChildren(table[i][j]), curUsed, curString, curCoords, false);
         else
-            if (board[i][j] == QChar('-'))
-                dfs(words, i, j, PRE_VERTEX, curUsed, curString, curCoords, false);
+            if (table[i][j] == QChar('-'))
+                dfs(table, words, i, j, PRE_VERTEX, curUsed, curString, curCoords, false);
 
         }
 
@@ -206,7 +274,7 @@ std::vector<Word> Bot::possibleVariants (std::vector<QString> notAllowedWords)
 
 void Bot::setupDictionary(QVector<QString> words) {
     Logger l;
-    std::cout << words.size() << std::endl;
+    //std::cout << words.size() << std::endl;
     l.printLog(DEBUG, tr("Get words"));
     for (int i = 0; i < words.size(); ++i) {
         borVocabulary.addWord(words[i]);

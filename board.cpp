@@ -3,6 +3,8 @@
 #include <QTextStream>
 #include <QVector>
 
+#include "logger.h"
+
 Board::Board(QObject *parent) :
     QObject(parent)
 {
@@ -200,6 +202,11 @@ void Board::setApproved() {
 
 void Board::chooseLetterFirst(QPair<QPair<int,int>,QChar>& letter) {
     changeLetter(letter.first.first, letter.first.second, letter.second);
+    Logger l;
+    l.printLog(DEBUG, "GET");
+    l.printLog(DEBUG, letter.first.first);
+    l.printLog(DEBUG, letter.first.second);
+    l.printLog(DEBUG, letter.second);
 }
 
 void Board::chooseLetterSecond(QPair<QPair<int,int>,QChar>& letter) {

@@ -9,7 +9,6 @@ GameManager::GameManager(QObject *parent) :
     board.setUpConnection(&wc);
 
     std::cout << "How many players\n";
-    int playersNumber;
     std::cin>> playersNumber;
 
     if (playersNumber == 2) {
@@ -30,7 +29,7 @@ GameManager::GameManager(QObject *parent) :
 
     currentPlayer = &player1;
     currentID = FIRST_PLAYER;
-    numberOfSpareCells = 4;
+    numberOfSpareCells = 20;
     if (playersNumber == 2) {
         board.connectToPlayers(&player1, &player2);
     } else {
@@ -66,14 +65,27 @@ void GameManager::runGame() {
         --numberOfSpareCells;
 
     }
-    int score1 = player1.getScore();
-    int score2 = player2.getScore();
-    if (score1 > score2) {
-        std::cout << "First player wins" << std::endl;
-    } else if (score1 == score2){
-        std::cout << "Draw" << std::endl;
+
+    if (playersNumber == 2) {
+        int score1 = player1.getScore();
+        int score2 = player2.getScore();
+        if (score1 > score2) {
+            std::cout << "First player wins" << std::endl;
+        } else if (score1 == score2){
+            std::cout << "Draw" << std::endl;
+        } else {
+            std::cout << "Second player wins" << std::endl;
+        }
     } else {
-        std::cout << "Second player wins" << std::endl;
+        int score1 = player1.getScore();
+        int score2 = bot.getScore();
+        if (score1 > score2) {
+            std::cout << "Player wins" << std::endl;
+        } else if (score1 == score2){
+            std::cout << "Draw" << std::endl;
+        } else {
+            std::cout << "Compucter wins" << std::endl;
+        }
     }
     std::cout << "Game over" << std::endl;
 }
