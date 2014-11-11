@@ -60,6 +60,9 @@ void Board::setFirstWord() {
     board_[2][4]->setLetter(tr("а")[0]);
 }
 
+void Board::setFirstPlayer(int player) {
+    currentPlayer = player;
+}
 void Board::sendError(QString message) {
     if (currentPlayer == FIRST_PLAYER) {
         emit chooseError(message);

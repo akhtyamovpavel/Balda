@@ -5,7 +5,7 @@
 #include "logger.h"
 #include <algorithm>
 #include <cstdlib>
-
+#include <string>
 Bot::Bot(QObject* parent) :
 Player(parent)
 {
@@ -13,6 +13,117 @@ Player(parent)
     MOVES.push_back(std::make_pair(0, -1));
     MOVES.push_back(std::make_pair(1, 0));
     MOVES.push_back(std::make_pair(-1, 0));
+}
+
+int Bot::maximalLength(std::vector<Word> variants) {
+
+    int maxx = 0;
+    for(int i = 0; i<variants.size(); ++i) {
+        if (variants[i].possibleWord.length() > maxx)
+            maxx = variants[i].possibleWord.length();
+    }
+
+    return maxx;
+
+}
+
+std::vector<Word> Bot::trulyAllowedWord(std::vector<Word> variants, std::vector<QString> notAllowedWords) {
+    std::vector<Word> trulyAllowedVariants;
+    for (int i = 0; i<variants.size(); ++i) {
+       bool possible = true;
+       for(int j = 0; j<notAllowedWords.size(); ++j) {
+           if (variants[i].possibleWord == notAllowedWords[j]) {
+               possible = false;
+           }
+       }
+       if (possible) {
+           trulyAllowedVariants.push_back(variants[i]);
+       }
+    }
+
+    return trulyAllowedVariants;
+
+}
+
+int Bot::easyIndexWord(std::vector<Word> variants) {
+
+    int sz = variants.size() - 1;
+    int index = rand()%sz;
+    return index;
+
+}
+
+int Bot::hardIndexWord(std::vector<Word> variants) {
+
+    int sz = variants.size();
+    if (sz == 0)
+        return -1;
+
+    int maxx = -1;
+    for(int i = 0; i<sz; ++i) {
+        Logger l;
+        l.printLog(DEBUG, variants[i].possibleWord);
+        if (variants[i].possibleWord.length() > maxx) {
+            maxx = variants[i].possibleWord.length();
+        }
+    }
+
+    Logger l;
+    l.printLog(DEBUG, "meaning of maxx");
+    l.printLog(DEBUG, maxx);
+
+    std::vector<Word> maximalVariants;
+
+    for(int i = 0; i<sz; ++i) {
+        if (variants[i].possibleWord.length() == maxx) {
+            maximalVariants.push_back(variants[i]);
+        }
+    }
+
+    int newSz = maximalVariants.size();
+    if (newSz == 0)
+        return -1;
+
+    int indexNewVector = rand()%newSz;
+
+    for(int index = 0; index < variants.size(); ++index) {
+        if (variants[index].possibleWord == maximalVariants[indexNewVector].possibleWord) {
+            return index;
+        }
+    }
+
+}
+
+int Bot::hardestIndexWord(std::vector<Word> variants, QVector<QVector<QChar> > symbols, std::vector<QString> notAllowedWords) {
+
+    int bestIndex = -1;
+    int maxx = -111111;
+    for(int index = 0; index < variants.size(); ++index) {
+        int usedX;
+        int usedY;
+        QChar c;
+        for (int i = 0; i < variants[index].coordinates.size(); ++i) {
+            int x = variants[index].coordinates[i].first - 1;
+            int y = variants[index].coordinates[i].second - 1;
+            if (symbols[x][y] == QChar('-')) {
+                usedX = x;
+                usedY = y;
+                c = variants[index].possibleWord[i];
+            }
+        notAllowedWords.push_back(variants[index].possibleWord);
+        int del1 = variants[index].possibleWord.length();
+        symbols[usedX][usedY] = c;
+        std::vector<Word> newVariants = possibleVariants(symbols);
+        symbols[usedX][usedY] = QChar('-');
+        std::vector<Word> newGoodVariants = trulyAllowedWord(newVariants, notAllowedWords);
+        int del2 = maximalLength(newGoodVariants);
+        if (del1 - del2 > maxx) {
+            maxx = del1 - del2;
+            bestIndex = index;
+        }
+    }
+    }
+    return bestIndex;
 }
 
 
@@ -36,13 +147,14 @@ void Bot::runProcess() {
 
     std::cout << "OK" << std::endl;
 
-    std::vector<std::string> notAllowedWords;
+    std::vector<QString> notAllowedWords;
     //std::vector<std::vector<char> > table;
 
     emit showBoard();
 
 
     // takeTable(Table);
+
     // takeListOfNotAllowedWords(notAllowedWords);
 
 
@@ -56,14 +168,14 @@ void Bot::runProcess() {
     }
 
 
-    std::cout << "OK" << std::endl;
-    std::vector<Word> variants = possibleVariants(symbols, std::vector<QString>(0));
+    //std::cout << "OK" << std::endl;
+    std::vector<Word> variants = possibleVariants(symbols);
 
     emit showBoard();
 
     Logger l;
 
-    l.printLog(INFO, variants.size());
+    //l.printLog(INFO, variants.size());
 
     /*for (int i = 0; i < variants.size(); ++ i) {
         l.printLog(DEBUG, variants[i].possibleWord);
@@ -73,22 +185,31 @@ void Bot::runProcess() {
         }
     }*/
 
-    isCommited = false;
+    isCommited = false;  
 
-    int usedX = -1;
-    int usedY = -1;
-    QChar c;
     int id = -1;
-    int maxLength = -1;
-    /*for (int i = 0; i < variants.size(); ++i) {
-        if (variants[i].possibleWord.length() > maxLength) {
-            id = i;
-            maxLength = variants[i].possibleWord.length();
-        }
-    }*/
 
+    if (level == EASY) {
+        id = easyIndexWord(variants);
+    }
+
+    if (level == HARD) {
+        id = hardIndexWord(variants);
+    }
+
+    if (level == HARDEST) {
+        id = hardestIndexWord(variants, symbols, notAllowedWords);
+    }
+
+    /*
+     if id == -1 then do something;
+     */
+
+    int usedX;
+    int usedY;
+    QChar c;
     while(!isCommited) {
-        id = 0;
+
         //id = std::max(rand(), (int)variants.size());
         l.printLog(DEBUG, variants[id].possibleWord);
         for (int i = 0; i < variants[id].coordinates.size(); ++i) {
@@ -129,6 +250,12 @@ void Bot::runProcess() {
 
 
     //sendAnswer(possibleVariants);
+
+}
+
+void Bot::setLevel(int difficulty) {
+
+    level = difficulty;
 
 }
 
@@ -220,21 +347,21 @@ void Bot::dfs(QVector<QVector<QChar> >  table, std::vector<Word> &words,
     curUsed[x][y] = false;
 }
 
-std::vector<Word> Bot::possibleVariants (QVector<QVector<QChar> >& table, std::vector<QString> notAllowedWords)
+std::vector<Word> Bot::possibleVariants (QVector<QVector<QChar> >& table)
 {
     int N, M;
     N = table.size() - 2;
     M = table[0].size() - 2;
-    Logger l;
-    l.printLog(DEBUG, table.size());
+    //Logger l;
+   // l.printLog(DEBUG, table.size());
 
 
-    for (int i = 0; i < 7; ++i) {
+ /*   for (int i = 0; i < 7; ++i) {
         for (int j = 0; j < 7; ++j) {
             l.printLog(DEBUG, table[i][j]);
             l.printLog(DEBUG, table[i][j].unicode());
         }
-    }
+    }*/
     //cerr << N << " " << M << "\n";
 
     //std::vector<std::string> possibleStrings;
@@ -263,10 +390,7 @@ std::vector<Word> Bot::possibleVariants (QVector<QVector<QChar> >& table, std::v
     std::vector<Word> corrects;
 
     for (int i = 0; i < words.size(); ++i)
-        if (notBelong(notAllowedWords, words[i].possibleWord))
-            corrects.push_back(words[i]);
-
-
+        corrects.push_back(words[i]);
 
     return corrects;
 }

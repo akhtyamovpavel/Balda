@@ -21,6 +21,18 @@ GameManager::GameManager(QObject *parent) :
         player1.connectToBoard(&board);
         player1.connectToManager(this);
         dict.connectToBot(&bot);
+        std::cout << "What level do you choose\n";
+        QString level;
+        QTextStream in(stdin);
+        in >> level;
+        level.toLower();
+        if (level == tr("easy")) {
+            bot.setLevel(EASY);
+        } else if (level == tr("hard")) {
+            bot.setLevel(HARD);
+        } else if (level == tr("hardest")) {
+            bot.setLevel(HARDEST);
+        }
         bot.connectToBoard(&board);
         bot.connectToManager(this);
         bot.connectToDictionary(&dict);
@@ -34,6 +46,7 @@ GameManager::GameManager(QObject *parent) :
         board.connectToPlayers(&player1, &player2);
     } else {
         board.connectToPlayers(&player1, &bot);
+        board.setFirstPlayer(SECOND_PLAYER);
     }
     connect(this, SIGNAL(askForCells()), &board, SLOT(getNumberOfCells()));
     connect(this, SIGNAL(startMoveFirst()), &player1, SLOT(beginStep()));
@@ -55,12 +68,23 @@ bool GameManager::isGameEnded() {
 void GameManager::runGame() {
     while (!isGameEnded()) {
         emit showBoard();
-        if (currentID == FIRST_PLAYER) {
-            std::cout << "First player: your move" << std::endl;
-            emit startMoveFirst();
-        } else {
-            std::cout << "Second player: your move" << std::endl;
-            emit startMoveSecond();
+        if (playersNumber == 2) {
+            if (currentID == FIRST_PLAYER) {
+                std::cout << "First player: your move" << std::endl;
+                emit startMoveFirst();
+            } else {
+                std::cout << "Second player: your move" << std::endl;
+                emit startMoveSecond();
+            }
+        }
+        if (playersNumber == 1) {
+            if (currentID == SECOND_PLAYER) {
+                std::cout << "First player: your move" << std::endl;
+                emit startMoveFirst();
+            } else {
+                std::cout << "Second player: your move" << std::endl;
+                emit startMoveSecond();
+            }
         }
         --numberOfSpareCells;
 

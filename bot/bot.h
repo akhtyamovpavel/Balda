@@ -22,10 +22,27 @@ class Bot : public Player
 
 public:
 
+    const int EASY = 14;
+    const int HARD = 88;
+    const int HARDEST = 228;
+
+    int level;
+
     Bor borVocabulary;
     std::vector<std::pair<int, int> > MOVES;
     explicit Bot(QObject* parent = 0);
 
+    int maximalLength(std::vector<Word> variants);
+
+    int easyIndexWord(std::vector<Word> variants);
+
+    int hardIndexWord(std::vector<Word> variants);
+
+    int hardestIndexWord(std::vector<Word> variants, QVector<QVector<QChar> > symbols, std::vector<QString> notAllowedWords);
+
+    std::vector<Word> trulyAllowedWord(std::vector<Word> variants, std::vector<QString> notAllowedWords);
+
+    void setLevel(int difficulty);
 
     void connectToDictionary(QObject* dictionary);
 
@@ -47,7 +64,7 @@ public:
         return char('а' + code);
     }
 
-    std::vector<Word> possibleVariants(QVector<QVector<QChar> >& table, std::vector<QString> not_allowed_words);
+    std::vector<Word> possibleVariants(QVector<QVector<QChar> >& table);
 
 signals:
     void getDictionary();
