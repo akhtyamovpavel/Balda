@@ -23,6 +23,9 @@ class GameManager : public QObject
     const int FIRST_PLAYER = 1;
     const int SECOND_PLAYER = 2;
     int currentID;
+    const int EASY = 14;
+    const int HARD = 88;
+    const int HARDEST = 228;
 
     bool isGameEnded();
 public:

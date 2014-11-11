@@ -31,6 +31,8 @@ class Board : public QObject
 public:
     explicit Board(QObject *parent = 0);
 
+    void setFirstPlayer(int player);
+
     void setUpConnection(QObject* wordCollector);
 
     void connectToPlayers(QObject* player1, QObject* player2);

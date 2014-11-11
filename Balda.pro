@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2014-10-15T00:25:12
+# Project created by QtCreator 2014-11-08T00:04:46
 #
 #-------------------------------------------------
 
@@ -19,14 +19,23 @@ SOURCES += main.cpp \
     board.cpp \
     cell.cpp \
     dictionary.cpp \
-    wordcollector.cpp \
+    gamemanager.cpp \
+    logger.cpp \
     player.cpp \
-    gamemanager.cpp
+    tst_testmainclassestest.cpp \
+    wordcollector.cpp \
+    bot/bor.cpp \
+    bot/bot.cpp \
+    bot/letter.cpp
 
 HEADERS += \
     board.h \
     cell.h \
     Dictionary.h \
-    wordcollector.h \
+    gamemanager.h \
+    logger.h \
     player.h \
-    gamemanager.h
+    wordcollector.h \
+    bot/bor.h \
+    bot/bot.h \
+    bot/letter.h
