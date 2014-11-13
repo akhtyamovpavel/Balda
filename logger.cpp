@@ -2,7 +2,10 @@
 
 Logger::Logger()
 {
-    outLog = new QTextStream(stdout);
+    file = new QFile("log.txt");
+    if (file->open(QIODevice::Append | QIODevice::Text)) {
+        outLog = new QTextStream(file);
+    }
 }
 
 void Logger::printLog(int level, QString message) {

@@ -86,7 +86,6 @@ void GameManager::runGame() {
                 emit startMoveSecond();
             }
         }
-        --numberOfSpareCells;
 
     }
 
@@ -120,7 +119,9 @@ void GameManager::stepEnded() {
         currentID = SECOND_PLAYER;
     } else {
         currentID = FIRST_PLAYER;
+
     }
+    --numberOfSpareCells;
 
 }
 

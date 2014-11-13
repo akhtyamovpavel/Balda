@@ -14,7 +14,7 @@ Dictionary::Dictionary(QObject *parent) :
 
 void Dictionary::loadDictionary(){
 
-    QFile file ("dictionary.txt");
+    QFile file("dictionary.txt");
     if(file.open(QIODevice::ReadOnly))
     {
         QTextStream stream(&file);

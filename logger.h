@@ -3,6 +3,7 @@
 
 #include <QTextStream>
 #include <QString>
+#include <QFile>
 const int INFO = -1;
 const int DEBUG = 0;
 const int WARNING = 1;
@@ -11,6 +12,7 @@ const int ERROR = 2;
 class Logger
 {
     QTextStream* outLog;
+    QFile* file;
 public:
     Logger();
 
@@ -21,6 +23,8 @@ public:
     void printLog(int level, QChar letter);
 
     ~Logger() {
+        file->close();
+        delete file;
         delete outLog;
     }
 };
