@@ -11,6 +11,7 @@
 
 #include "logger.h"
 
+class WordCollector;
 
 class Board : public QObject
 {
@@ -33,7 +34,7 @@ public:
 
     void setFirstPlayer(int player);
 
-    void setUpConnection(QObject* wordCollector);
+    void setUpConnection(WordCollector* wordCollector);
 
     void connectToPlayers(QObject* player1, QObject* player2);
 

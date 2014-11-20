@@ -22,8 +22,6 @@ void Dictionary::loadDictionary(){
         while (!stream.atEnd())
         {
             word = stream.readLine();
-            //QTextStream out(stdout);
-            //out << word << tr("\n");
             setOfWords.insert(word);
 
         }

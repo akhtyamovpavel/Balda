@@ -7,14 +7,14 @@ Cell::Cell(QChar let, QObject *parent) :
     isMarked_ = false;
 }
 
-QChar Cell::getLetter(){
+QChar Cell::getLetter() const {
     return letter_;
 }
 void Cell::setLetter(QChar c){
     letter_ = c;
 }
 
-bool Cell::isMarked() {
+bool Cell::isMarked() const {
     return isMarked_;
 }
 

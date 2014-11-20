@@ -11,11 +11,11 @@ class Cell : public QObject
 
 public:
     explicit Cell(QChar let = QChar(), QObject *parent = 0);
-    QChar getLetter();
+    QChar getLetter() const;
 
     void setLetter(QChar c);
 
-    bool isMarked();
+    bool isMarked() const;
 
     void setMarked(bool value);
 

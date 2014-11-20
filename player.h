@@ -16,10 +16,13 @@ class Player : public QObject
 
     int score;
 
+protected:
+    QVector<QVector<QChar> > board;
+
 
 
 public:
-    QVector<QVector<QChar> > board;
+
     bool isCommited;
     explicit Player(QObject *parent = 0);
     void connectToBoard(QObject* board);
