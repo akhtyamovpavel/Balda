@@ -1,4 +1,6 @@
 #include "graphicboard.h"
+#include "logger.h"
+#include <QInputDialog>
 
 GraphicBoard::GraphicBoard(QWidget *parent) :
     QWidget(parent)
@@ -8,9 +10,14 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
         buttons.push_back(QVector<ButtonCell*>(5));
         for (int j = 0; j < 5; ++j) {
             buttons[i][j] = new ButtonCell();
+            tableLayout->addWidget(buttons[i][j], i, j);
         }
 
     }
+    setLayout(tableLayout);
+    int players = QInputDialog::getInt(this, tr("Enter number of players"), tr("Введите число игроков"), 1, 1, 2);
+    Logger l;
+    l.printLog(DEBUG, players);
 }
 
 
@@ -20,7 +27,7 @@ void GraphicBoard::onCellPushed()
     int ySender = 0;
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
-            if (sender() == buttons[i][j]) {
+            if (reinterpret_cast<ButtonCell*>(sender()) == buttons[i][j]) {
                 xSender = i;
                 ySender = j;
             }
@@ -35,7 +42,7 @@ void GraphicBoard::onCellChosen(QChar letter)
     int ySender = 0;
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
-            if (sender() == buttons[i][j]) {
+            if (reinterpret_cast<ButtonCell*>(sender()) == buttons[i][j]) {
                 xSender = i;
                 ySender = j;
             }

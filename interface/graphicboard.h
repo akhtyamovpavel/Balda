@@ -6,14 +6,13 @@
 #include <QPair>
 #include <QGridLayout>
 #include "buttoncell.h"
-#include "board.h"
+class Player;
 
 class GraphicBoard : public QWidget
 {
     Q_OBJECT
     QVector<QVector<ButtonCell*> > buttons;
     QGridLayout* tableLayout;
-    Board* board_;
 
 public:
     explicit GraphicBoard(QWidget *parent = 0);

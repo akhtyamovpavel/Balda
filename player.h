@@ -8,6 +8,9 @@
 
 #include "logger.h"
 
+
+class GraphicBoard;
+
 class Player : public QObject
 {
     Q_OBJECT
@@ -38,6 +41,10 @@ signals:
 
     void showBoard();
 
+    void afterLetterChosed(QPair<int,int> coordinates);
+    void afterLetterPushed(QPair<int,int> coordinates);
+    void afterWordCommited(QString word);
+
 public slots:
     /**
      * slots from GameManager
@@ -51,6 +58,13 @@ public slots:
     void letterChosen();
     void approveWord(QString word);
     void setCurrentBoard(QVector<QVector<QChar> > data);
+
+    /**
+      * Slots from GraphicBoard
+      */
+
+    void onLetterChosen(QPair<QPair<int,int>, QChar > letter);
+    void onLetterPushed(QPair<int, int> coordinates);
 };
 
 #endif // PLAYER_H

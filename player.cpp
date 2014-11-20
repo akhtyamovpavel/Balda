@@ -115,10 +115,29 @@ void Player::approveWord(QString word) {
     QTextStream out(stdout);
     out << "Word approved: " << word << "\n";
     out << "Your current score is " << score << "\n";
-    //send to GameManager;
+    isCommited = false;
+    isChosen = false;
+    emit moveEnded();
 }
 
 void Player::setCurrentBoard(QVector<QVector<QChar> > data) {
     board = data;
 }
+
+void Player::onLetterChosen(QPair<QPair<int,int>, QChar> letter) {
+    if (isChosen) {
+        return;
+    }
+    emit chooseLetter(letter);
+}
+
+void Player::onLetterPushed(QPair<int, int> coordinates)
+{
+    if (!isChosen) {
+        return;
+    }
+    emit pushLetter(coordinates);
+}
+
+
 

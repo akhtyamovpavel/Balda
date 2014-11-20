@@ -5,7 +5,7 @@
 #include <iostream>
 #include <QTextStream>
 #include "logger.h"
-
+#include <QMessageLogger>
 Dictionary::Dictionary(QObject *parent) :
     QObject(parent)
 {
@@ -14,6 +14,7 @@ Dictionary::Dictionary(QObject *parent) :
 
 void Dictionary::loadDictionary(){
 
+    QMessageLogger l;
     QFile file("dictionary.txt");
     if(file.open(QIODevice::ReadOnly))
     {
@@ -31,6 +32,7 @@ void Dictionary::loadDictionary(){
         }
         file.close();
     }
+    l.debug("Dictionary loaded");
     std::cout << "Dictionary loaded" << std::endl;
 
 }
