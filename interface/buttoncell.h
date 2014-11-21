@@ -28,17 +28,17 @@ class ButtonCell : public QToolButton
 
 public:
     ButtonCell(QToolButton *parent = 0);
-
+    void connectToPanel(QObject *gb);
 
 signals:
-    void onNewLetterChosen(QChar letter);
+    void onLetterChosen(QChar letter);
     void onLetterPushed();
 
 public slots:
     void setLetter(QString letter) {
         setMenu(NULL);
         QToolButton::setText(letter.at(0));
-        emit onNewLetterChosen(letter.at(0));
+        emit onLetterChosen(letter.at(0));
     }
 
     void onLetterClicked() {

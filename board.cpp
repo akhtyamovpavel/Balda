@@ -18,7 +18,7 @@ Board::Board(QObject *parent) :
         }
     }
     currentPlayer = FIRST_PLAYER;
-    setFirstWord();
+
 }
 
 
@@ -54,10 +54,9 @@ void Board::connectToGameManager(QObject* gameManager) {
 
 //Methods
 
-void Board::setFirstWord() {
-    const QString result = tr("балда");
+void Board::setFirstWord(QString firstWord) {
     for (int i = 0; i <  5; ++i) {
-        board_[2][i]->setLetter(result[i]);
+        board_[2][i]->setLetter(firstWord[i]);
     }
 }
 
@@ -206,7 +205,7 @@ void Board::setApproved() {
  * Slots from Player
  * */
 
-void Board::chooseLetterFirst(QPair<QPair<int,int>,QChar>& letter) {
+void Board::chooseLetterFirst(QPair<QPair<int,int>, QChar>& letter) {
     changeLetter(letter.first.first, letter.first.second, letter.second);
     Logger l;
     l.printLog<QString>(DEBUG, tr("GET"));

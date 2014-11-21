@@ -25,6 +25,12 @@ void Player::connectToManager(QObject* gameManager) {
     connect(this, SIGNAL(moveEnded()), gameManager, SLOT(stepEnded()));
 }
 
+void Player::connectToInterface(QObject *graphicBoard)
+{
+    /*connect(this, SIGNAL(afterLetterChosed(QPair<int,int>)),
+                         graphicBoard, SLOT());*/
+}
+
 
 //Public methods
 

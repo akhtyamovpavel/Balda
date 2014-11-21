@@ -25,7 +25,7 @@ class Board : public QObject
 
     const int WIDTH = 5;
     const int HEIGHT = 5;
-    void setFirstWord();
+
     void sendError(QString message);
     bool rangeCheck(int x, int y);
 
@@ -33,7 +33,7 @@ public:
     explicit Board(QObject *parent = 0);
 
     void setFirstPlayer(int player);
-
+    void setFirstWord(QString firstWord);
     void setUpConnection(WordCollector* wordCollector);
 
     void connectToPlayers(QObject* player1, QObject* player2);

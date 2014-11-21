@@ -30,7 +30,8 @@ public:
     explicit Player(QObject *parent = 0);
     void connectToBoard(QObject* board);
     void connectToManager(QObject* gameManager);
-    void runProcess();
+    void connectToInterface(QObject* graphicBoard);
+    virtual void runProcess();
     int getScore();
 
 signals:
@@ -49,7 +50,7 @@ public slots:
     /**
      * slots from GameManager
      */
-    void beginStep();
+    virtual void beginStep();
 
     /**
      * slots from Board
@@ -63,7 +64,7 @@ public slots:
       * Slots from GraphicBoard
       */
 
-    void onLetterChosen(QPair<QPair<int,int>, QChar > letter);
+    void onLetterChosen(QPair<QPair<int,int>, QChar> letter);
     void onLetterPushed(QPair<int, int> coordinates);
 };
 

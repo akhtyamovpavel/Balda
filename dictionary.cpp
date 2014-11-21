@@ -5,11 +5,28 @@
 #include <iostream>
 #include <QTextStream>
 #include "logger.h"
-#include <QMessageLogger>
+#include <QVector>
+#include <ctime>
+
 Dictionary::Dictionary(QObject *parent) :
     QObject(parent)
 {
     loadDictionary();
+}
+
+QString Dictionary::getFirstWord()
+{
+    srand(time(NULL));
+    QVector<QString> firstWordList;
+    for (QString word: setOfWords) {
+        if (word.size() == 5) {
+            firstWordList.push_back(word);
+        }
+    }
+
+    QString firstWord = firstWordList.at((rand())%firstWordList.size());
+    usedWords.insert(firstWord);
+    return firstWord;
 }
 
 void Dictionary::loadDictionary(){
