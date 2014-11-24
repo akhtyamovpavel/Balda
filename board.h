@@ -80,12 +80,13 @@ signals:
     void chooseError(QString message);
     void letterChosen(QPair<QPair<int,int>, QChar>);
     void sendBoardFirst(QVector<QVector<QChar> >);
+    void resetWordFirst(const QPair<int,int>&);
 
     void moveEndedSecond(QString word);
     void chooseErrorSecond(QString message);
     void letterChosenSecond(QPair<QPair<int,int>, QChar>);
     void sendBoardSecond(QVector<QVector<QChar> >);
-
+    void resetWordSecond(const QPair<int,int>&);
     /*
      *  Signals to GameManager
      */

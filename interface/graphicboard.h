@@ -45,6 +45,7 @@ public slots:
     void afterCellPushed(QPair<int,int> coordinates);
     void afterCellChoosen(QPair<QPair<int,int>, QChar> coordinates);
     void afterWordCommited(QString word);
+    void onPlayerResetWord(const QPair<int,int>& coordinates);
 
     void onCommitButtonClicked();
 };

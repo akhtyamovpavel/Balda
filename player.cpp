@@ -31,6 +31,8 @@ void Player::connectToInterface(QObject *graphicBoard)
                          graphicBoard, SLOT(afterCellChoosen(QPair<QPair<int,int>, QChar>)));
     connect(this, SIGNAL(afterLetterPushed(QPair<int,int>)), graphicBoard, SLOT(afterCellPushed(QPair<int,int>)));
     connect(this, SIGNAL(afterWordCommited(QString)), graphicBoard, SLOT(afterWordCommited(QString)));
+    connect(this, SIGNAL(resetWord(const QPair<int,int>&)),
+            graphicBoard, SLOT(onPlayerResetWord(const QPair<int,int>&)));
 }
 
 
@@ -134,6 +136,13 @@ void Player::setCurrentBoard(QVector<QVector<QChar> > data) {
     board = data;
 }
 
+void Player::onBoardResetWord(const QPair<int, int> &coordinates)
+{
+    isChosen = false;
+    isCommited = false;
+    emit resetWord(coordinates);
+}
+
 void Player::onLetterChosen(QPair<QPair<int,int>, QChar> letter) {
     if (isChosen) {
         return;
@@ -149,9 +158,6 @@ void Player::onLetterPushed(QPair<int, int> coordinates)
     emit pushLetter(coordinates);
     emit afterLetterPushed(coordinates);
 }
-
-
-
 
 
 void Player::onWordCommited()

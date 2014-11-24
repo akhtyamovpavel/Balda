@@ -5,8 +5,7 @@ ButtonCell::ButtonCell(QToolButton *parent) :
 {
     connect(this, &ButtonCell::clicked, this, &ButtonCell::onLetterClicked);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    currentMenu_ = createMenu();
-    setMenu(currentMenu_);
+    createMenu();
 }
 
 void ButtonCell::connectToPanel(QObject *gb)
@@ -15,7 +14,7 @@ void ButtonCell::connectToPanel(QObject *gb)
     connect(this, SIGNAL(onLetterPushed()), gb, SLOT(onCellPushed()));
 }
 
-QMenu* ButtonCell::createMenu() {
+void ButtonCell::createMenu() {
     signalMapper_ = new QSignalMapper(this);
     QMenu* menu = new QMenu(tr("Set of letters"));
     for(wchar_t c = L'а'; c <= L'я'; ++c){
@@ -25,5 +24,5 @@ QMenu* ButtonCell::createMenu() {
         connect(actions_.back(), SIGNAL(triggered()), signalMapper_, SLOT(map()));
     }
     connect(signalMapper_, SIGNAL(mapped(QString)), this, SLOT(setLetter(QString)));
-    return menu;
+    setMenu(menu);
 }

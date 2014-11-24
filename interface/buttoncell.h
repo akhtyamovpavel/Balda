@@ -23,12 +23,10 @@ class ButtonCell : public QToolButton
     QMenu* currentMenu_;
     GraphicBoard* parent_;
 
-    QMenu* createMenu();
-
-
 public:
     ButtonCell(QToolButton *parent = 0);
     void connectToPanel(QObject *gb);
+    void createMenu();
 
 signals:
     void onLetterChosen(QChar letter);

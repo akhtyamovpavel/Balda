@@ -44,11 +44,15 @@ void Board::connectToPlayers(QObject* player1, QObject* player2) {
     connect(this, SIGNAL(chooseError(QString)), player1, SLOT(badChooseLetter(QString)));
     connect(this, SIGNAL(letterChosen(QPair<QPair<int,int>, QChar>)), player1, SLOT(letterChosen(QPair<QPair<int,int>, QChar >)));
     connect(this, SIGNAL(sendBoardFirst(QVector<QVector<QChar> >)), player1, SLOT(setCurrentBoard(QVector<QVector<QChar> >)));
+    connect(this, SIGNAL(resetWordFirst(const QPair<int,int>&)),
+            player1, SLOT(onBoardResetWord(const QPair<int,int>&)));
 
     connect(this, SIGNAL(moveEndedSecond(QString)), player2, SLOT(approveWord(QString)));
     connect(this, SIGNAL(chooseErrorSecond(QString)), player2, SLOT(badChooseLetter(QString)));
     connect(this, SIGNAL(letterChosenSecond(QPair<QPair<int,int>, QChar>)), player2, SLOT(letterChosen(QPair<QPair<int,int>, QChar>)));
     connect(this, SIGNAL(sendBoardSecond(QVector<QVector<QChar> >)), player2, SLOT(setCurrentBoard(QVector<QVector<QChar> >)));
+    connect(this, SIGNAL(resetWordSecond(const QPair<int,int>&)),
+            player2, SLOT(onBoardResetWord(const QPair<int,int>&)));
 
 }
 
@@ -167,10 +171,23 @@ void Board::setChanged(bool changed) {
 //slots
 
 void Board::resetState(const QPair<int,int>& coordinates) {
+    isChanged = false;
+    for (int i = 0; i < WIDTH; ++i) {
+        for (int j = 0; j < HEIGHT; ++j) {
+            if (getLetter(i,j) != '-') {
+                setMarked(i, j, false);
+            }
+        }
+    }
     std::cout<<"reset state from" << coordinates.first << " " << coordinates.second << std::endl;
     std::cout.flush();
     setLetter(coordinates.first, coordinates.second, '-');
     setMarked(coordinates.first, coordinates.second, false);
+    if (currentPlayer == FIRST_PLAYER) {
+        emit resetWordFirst(coordinates);
+    } else {
+        emit resetWordSecond(coordinates);
+    }
 }
 
 void Board::remakeMove(const QString& word) {

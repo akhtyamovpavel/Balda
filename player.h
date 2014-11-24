@@ -45,6 +45,7 @@ signals:
     void afterLetterChosed(QPair<QPair<int,int>, QChar> letter);
     void afterLetterPushed(QPair<int,int> coordinates);
     void afterWordCommited(QString word);
+    void resetWord(const QPair<int,int>& coordinates);
 
 public slots:
     /**
@@ -59,7 +60,7 @@ public slots:
     void letterChosen(QPair<QPair<int,int>, QChar> letter);
     void approveWord(QString word);
     void setCurrentBoard(QVector<QVector<QChar> > data);
-
+    void onBoardResetWord(const QPair<int,int>& coordinates);
     /**
       * Slots from GraphicBoard
       */

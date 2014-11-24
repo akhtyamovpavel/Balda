@@ -114,6 +114,13 @@ void GraphicBoard::afterWordCommited(QString word) {
     currentWord->setText(NULL);
 }
 
+void GraphicBoard::onPlayerResetWord(const QPair<int, int> &coordinates)
+{
+    buttons[coordinates.first][coordinates.second]->createMenu();
+    buttons[coordinates.first][coordinates.second]->setText(QString(""));
+    currentWord->setText(QString(""));
+}
+
 void GraphicBoard::onCommitButtonClicked()
 {
     if (gameManager->getCurrentPlayer() == 1) {
