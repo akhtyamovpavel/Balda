@@ -15,16 +15,36 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
             tableLayout->addWidget(buttons[i][j], i, j);
         }
     }
-    gamePanel = new QVBoxLayout;
-    gamePanel->addLayout(tableLayout);
+    gamePanel = new QHBoxLayout(this);
+    gameBoardPanel = new QVBoxLayout;
+    gameBoardPanel->addLayout(tableLayout);
     wordPanel = new QHBoxLayout;
     currentWord = new QLabel("");
     commitButton = new QPushButton("Enter!");
     wordPanel->addWidget(currentWord);
     wordPanel->addWidget(commitButton);
-    gamePanel->addLayout(wordPanel);
+    gameBoardPanel->addLayout(wordPanel);
+
+
+
+    firstPlayerScore = new QLabel(tr("0"), this);
+    firstPlayerWords = new QListWidget(this);
+    firstPlayerPanel = new QVBoxLayout(this);
+    firstPlayerPanel->addWidget(firstPlayerScore);
+    firstPlayerPanel->addWidget(firstPlayerWords);
+
+    secondPlayerScore = new QLabel(tr("0"), this);
+    secondPlayerWords = new QListWidget(this);
+    secondPlayerPanel = new QVBoxLayout(this);
+    secondPlayerPanel->addWidget(secondPlayerScore);
+    secondPlayerPanel->addWidget(secondPlayerWords);
+
+    gamePanel->addLayout(secondPlayerPanel);
+    gamePanel->addLayout(gameBoardPanel);
+    gamePanel->addLayout(firstPlayerPanel);
+
     setLayout(gamePanel);
-    //WsetLayout(tableLayout);
+
     int players = QInputDialog::getInt(this, tr("Enter number of players"), tr("Введите число игроков"), 1, 1, 2);
     Logger l;
     l.printLog(DEBUG, players);
@@ -112,6 +132,18 @@ void GraphicBoard::afterCellChoosen(QPair<QPair<int, int>, QChar> coordinates)
 
 void GraphicBoard::afterWordCommited(QString word) {
     currentWord->setText(NULL);
+    if (sender() == gameManager->getFirstPlayer()) {
+        firstPlayerWords->addItem(word);
+    } else {
+        secondPlayerWords->addItem(word);
+    }
+    if (sender() == gameManager->getFirstPlayer()) {
+        int score = gameManager->getFirstPlayer()->getScore();
+        firstPlayerScore->setText(QString::number(score));
+    } else {
+        int score = gameManager->getSecondPlayer()->getScore();
+        secondPlayerScore->setText(QString::number(score));
+    }
 }
 
 void GraphicBoard::onPlayerResetWord(const QPair<int, int> &coordinates)

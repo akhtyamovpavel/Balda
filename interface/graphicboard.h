@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QListWidget>
 
 #include "buttoncell.h"
 #include "gamemanager.h"
@@ -21,10 +22,18 @@ class GraphicBoard : public QWidget
     QVector<QVector<ButtonCell*> > buttons;
     QGridLayout* tableLayout;
     GameManager* gameManager;
-    QVBoxLayout* gamePanel;
+    QVBoxLayout* gameBoardPanel;
     QHBoxLayout* wordPanel;
+    QHBoxLayout* gamePanel;
     QPushButton* commitButton;
     QLabel* currentWord;
+    QListWidget* firstPlayerWords;
+    QListWidget* secondPlayerWords;
+    QLabel* firstPlayerScore;
+    QLabel* secondPlayerScore;
+    QVBoxLayout* firstPlayerPanel;
+    QVBoxLayout* secondPlayerPanel;
+
 public:
     explicit GraphicBoard(QWidget *parent = 0);
 
