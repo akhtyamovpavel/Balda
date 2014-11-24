@@ -18,6 +18,7 @@ class GameManager : public QObject
     Player player2;
     Bot bot;
     int numberOfSpareCells;
+    QString firstWord;
     int playersNumber;
     Player* currentPlayer;
     const int FIRST_PLAYER = 1;
@@ -29,9 +30,12 @@ class GameManager : public QObject
 
     bool isGameEnded();
 public:
-    explicit GameManager(QObject *parent = 0);
+    explicit GameManager(int playersNumber, QObject *parent = 0);
     void runGame();
-
+    Player* getFirstPlayer();
+    Player* getSecondPlayer();
+    int getCurrentPlayer();
+    QString getFirstWord();
 signals:
     void startMoveFirst();
     void startMoveSecond();

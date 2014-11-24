@@ -81,12 +81,12 @@ void WordCollector::checkWord() {
     }
     isApproved = true;
     int cntNew = 0;
-    for (int i = 1; i < xList.size(); ++i) {
+    for (size_t i = 1; i < xList.size(); ++i) {
         if (labs(xList[i] - xList[i-1]) + labs(yList[i] - yList[i-1]) != 1) {
             isApproved = false;
         }
     }
-    for(int i = 0; i < xList.size(); ++i) {
+    for(size_t i = 0; i < xList.size(); ++i) {
         if(xList[i] == changedCell.first && yList[i] == changedCell.second) {
             ++cntNew;
         }
@@ -95,8 +95,8 @@ void WordCollector::checkWord() {
         isApproved = false;
     }
 
-    for (int i = 0; i < xList.size(); ++i) {
-        for (int j = i+1; j < yList.size(); ++j) {
+    for (size_t i = 0; i < xList.size(); ++i) {
+        for (size_t j = i+1; j < yList.size(); ++j) {
             if (xList[i] == xList[j] && yList[i] == yList[j]) {
                 isApproved = false;
             }

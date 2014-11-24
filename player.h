@@ -8,6 +8,9 @@
 
 #include "logger.h"
 
+
+class GraphicBoard;
+
 class Player : public QObject
 {
     Q_OBJECT
@@ -16,15 +19,19 @@ class Player : public QObject
 
     int score;
 
+protected:
+    QVector<QVector<QChar> > board;
+
 
 
 public:
-    QVector<QVector<QChar> > board;
+
     bool isCommited;
     explicit Player(QObject *parent = 0);
     void connectToBoard(QObject* board);
     void connectToManager(QObject* gameManager);
-    void runProcess();
+    void connectToInterface(QObject* graphicBoard);
+    virtual void runProcess();
     int getScore();
 
 signals:
@@ -35,19 +42,32 @@ signals:
 
     void showBoard();
 
+    void afterLetterChosed(QPair<QPair<int,int>, QChar> letter);
+    void afterLetterPushed(QPair<int,int> coordinates);
+    void afterWordCommited(QString word);
+    void resetWord(const QPair<int,int>& coordinates);
+
 public slots:
     /**
      * slots from GameManager
      */
-    void beginStep();
+    virtual void beginStep();
 
     /**
      * slots from Board
      */
     void badChooseLetter(QString message);
-    void letterChosen();
+    void letterChosen(QPair<QPair<int,int>, QChar> letter);
     void approveWord(QString word);
     void setCurrentBoard(QVector<QVector<QChar> > data);
+    void onBoardResetWord(const QPair<int,int>& coordinates);
+    /**
+      * Slots from GraphicBoard
+      */
+
+    void onLetterChosen(QPair<QPair<int,int>, QChar> letter);
+    void onLetterPushed(QPair<int, int> coordinates);
+    void onWordCommited();
 };
 
 #endif // PLAYER_H

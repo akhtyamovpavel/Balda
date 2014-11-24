@@ -5,6 +5,8 @@
 #include <iostream>
 #include <QTextStream>
 #include "logger.h"
+#include <QVector>
+#include <ctime>
 
 Dictionary::Dictionary(QObject *parent) :
     QObject(parent)
@@ -12,8 +14,24 @@ Dictionary::Dictionary(QObject *parent) :
     loadDictionary();
 }
 
+QString Dictionary::getFirstWord()
+{
+    srand(time(NULL));
+    QVector<QString> firstWordList;
+    for (QString word: setOfWords) {
+        if (word.size() == 5) {
+            firstWordList.push_back(word);
+        }
+    }
+
+    QString firstWord = firstWordList.at((rand())%firstWordList.size());
+    usedWords.insert(firstWord);
+    return firstWord;
+}
+
 void Dictionary::loadDictionary(){
 
+    QMessageLogger l;
     QFile file("dictionary.txt");
     if(file.open(QIODevice::ReadOnly))
     {
@@ -22,8 +40,6 @@ void Dictionary::loadDictionary(){
         while (!stream.atEnd())
         {
             word = stream.readLine();
-            //QTextStream out(stdout);
-            //out << word << tr("\n");
             setOfWords.insert(word);
 
         }
@@ -33,6 +49,7 @@ void Dictionary::loadDictionary(){
         }
         file.close();
     }
+    l.debug("Dictionary loaded");
     std::cout << "Dictionary loaded" << std::endl;
 
 }

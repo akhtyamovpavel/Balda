@@ -1,15 +1,14 @@
 #include "gamemanager.h"
 #include <iostream>
-GameManager::GameManager(QObject *parent) :
-    QObject(parent)
+GameManager::GameManager(int playersNumber, QObject *parent) :
+    QObject(parent), playersNumber(playersNumber)
 {
     wc.connectToDictionary(&dict);
     wc.connectToBoard(&board);
     dict.setUpConnection(&wc);
     board.setUpConnection(&wc);
 
-    std::cout << "How many players\n";
-    std::cin>> playersNumber;
+    firstWord = dict.getFirstWord();
 
     if (playersNumber == 2) {
         player1.connectToBoard(&board);
@@ -44,6 +43,7 @@ GameManager::GameManager(QObject *parent) :
     numberOfSpareCells = 20;
     if (playersNumber == 2) {
         board.connectToPlayers(&player1, &player2);
+        board.setFirstPlayer(FIRST_PLAYER);
     } else {
         board.connectToPlayers(&player1, &bot);
         board.setFirstPlayer(SECOND_PLAYER);
@@ -55,7 +55,8 @@ GameManager::GameManager(QObject *parent) :
     } else {
         connect(this, SIGNAL(startMoveSecond()), &bot, SLOT(beginStep()));
     }
-    connect(this, SIGNAL(showBoard()), &board, SLOT(showBoardToManager()));
+    board.setFirstWord(firstWord);
+    //connect(this, SIGNAL(showBoard()), &board, SLOT(showBoardToManager()));
 }
 
 bool GameManager::isGameEnded() {
@@ -111,6 +112,25 @@ void GameManager::runGame() {
         }
     }
     std::cout << "Game over" << std::endl;
+}
+
+Player* GameManager::getFirstPlayer()
+{
+    return &player1;
+}
+
+Player* GameManager::getSecondPlayer()
+{
+    return &player2;
+}
+
+int GameManager::getCurrentPlayer() {
+    return currentID;
+}
+
+QString GameManager::getFirstWord()
+{
+    return firstWord;
 }
 //Slots
 

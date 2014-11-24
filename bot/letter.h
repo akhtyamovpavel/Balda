@@ -5,9 +5,6 @@
 #include <QChar>
 #include <QVector>
 
-
-
-
 class Letter{
 public:
     QChar symbol;

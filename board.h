@@ -11,11 +11,12 @@
 
 #include "logger.h"
 
+class WordCollector;
 
 class Board : public QObject
 {
     Q_OBJECT
-    std::vector<std::vector<Cell*> > board_;
+    QVector<QVector<Cell*> > board_;
     int currentPlayer;
     bool isChanged;
     bool isApproved;
@@ -24,16 +25,17 @@ class Board : public QObject
 
     const int WIDTH = 5;
     const int HEIGHT = 5;
-    void setFirstWord();
+
     void sendError(QString message);
     bool rangeCheck(int x, int y);
 
 public:
+
     explicit Board(QObject *parent = 0);
 
     void setFirstPlayer(int player);
-
-    void setUpConnection(QObject* wordCollector);
+    void setFirstWord(QString firstWord);
+    void setUpConnection(WordCollector* wordCollector);
 
     void connectToPlayers(QObject* player1, QObject* player2);
 
@@ -76,14 +78,15 @@ signals:
 
     void moveEnded(QString word);
     void chooseError(QString message);
-    void letterChosen();
+    void letterChosen(QPair<QPair<int,int>, QChar>);
     void sendBoardFirst(QVector<QVector<QChar> >);
+    void resetWordFirst(const QPair<int,int>&);
 
     void moveEndedSecond(QString word);
     void chooseErrorSecond(QString message);
-    void letterChosenSecond();
+    void letterChosenSecond(QPair<QPair<int,int>, QChar>);
     void sendBoardSecond(QVector<QVector<QChar> >);
-
+    void resetWordSecond(const QPair<int,int>&);
     /*
      *  Signals to GameManager
      */

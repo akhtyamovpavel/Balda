@@ -4,15 +4,6 @@ Bor::Bor(){
 
     borVertices.push_back(Letter());
 
-    //TakeVocavulary();
-
-    /*fstream::ifstream in("vocabulary.txt");
-
-    string s;
-    while (in >> s)
-        BOR.addWord(s);*/
-
-
 }
 
 void Bor::addWord(const QString& word){

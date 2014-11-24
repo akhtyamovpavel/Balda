@@ -1,7 +1,7 @@
-#include <QString>
+/*#include <QString>
 #include <QtTest/QTest>
 #include "Board.h"
-
+*/
 /*class TestMainClassesTest : public QObject
 {
     Q_OBJECT

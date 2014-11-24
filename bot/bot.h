@@ -29,18 +29,18 @@ public:
     int level;
 
     Bor borVocabulary;
-    std::vector<std::pair<int, int> > MOVES;
+    QVector<QPair<int, int> > MOVES;
     explicit Bot(QObject* parent = 0);
 
-    int maximalLength(std::vector<Word> variants);
+    int maximalLength(QVector<Word> variants);
 
-    int easyIndexWord(std::vector<Word> variants);
+    int easyIndexWord(QVector<Word> variants);
 
-    int hardIndexWord(std::vector<Word> variants);
+    int hardIndexWord(QVector<Word> variants);
 
-    int hardestIndexWord(std::vector<Word> variants, QVector<QVector<QChar> > symbols, std::vector<QString> notAllowedWords);
+    int hardestIndexWord(QVector<Word> variants, QVector<QVector<QChar> > symbols, QVector<QString> notAllowedWords);
 
-    std::vector<Word> trulyAllowedWord(std::vector<Word> variants, std::vector<QString> notAllowedWords);
+    QVector<Word> trulyAllowedWord(QVector<Word> variants, QVector<QString> notAllowedWords);
 
     void setLevel(int difficulty);
 
@@ -48,23 +48,17 @@ public:
 
     void runProcess() Q_DECL_OVERRIDE;
 
-    bool notBelong(std::vector<QString> not_allowed_words, QString &check_in);
+    bool notBelong(QVector<QString> not_allowed_words, QString &check_in);
 
-    void dfs(QVector<QVector<QChar> >  table, std::vector<Word> &Words, int x, int y, int cur_position,
-             std::vector<std::vector<bool> > cur_used,
+    void dfs(QVector<QVector<QChar> >  table, QVector<Word> &Words, int x, int y, int cur_position,
+             QVector<QVector<bool> > cur_used,
              QString &cur_string,
-             std::vector<std::pair<int, int> > &cur_coords,
+             QVector<QPair<int, int> > &cur_coords,
              bool used_empty);
 
-    int getCode(char c){
-        return (c - 'а');
-    }
 
-    char getChar(int code){
-        return char('а' + code);
-    }
 
-    std::vector<Word> possibleVariants(QVector<QVector<QChar> >& table);
+    QVector<Word> possibleVariants(QVector<QVector<QChar> >& table);
 
 signals:
     void getDictionary();

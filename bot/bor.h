@@ -8,6 +8,7 @@
 #include <QChar>
 #include <QString>
 #include <QVector>
+#include <QPair>
 #include "letter.h"
 const int NOT_FOUND = -1;
 const int PRE_VERTEX = 0;
@@ -28,13 +29,13 @@ struct Word
 {
 
     QString possibleWord;
-    std::vector<std::pair<int, int> > coordinates;
+    QVector<QPair<int, int> > coordinates;
     Word(){}
 
-    Word(QString &push_s, std::vector<std::pair<int, int> > &push_coordinates)
+    Word(QString &pushString, const QVector<QPair<int, int> >& pushCoordinates)
     {
-        possibleWord = push_s;
-        coordinates = push_coordinates;
+        possibleWord = pushString;
+        coordinates = pushCoordinates;
     }
     bool operator < (const Word& w2)
     {

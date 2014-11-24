@@ -24,6 +24,8 @@ class Dictionary : public QObject
 public:
     explicit Dictionary(QObject *parent = 0);
 
+    QString getFirstWord();
+
 
     void setUpConnection(QObject* wordCollector);
     void connectToBot(QObject* bot);
