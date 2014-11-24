@@ -30,25 +30,32 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
     l.printLog(DEBUG, players);
     gameManager = new GameManager(players);
     connectToPlayers(gameManager->getFirstPlayer(), gameManager->getSecondPlayer());
+    gameManager->getFirstPlayer()->connectToInterface(this);
+    gameManager->getSecondPlayer()->connectToInterface(this);
     QString word = gameManager->getFirstWord();
     for (int i = 0; i < 5; ++i) {
         buttons[2][i]->setText(QString(word[i]));
     }
+
     for (int i = 0; i < 5; ++i) {
         buttons[2][i]->setMenu(NULL);
     }
+
+    connect(commitButton, SIGNAL(clicked()), this, SLOT(onCommitButtonClicked()));
 }
 
 void GraphicBoard::connectToPlayers(Player *player1, Player* player2)
 {
-    connect(this, SIGNAL(chooseLetter(QPair<QPair<int,int>, QChar>)),
+    connect(this, SIGNAL(chooseLetterFirst(QPair<QPair<int,int>, QChar>)),
             player1, SLOT(onLetterChosen(QPair<QPair<int,int>,QChar>)));
-    connect(this, SIGNAL(chooseLetter(QPair<QPair<int,int>, QChar>)),
+    connect(this, SIGNAL(chooseLetterSecond(QPair<QPair<int,int>, QChar>)),
             player2, SLOT(onLetterChosen(QPair<QPair<int,int>,QChar>)));
-    connect(this, SIGNAL(pushLetter(QPair<int,int>)),
+    connect(this, SIGNAL(pushLetterFirst(QPair<int,int>)),
             player1, SLOT(onLetterPushed(QPair<int,int>)));
-    connect(this, SIGNAL(pushLetter(QPair<int,int>)),
+    connect(this, SIGNAL(pushLetterSecond(QPair<int,int>)),
             player2, SLOT(onLetterPushed(QPair<int,int>)));
+    connect(this, SIGNAL(commitWordFirst()), player1, SLOT(onWordCommited()));
+    connect(this, SIGNAL(commitWordSecond()), player2, SLOT(onWordCommited()));
 }
 
 
@@ -64,8 +71,12 @@ void GraphicBoard::onCellPushed()
             }
         }
     }
-    currentWord->setText(currentWord->text() + buttons[xSender][ySender]->text());
-    emit pushLetter(qMakePair(xSender, ySender));
+    //  currentWord->setText(currentWord->text() + buttons[xSender][ySender]->text());
+    if (gameManager->getCurrentPlayer() == 1) {
+        emit pushLetterFirst(qMakePair(xSender, ySender));
+    } else {
+        emit pushLetterSecond(qMakePair(xSender, ySender));
+    }
 }
 
 void GraphicBoard::onCellChosen(QChar letter)
@@ -81,8 +92,38 @@ void GraphicBoard::onCellChosen(QChar letter)
         }
     }
     QPair<QPair<int,int>, QChar> sendLetter = qMakePair(qMakePair(xSender, ySender), letter);
-    emit chooseLetter(sendLetter);
+    if (gameManager->getCurrentPlayer() == 1) {
+        emit chooseLetterFirst(sendLetter);
+    } else {
+        emit chooseLetterSecond(sendLetter);
+    }
 }
+
+void GraphicBoard::afterCellPushed(QPair<int, int>coordinates)
+{
+    currentWord->setText(currentWord->text() + buttons[coordinates.first][coordinates.second]->text());
+}
+
+void GraphicBoard::afterCellChoosen(QPair<QPair<int, int>, QChar> coordinates)
+{
+    buttons[coordinates.first.first][coordinates.first.second]->setMenu(NULL);
+    buttons[coordinates.first.first][coordinates.first.second]->setText(QString(coordinates.second));
+}
+
+void GraphicBoard::afterWordCommited(QString word) {
+    currentWord->setText(NULL);
+}
+
+void GraphicBoard::onCommitButtonClicked()
+{
+    if (gameManager->getCurrentPlayer() == 1) {
+        emit commitWordFirst();
+    } else {
+        emit commitWordSecond();
+    }
+}
+
+
 
 
 

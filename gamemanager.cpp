@@ -55,6 +55,7 @@ GameManager::GameManager(int playersNumber, QObject *parent) :
     } else {
         connect(this, SIGNAL(startMoveSecond()), &bot, SLOT(beginStep()));
     }
+    board.setFirstWord(firstWord);
     //connect(this, SIGNAL(showBoard()), &board, SLOT(showBoardToManager()));
 }
 

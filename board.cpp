@@ -3,18 +3,23 @@
 #include <QTextStream>
 #include <QVector>
 
+
 #include "logger.h"
 #include "wordcollector.h"
+#include "cell.h"
+
 
 Board::Board(QObject *parent) :
     QObject(parent)
 {
     isChanged = false;
     isApproved = false;
-    board_.resize(HEIGHT, std::vector<Cell*>(WIDTH));
+
+
     for (int i = 0; i < 5; ++i){
         for(int j = 0; j <5; ++j) {
-            board_[i][j] = new Cell(QChar('-'), parent);
+            board_.push_back(QVector<Cell*>());
+            board_[i].push_back(new Cell(QChar('-'), parent));
         }
     }
     currentPlayer = FIRST_PLAYER;
@@ -37,12 +42,12 @@ void Board::setUpConnection(WordCollector* wordCollector) {
 void Board::connectToPlayers(QObject* player1, QObject* player2) {
     connect(this, SIGNAL(moveEnded(QString)), player1, SLOT(approveWord(QString)));
     connect(this, SIGNAL(chooseError(QString)), player1, SLOT(badChooseLetter(QString)));
-    connect(this, SIGNAL(letterChosen()), player1, SLOT(letterChosen()));
+    connect(this, SIGNAL(letterChosen(QPair<QPair<int,int>, QChar>)), player1, SLOT(letterChosen(QPair<QPair<int,int>, QChar >)));
     connect(this, SIGNAL(sendBoardFirst(QVector<QVector<QChar> >)), player1, SLOT(setCurrentBoard(QVector<QVector<QChar> >)));
 
     connect(this, SIGNAL(moveEndedSecond(QString)), player2, SLOT(approveWord(QString)));
     connect(this, SIGNAL(chooseErrorSecond(QString)), player2, SLOT(badChooseLetter(QString)));
-    connect(this, SIGNAL(letterChosenSecond()), player2, SLOT(letterChosen()));
+    connect(this, SIGNAL(letterChosenSecond(QPair<QPair<int,int>, QChar>)), player2, SLOT(letterChosen(QPair<QPair<int,int>, QChar>)));
     connect(this, SIGNAL(sendBoardSecond(QVector<QVector<QChar> >)), player2, SLOT(setCurrentBoard(QVector<QVector<QChar> >)));
 
 }
@@ -83,7 +88,7 @@ void Board::showBoard(){
     QTextStream out(stdout);
     for(int i = 0; i < HEIGHT; ++i){
         for(int j = 0; j < WIDTH; ++j) {
-            out << board_[i][j]->getLetter()<<" ";
+            out << board_[i][j]->getLetter() << " ";
         }
         out <<"\n";
     }
@@ -107,11 +112,12 @@ void Board::changeLetter(int x, int y, QChar letter) {
     setMarked(x, y, true);
     setChanged(true);
     showBoard();
+    QPair<QPair<int,int>, QChar> sendLetter = qMakePair(qMakePair(x, y), letter);
     emit addNewLetter(QPair<int,int>(x, y));
     if (currentPlayer == FIRST_PLAYER) {
-        emit letterChosen();
+        emit letterChosen(sendLetter);
     } else {
-        emit letterChosenSecond();
+        emit letterChosenSecond(sendLetter);
     }
 
 }

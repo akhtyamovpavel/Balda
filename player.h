@@ -42,7 +42,7 @@ signals:
 
     void showBoard();
 
-    void afterLetterChosed(QPair<int,int> coordinates);
+    void afterLetterChosed(QPair<QPair<int,int>, QChar> letter);
     void afterLetterPushed(QPair<int,int> coordinates);
     void afterWordCommited(QString word);
 
@@ -56,7 +56,7 @@ public slots:
      * slots from Board
      */
     void badChooseLetter(QString message);
-    void letterChosen();
+    void letterChosen(QPair<QPair<int,int>, QChar> letter);
     void approveWord(QString word);
     void setCurrentBoard(QVector<QVector<QChar> > data);
 
@@ -66,6 +66,7 @@ public slots:
 
     void onLetterChosen(QPair<QPair<int,int>, QChar> letter);
     void onLetterPushed(QPair<int, int> coordinates);
+    void onWordCommited();
 };
 
 #endif // PLAYER_H

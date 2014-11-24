@@ -36,8 +36,6 @@ signals:
 
 public slots:
     void setLetter(QString letter) {
-        setMenu(NULL);
-        QToolButton::setText(letter.at(0));
         emit onLetterChosen(letter.at(0));
     }
 

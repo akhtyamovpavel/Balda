@@ -26,6 +26,7 @@ public:
 
     QString getFirstWord();
 
+
     void setUpConnection(QObject* wordCollector);
     void connectToBot(QObject* bot);
 

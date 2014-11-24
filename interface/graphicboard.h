@@ -32,12 +32,21 @@ public:
 
 
 signals:
+    void pushLetterFirst(QPair<int,int> coords);
+    void pushLetterSecond(QPair<int,int> coords);
+    void chooseLetterFirst(QPair<QPair<int,int>, QChar> letter);
+    void chooseLetterSecond(QPair<QPair<int,int>, QChar> letter);
+    void commitWordFirst();
+    void commitWordSecond();
 
-    void pushLetter(QPair<int,int> coords);
-    void chooseLetter(QPair<QPair<int,int>, QChar> letter);
 public slots:
     void onCellPushed();
     void onCellChosen(QChar letter);
+    void afterCellPushed(QPair<int,int> coordinates);
+    void afterCellChoosen(QPair<QPair<int,int>, QChar> coordinates);
+    void afterWordCommited(QString word);
+
+    void onCommitButtonClicked();
 };
 
 #endif // GRAPHICBOARD_H

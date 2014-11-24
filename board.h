@@ -16,7 +16,7 @@ class WordCollector;
 class Board : public QObject
 {
     Q_OBJECT
-    std::vector<std::vector<Cell*> > board_;
+    QVector<QVector<Cell*> > board_;
     int currentPlayer;
     bool isChanged;
     bool isApproved;
@@ -30,6 +30,7 @@ class Board : public QObject
     bool rangeCheck(int x, int y);
 
 public:
+
     explicit Board(QObject *parent = 0);
 
     void setFirstPlayer(int player);
@@ -77,12 +78,12 @@ signals:
 
     void moveEnded(QString word);
     void chooseError(QString message);
-    void letterChosen();
+    void letterChosen(QPair<QPair<int,int>, QChar>);
     void sendBoardFirst(QVector<QVector<QChar> >);
 
     void moveEndedSecond(QString word);
     void chooseErrorSecond(QString message);
-    void letterChosenSecond();
+    void letterChosenSecond(QPair<QPair<int,int>, QChar>);
     void sendBoardSecond(QVector<QVector<QChar> >);
 
     /*

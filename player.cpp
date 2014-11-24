@@ -27,8 +27,10 @@ void Player::connectToManager(QObject* gameManager) {
 
 void Player::connectToInterface(QObject *graphicBoard)
 {
-    /*connect(this, SIGNAL(afterLetterChosed(QPair<int,int>)),
-                         graphicBoard, SLOT());*/
+    connect(this, SIGNAL(afterLetterChosed(QPair<QPair<int,int>, QChar>)),
+                         graphicBoard, SLOT(afterCellChoosen(QPair<QPair<int,int>, QChar>)));
+    connect(this, SIGNAL(afterLetterPushed(QPair<int,int>)), graphicBoard, SLOT(afterCellPushed(QPair<int,int>)));
+    connect(this, SIGNAL(afterWordCommited(QString)), graphicBoard, SLOT(afterWordCommited(QString)));
 }
 
 
@@ -109,9 +111,10 @@ void Player::badChooseLetter(QString message) {
     std::cout << message.toStdString() << std::endl;
 }
 
-void Player::letterChosen() {
+void Player::letterChosen(QPair<QPair<int,int>, QChar> letter) {
     std::cout << "Letter chosen" << std::endl;
     isChosen = true;
+    emit afterLetterChosed(letter);
 }
 
 void Player::approveWord(QString word) {
@@ -123,6 +126,7 @@ void Player::approveWord(QString word) {
     out << "Your current score is " << score << "\n";
     isCommited = false;
     isChosen = false;
+    emit afterWordCommited(word);
     emit moveEnded();
 }
 
@@ -143,7 +147,14 @@ void Player::onLetterPushed(QPair<int, int> coordinates)
         return;
     }
     emit pushLetter(coordinates);
+    emit afterLetterPushed(coordinates);
 }
 
 
 
+
+
+void Player::onWordCommited()
+{
+    emit commitWord();
+}
