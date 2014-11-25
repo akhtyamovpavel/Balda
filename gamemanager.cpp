@@ -21,9 +21,7 @@ GameManager::GameManager(int playersNumber, QObject *parent) :
         player1.connectToManager(this);
         dict.connectToBot(&bot);
         std::cout << "What level do you choose\n";
-        QString level;
-        QTextStream in(stdin);
-        in >> level;
+        QString level = tr("easy");
         level.toLower();
         if (level == tr("easy")) {
             bot.setLevel(EASY);
@@ -46,7 +44,7 @@ GameManager::GameManager(int playersNumber, QObject *parent) :
         board.setFirstPlayer(FIRST_PLAYER);
     } else {
         board.connectToPlayers(&player1, &bot);
-        board.setFirstPlayer(SECOND_PLAYER);
+        board.setFirstPlayer(FIRST_PLAYER);
     }
     connect(this, SIGNAL(askForCells()), &board, SLOT(getNumberOfCells()));
     connect(this, SIGNAL(startMoveFirst()), &player1, SLOT(beginStep()));
@@ -67,7 +65,7 @@ bool GameManager::isGameEnded() {
 
 
 void GameManager::runGame() {
-    while (!isGameEnded()) {
+    if (!isGameEnded()) {
         emit showBoard();
         if (playersNumber == 2) {
             if (currentID == FIRST_PLAYER) {
@@ -79,7 +77,7 @@ void GameManager::runGame() {
             }
         }
         if (playersNumber == 1) {
-            if (currentID == SECOND_PLAYER) {
+            if (currentID == FIRST_PLAYER) {
                 std::cout << "First player: your move" << std::endl;
                 emit startMoveFirst();
             } else {
@@ -87,31 +85,31 @@ void GameManager::runGame() {
                 emit startMoveSecond();
             }
         }
-
+        return;
     }
-
+    QString message;
     if (playersNumber == 2) {
         int score1 = player1.getScore();
         int score2 = player2.getScore();
         if (score1 > score2) {
-            std::cout << "First player wins" << std::endl;
+            message = tr("First player won");
         } else if (score1 == score2){
-            std::cout << "Draw" << std::endl;
+            message = tr("Draw");
         } else {
-            std::cout << "Second player wins" << std::endl;
+            message = tr("Second player won");
         }
     } else {
         int score1 = player1.getScore();
         int score2 = bot.getScore();
         if (score1 > score2) {
-            std::cout << "Player wins" << std::endl;
+            message = tr("Player won");
         } else if (score1 == score2){
-            std::cout << "Draw" << std::endl;
+            message = tr("Draw");
         } else {
-            std::cout << "Compucter wins" << std::endl;
+            message = tr("Compucter wins");
         }
     }
-    std::cout << "Game over" << std::endl;
+    emit gameEnded(message);
 }
 
 Player* GameManager::getFirstPlayer()
@@ -121,7 +119,11 @@ Player* GameManager::getFirstPlayer()
 
 Player* GameManager::getSecondPlayer()
 {
-    return &player2;
+    if (playersNumber == 2) {
+        return &player2;
+    } else {
+        return &bot;
+    }
 }
 
 int GameManager::getCurrentPlayer() {

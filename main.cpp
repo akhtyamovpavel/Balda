@@ -19,7 +19,9 @@ int main(int argc, char *argv[])
 
 
     GraphicBoard gb;
+    QObject::connect(&gb, SIGNAL(quit()), &a, SLOT(quit()));
     gb.show();
+    gb.runStep();
 
     return a.exec();
 }

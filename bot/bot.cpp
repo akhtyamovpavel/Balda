@@ -134,6 +134,8 @@ void Bot::connectToDictionary(QObject* dictionary) {
     emit getDictionary();
 }
 
+
+
 void Bot::beginStep() {
     runProcess();
 }
@@ -192,7 +194,7 @@ void Bot::runProcess() {
     int usedX;
     int usedY;
     QChar c;
-    while(!isCommited) {
+    while(!tempCommited) {
 
         //id = std::max(rand(), (int)variants.size());
         l.printLog(DEBUG, variants[id].possibleWord);
@@ -218,17 +220,18 @@ void Bot::runProcess() {
             QPair<int,int> coords(x, y);
             l.printLog(DEBUG, "push");
             l.printLog(DEBUG, x);
-            l.printLog(DEBUG, y);
+                l.printLog(DEBUG, y);
             emit pushLetter(coords);
         }
+
         emit commitWord();
 
-        if (isCommited) {
-            emit moveEnded();
+        if (tempCommited) {
+            tempCommited = false;
+            return;
         }
         ++id;
     }
-
 
 }
 
@@ -266,8 +269,8 @@ void Bot::dfs(QVector<QVector<QChar> >  table, QVector<Word> &words,
     {
 
 
-        for (int i = 0; i < 32; ++i) {
-            QChar cc = QChar(1072 + i);
+        for (wchar_t c = L'a'; c <= L'я'; ++c) {
+            QChar cc = QChar(c);
             table[x][y] = cc;
             if (borVocabulary.borVertices[curPosition].findChildren(cc) != -1)
                 dfs(table, words, x, y, borVocabulary.borVertices[curPosition].findChildren(cc), curUsed, curString, curCoords, true);
@@ -352,3 +355,5 @@ void Bot::setupDictionary(QVector<QString> words) {
         borVocabulary.addWord(words[i]);
     }
 }
+
+

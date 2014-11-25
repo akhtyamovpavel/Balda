@@ -40,6 +40,7 @@ signals:
     void startMoveFirst();
     void startMoveSecond();
     void askForCells();
+    void gameEnded(const QString& message);
 
     /*
      * Signals to Board

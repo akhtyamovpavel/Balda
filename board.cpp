@@ -207,11 +207,11 @@ void Board::remakeMove(const QString& word) {
         isApproved = false;
         currentPlayer = 3 - currentPlayer;
         switch (currentPlayer) {
-        case 1:
+        case 2:
             emit moveEnded(word);
             break;
 
-        case 2:
+        case 1:
             emit moveEndedSecond(word);
             break;
         }

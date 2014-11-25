@@ -39,6 +39,7 @@ public:
 
     void connectToPlayers(Player* player1, Player* player2);
 
+    void runStep();
 
 signals:
     void pushLetterFirst(QPair<int,int> coords);
@@ -47,6 +48,7 @@ signals:
     void chooseLetterSecond(QPair<QPair<int,int>, QChar> letter);
     void commitWordFirst();
     void commitWordSecond();
+    void quit();
 
 public slots:
     void onCellPushed();
@@ -57,6 +59,8 @@ public slots:
     void onPlayerResetWord(const QPair<int,int>& coordinates);
 
     void onCommitButtonClicked();
+
+    void finishGame(const QString& message);
 };
 
 #endif // GRAPHICBOARD_H
