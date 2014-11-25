@@ -25,8 +25,6 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
     wordPanel->addWidget(commitButton);
     gameBoardPanel->addLayout(wordPanel);
 
-
-
     firstPlayerScore = new QLabel(tr("0"), this);
     firstPlayerWords = new QListWidget(this);
     firstPlayerPanel = new QVBoxLayout(this);
@@ -39,15 +37,13 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
     secondPlayerPanel->addWidget(secondPlayerScore);
     secondPlayerPanel->addWidget(secondPlayerWords);
 
-    gamePanel->addLayout(secondPlayerPanel);
-    gamePanel->addLayout(gameBoardPanel);
     gamePanel->addLayout(firstPlayerPanel);
+    gamePanel->addLayout(gameBoardPanel);
+    gamePanel->addLayout(secondPlayerPanel);
 
     setLayout(gamePanel);
 
     int players = QInputDialog::getInt(this, tr("Enter number of players"), tr("Введите число игроков"), 1, 1, 2);
-    Logger l;
-    l.printLog(DEBUG, players);
     gameManager = new GameManager(players);
     connectToPlayers(gameManager->getFirstPlayer(), gameManager->getSecondPlayer());
     gameManager->getFirstPlayer()->connectToInterface(this);
@@ -62,6 +58,7 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
     }
 
     connect(commitButton, SIGNAL(clicked()), this, SLOT(onCommitButtonClicked()));
+
 }
 
 void GraphicBoard::connectToPlayers(Player *player1, Player* player2)
@@ -76,6 +73,11 @@ void GraphicBoard::connectToPlayers(Player *player1, Player* player2)
             player2, SLOT(onLetterPushed(QPair<int,int>)));
     connect(this, SIGNAL(commitWordFirst()), player1, SLOT(onWordCommited()));
     connect(this, SIGNAL(commitWordSecond()), player2, SLOT(onWordCommited()));
+}
+
+void GraphicBoard::runStep()
+{
+    gameManager->runGame();
 }
 
 
@@ -144,6 +146,7 @@ void GraphicBoard::afterWordCommited(QString word) {
         int score = gameManager->getSecondPlayer()->getScore();
         secondPlayerScore->setText(QString::number(score));
     }
+    runStep();
 }
 
 void GraphicBoard::onPlayerResetWord(const QPair<int, int> &coordinates)

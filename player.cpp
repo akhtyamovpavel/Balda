@@ -104,7 +104,7 @@ void Player::runProcess() {
 
 //Slots from GameManager
 void Player::beginStep() {
-    runProcess();
+    //runProcess();
 }
 
 
@@ -126,10 +126,13 @@ void Player::approveWord(QString word) {
     QTextStream out(stdout);
     out << "Word approved: " << word << "\n";
     out << "Your current score is " << score << "\n";
+    out.flush();
     isCommited = false;
     isChosen = false;
-    emit afterWordCommited(word);
+    tempCommited = true;
     emit moveEnded();
+    emit afterWordCommited(word);
+
 }
 
 void Player::setCurrentBoard(QVector<QVector<QChar> > data) {

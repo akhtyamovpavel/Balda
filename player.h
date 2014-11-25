@@ -22,9 +22,10 @@ class Player : public QObject
 protected:
     QVector<QVector<QChar> > board;
 
-
+    bool tempCommited = false;
 
 public:
+
 
     bool isCommited;
     explicit Player(QObject *parent = 0);

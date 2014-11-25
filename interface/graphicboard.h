@@ -39,6 +39,7 @@ public:
 
     void connectToPlayers(Player* player1, Player* player2);
 
+    void runStep();
 
 signals:
     void pushLetterFirst(QPair<int,int> coords);

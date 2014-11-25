@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 
     GraphicBoard gb;
     gb.show();
+    gb.runStep();
 
     return a.exec();
 }

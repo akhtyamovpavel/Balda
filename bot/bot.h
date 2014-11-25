@@ -62,9 +62,8 @@ public:
 
 signals:
     void getDictionary();
-
-
-
+    void sendLetter(QPair<QPair<int,int>, QChar> letter);
+    void sendWord(QString word);
 
 public slots:
 
