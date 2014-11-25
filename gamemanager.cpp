@@ -87,29 +87,29 @@ void GameManager::runGame() {
         }
         return;
     }
-
+    QString message;
     if (playersNumber == 2) {
         int score1 = player1.getScore();
         int score2 = player2.getScore();
         if (score1 > score2) {
-            std::cout << "First player wins" << std::endl;
+            message = tr("First player won");
         } else if (score1 == score2){
-            std::cout << "Draw" << std::endl;
+            message = tr("Draw");
         } else {
-            std::cout << "Second player wins" << std::endl;
+            message = tr("Second player won");
         }
     } else {
         int score1 = player1.getScore();
         int score2 = bot.getScore();
         if (score1 > score2) {
-            std::cout << "Player wins" << std::endl;
+            message = tr("Player won");
         } else if (score1 == score2){
-            std::cout << "Draw" << std::endl;
+            message = tr("Draw");
         } else {
-            std::cout << "Compucter wins" << std::endl;
+            message = tr("Compucter wins");
         }
     }
-    std::cout << "Game over" << std::endl;
+    emit gameEnded(message);
 }
 
 Player* GameManager::getFirstPlayer()

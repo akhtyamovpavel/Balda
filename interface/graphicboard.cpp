@@ -59,6 +59,9 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
 
     connect(commitButton, SIGNAL(clicked()), this, SLOT(onCommitButtonClicked()));
 
+    connect(gameManager, SIGNAL(gameEnded(const QString&)),
+            this, SLOT(finishGame(const QString&)));
+
 }
 
 void GraphicBoard::connectToPlayers(Player *player1, Player* player2)
@@ -162,6 +165,17 @@ void GraphicBoard::onCommitButtonClicked()
         emit commitWordFirst();
     } else {
         emit commitWordSecond();
+    }
+}
+
+void GraphicBoard::finishGame(const QString &message)
+{
+    QMessageBox box(this);
+    box.setText(message);
+    QPushButton* okButton = box.addButton(QMessageBox::Ok);
+    box.exec();
+    if (box.clickedButton() == okButton) {
+        emit quit();
     }
 }
 

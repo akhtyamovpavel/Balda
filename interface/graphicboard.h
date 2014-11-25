@@ -48,6 +48,7 @@ signals:
     void chooseLetterSecond(QPair<QPair<int,int>, QChar> letter);
     void commitWordFirst();
     void commitWordSecond();
+    void quit();
 
 public slots:
     void onCellPushed();
@@ -58,6 +59,8 @@ public slots:
     void onPlayerResetWord(const QPair<int,int>& coordinates);
 
     void onCommitButtonClicked();
+
+    void finishGame(const QString& message);
 };
 
 #endif // GRAPHICBOARD_H

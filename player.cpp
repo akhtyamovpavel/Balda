@@ -45,59 +45,6 @@ int Player::getScore() {
 
 
 void Player::runProcess() {
-    QTextStream in(stdin);
-    QTextStream out(stdout);
-    while (!isCommited) {
-        QString text;
-        in>>text;
-        if (text == "exit") {
-            //do some;
-        }
-        if(text == "show") {
-            emit showBoard();
-            out << tr("Current board:\n");
-            for (int i = 0; i < 5; ++i) {
-                for (int j = 0; j < 5; ++j) {
-                    out << board[i][j]<<tr(" ");
-                }
-                out << "\n";
-            }
-            out.flush();
-        } else if (text == "new") {
-            int x,y;
-            in>>x>>y;
-            --x;
-            --y;
-            QString letter;
-            in>>letter;
-            if (letter.size() != 1) {
-                out << "Not letter\n";
-                out.flush();
-            }
-            QPair<QPair<int, int>, QChar> sendLetter(QPair<int,int>(x,y), letter[0]);
-            emit chooseLetter(sendLetter);
-
-        } else if (text == "push") {
-            int x, y;
-            in >> x >> y;
-            if (!isChosen) {
-                out << "Choose letter first\n";
-                out.flush();
-            }
-            --x;
-            --y;
-            QPair<int,int> coordinates(x,y);
-            emit pushLetter(coordinates);
-        } else if (text == "commit"){
-            emit commitWord();
-        } else {
-            out << "wrong command\n";
-            out.flush();
-        }
-    }
-    isChosen = false;
-    isCommited = false;
-    emit moveEnded();
 }
 
 
