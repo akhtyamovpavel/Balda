@@ -105,8 +105,8 @@ int Bot::hardestIndexWord(QVector<Word> variants, QVector<QVector<QChar> > symbo
         int usedY;
         QChar c;
         for (int i = 0; i < variants[index].coordinates.size(); ++i) {
-            int x = variants[index].coordinates[i].first - 1;
-            int y = variants[index].coordinates[i].second - 1;
+            int x = variants[index].coordinates[i].first;
+            int y = variants[index].coordinates[i].second;
             if (symbols[x][y] == QChar('-')) {
                 usedX = x;
                 usedY = y;
@@ -117,6 +117,7 @@ int Bot::hardestIndexWord(QVector<Word> variants, QVector<QVector<QChar> > symbo
         symbols[usedX][usedY] = c;
         QVector<Word> newVariants = possibleVariants(symbols);
         symbols[usedX][usedY] = QChar('-');
+        notAllowedWords.back();
         QVector<Word> newGoodVariants = trulyAllowedWord(newVariants, notAllowedWords);
         int del2 = maximalLength(newGoodVariants);
         if (del1 - del2 > maxx) {
@@ -187,9 +188,9 @@ void Bot::runProcess() {
         id = hardestIndexWord(variants, symbols, notAllowedWords);
     }
 
-    /*
-     if id == -1 then do something;
-     */
+
+     if (id == -1) {
+         emit dontMakeMove();}
 
     int usedX;
     int usedY;
@@ -231,7 +232,10 @@ void Bot::runProcess() {
             return;
         }
         ++id;
+
+
     }
+
 
 }
 

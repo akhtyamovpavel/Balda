@@ -26,6 +26,7 @@ class GraphicBoard : public QWidget
     QHBoxLayout* wordPanel;
     QHBoxLayout* gamePanel;
     QPushButton* commitButton;
+    QPushButton* commitGiveUp;
     QLabel* currentWord;
     QListWidget* firstPlayerWords;
     QListWidget* secondPlayerWords;
@@ -49,6 +50,8 @@ signals:
     void commitWordFirst();
     void commitWordSecond();
     void quit();
+    void giveUpFirst();
+    void giveUpSecond();
 
 public slots:
     void onCellPushed();
@@ -60,7 +63,10 @@ public slots:
 
     void onCommitButtonClicked();
 
+    void onCommitGiveUpClicked();
+
     void finishGame(const QString& message);
+
 };
 
 #endif // GRAPHICBOARD_H
