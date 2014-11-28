@@ -47,6 +47,7 @@ signals:
     void afterLetterPushed(QPair<int,int> coordinates);
     void afterWordCommited(QString word);
     void resetWord(const QPair<int,int>& coordinates);
+    void dontMakeMove();
 
 public slots:
     /**
@@ -69,6 +70,7 @@ public slots:
     void onLetterChosen(QPair<QPair<int,int>, QChar> letter);
     void onLetterPushed(QPair<int, int> coordinates);
     void onWordCommited();
+    void sendEnd();
 };
 
 #endif // PLAYER_H

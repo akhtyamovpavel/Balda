@@ -42,6 +42,7 @@ signals:
     void askForCells();
     void gameEnded(const QString& message);
 
+
     /*
      * Signals to Board
      * */
@@ -51,6 +52,7 @@ signals:
 public slots:
     void stepEnded();
     void getNumberOfCells(int value);
+    void gameEnding();
 };
 
 #endif // GAMEMANAGER_H

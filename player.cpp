@@ -23,6 +23,7 @@ void Player::connectToBoard(QObject* board) {
 
 void Player::connectToManager(QObject* gameManager) {
     connect(this, SIGNAL(moveEnded()), gameManager, SLOT(stepEnded()));
+    connect(this, SIGNAL(dontMakeMove()), gameManager, SLOT(gameEnding()));
 }
 
 void Player::connectToInterface(QObject *graphicBoard)
@@ -35,6 +36,10 @@ void Player::connectToInterface(QObject *graphicBoard)
             graphicBoard, SLOT(onPlayerResetWord(const QPair<int,int>&)));
 }
 
+void Player::sendEnd()
+{
+    emit dontMakeMove();
+}
 
 //Public methods
 

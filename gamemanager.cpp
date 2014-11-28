@@ -21,7 +21,7 @@ GameManager::GameManager(int playersNumber, QObject *parent) :
         player1.connectToManager(this);
         dict.connectToBot(&bot);
         std::cout << "What level do you choose\n";
-        QString level = tr("easy");
+        QString level = tr("hardest");
         level.toLower();
         if (level == tr("easy")) {
             bot.setLevel(EASY);
@@ -87,6 +87,11 @@ void GameManager::runGame() {
         }
         return;
     }
+    gameEnding();
+}
+
+void GameManager::gameEnding()
+{
     QString message;
     if (playersNumber == 2) {
         int score1 = player1.getScore();
@@ -106,7 +111,7 @@ void GameManager::runGame() {
         } else if (score1 == score2){
             message = tr("Draw");
         } else {
-            message = tr("Compucter wins");
+            message = tr("Computer wins");
         }
     }
     emit gameEnded(message);
@@ -116,6 +121,8 @@ Player* GameManager::getFirstPlayer()
 {
     return &player1;
 }
+
+
 
 Player* GameManager::getSecondPlayer()
 {

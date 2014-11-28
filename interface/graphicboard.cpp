@@ -21,9 +21,12 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
     wordPanel = new QHBoxLayout;
     currentWord = new QLabel("");
     commitButton = new QPushButton("Enter!");
+    commitGiveUp = new QPushButton("Give Up");
+    wordPanel->addWidget(commitGiveUp);
     wordPanel->addWidget(currentWord);
     wordPanel->addWidget(commitButton);
     gameBoardPanel->addLayout(wordPanel);
+
 
     firstPlayerScore = new QLabel(tr("0"), this);
     firstPlayerWords = new QListWidget(this);
@@ -58,6 +61,8 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
     }
 
     connect(commitButton, SIGNAL(clicked()), this, SLOT(onCommitButtonClicked()));
+    connect(commitGiveUp, SIGNAL(clicked()), this, SLOT(onCommitGiveUpClicked()));
+
 
     connect(gameManager, SIGNAL(gameEnded(const QString&)),
             this, SLOT(finishGame(const QString&)));
@@ -76,7 +81,11 @@ void GraphicBoard::connectToPlayers(Player *player1, Player* player2)
             player2, SLOT(onLetterPushed(QPair<int,int>)));
     connect(this, SIGNAL(commitWordFirst()), player1, SLOT(onWordCommited()));
     connect(this, SIGNAL(commitWordSecond()), player2, SLOT(onWordCommited()));
+    connect(this, SIGNAL(giveUpFirst()), player1, SLOT(sendEnd()));
+    connect(this, SIGNAL(giveUpSecond()), player2, SLOT(sendEnd()));
+
 }
+
 
 void GraphicBoard::runStep()
 {
@@ -165,6 +174,15 @@ void GraphicBoard::onCommitButtonClicked()
         emit commitWordFirst();
     } else {
         emit commitWordSecond();
+    }
+}
+
+void GraphicBoard::onCommitGiveUpClicked()
+{
+    if (gameManager->getCurrentPlayer() == 1) {
+        emit giveUpFirst();
+    } else {
+        emit giveUpSecond();
     }
 }
 
