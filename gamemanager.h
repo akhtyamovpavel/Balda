@@ -30,7 +30,7 @@ class GameManager : public QObject
 
     bool isGameEnded();
 public:
-    explicit GameManager(int playersNumber, QObject *parent = 0);
+    explicit GameManager(int playersNumber, QString level = "", QObject *parent = 0);
     void runGame();
     Player* getFirstPlayer();
     Player* getSecondPlayer();

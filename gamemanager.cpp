@@ -1,6 +1,6 @@
 #include "gamemanager.h"
 #include <iostream>
-GameManager::GameManager(int playersNumber, QObject *parent) :
+GameManager::GameManager(int playersNumber, QString level, QObject *parent) :
     QObject(parent), playersNumber(playersNumber)
 {
     wc.connectToDictionary(&dict);
@@ -20,14 +20,11 @@ GameManager::GameManager(int playersNumber, QObject *parent) :
         player1.connectToBoard(&board);
         player1.connectToManager(this);
         dict.connectToBot(&bot);
-        std::cout << "What level do you choose\n";
-        QString level = tr("easy");
-        level.toLower();
-        if (level == tr("easy")) {
+        if (level == "EASY") {
             bot.setLevel(EASY);
-        } else if (level == tr("hard")) {
+        } else if (level == "HARD") {
             bot.setLevel(HARD);
-        } else if (level == tr("hardest")) {
+        } else if (level == "HARDEST") {
             bot.setLevel(HARDEST);
         }
         bot.connectToBoard(&board);

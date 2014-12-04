@@ -2,6 +2,7 @@
 #include "logger.h"
 #include <QInputDialog>
 #include "gamemanager.h"
+#include <QStringList>
 
 GraphicBoard::GraphicBoard(QWidget *parent) :
     QWidget(parent)
@@ -47,7 +48,16 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
     setLayout(gamePanel);
 
     int players = QInputDialog::getInt(this, tr("Enter number of players"), tr("Введите число игроков"), 1, 1, 2);
-    gameManager = new GameManager(players);
+    if (players == 2) {
+        gameManager = new GameManager(players);
+    } else {
+        QStringList list;
+        list.push_back(tr("EASY"));
+        list.push_back(tr("HARD"));
+        list.push_back("HARDEST");
+        QString level = QInputDialog::getItem(this, tr("Choose level"), tr("Выберите сложность"), list);
+        gameManager = new GameManager(players, level);
+    }
     connectToPlayers(gameManager->getFirstPlayer(), gameManager->getSecondPlayer());
     gameManager->getFirstPlayer()->connectToInterface(this);
     gameManager->getSecondPlayer()->connectToInterface(this);
