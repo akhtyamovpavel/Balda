@@ -190,14 +190,14 @@ void Bot::runProcess() {
 
 
      if (id == -1) {
-         emit dontMakeMove();}
+         emit dontMakeMove();
+     }
 
     int usedX;
     int usedY;
     QChar c;
     while(!tempCommited) {
 
-        //id = std::max(rand(), (int)variants.size());
         l.printLog(DEBUG, variants[id].possibleWord);
         for (int i = 0; i < variants[id].coordinates.size(); ++i) {
             int x = variants[id].coordinates[i].first - 1;
@@ -273,7 +273,7 @@ void Bot::dfs(QVector<QVector<QChar> >  table, QVector<Word> &words,
     {
 
 
-        for (wchar_t c = L'a'; c <= L'я'; ++c) {
+        for (wchar_t c = L'А'; c <= L'Я'; ++c) {
             QChar cc = QChar(c);
             table[x][y] = cc;
             if (borVocabulary.borVertices[curPosition].findChildren(cc) != -1)

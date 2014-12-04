@@ -21,7 +21,7 @@ GameManager::GameManager(int playersNumber, QObject *parent) :
         player1.connectToManager(this);
         dict.connectToBot(&bot);
         std::cout << "What level do you choose\n";
-        QString level = tr("hardest");
+        QString level = tr("easy");
         level.toLower();
         if (level == tr("easy")) {
             bot.setLevel(EASY);

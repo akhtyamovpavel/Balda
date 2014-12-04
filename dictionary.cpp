@@ -7,10 +7,15 @@
 #include "logger.h"
 #include <QVector>
 #include <ctime>
+#include <QSettings>
+#include <QDir>
+#include <QDebug>
+#include <QSqlError>
 
 Dictionary::Dictionary(QObject *parent) :
     QObject(parent)
 {
+
     loadDictionary();
 }
 
@@ -18,8 +23,12 @@ QString Dictionary::getFirstWord()
 {
     srand(time(NULL));
     QVector<QString> firstWordList;
-    for (QString word: setOfWords) {
-        if (word.size() == 5) {
+    QSqlQuery query(db);
+    query.exec(GET_WORDS_QUERY);
+    qDebug() << query.lastError();
+    while (query.next()) {
+        QString word = query.value(0).toString();
+        if (word.length() == 5) {
             firstWordList.push_back(word);
         }
     }
@@ -29,29 +38,17 @@ QString Dictionary::getFirstWord()
     return firstWord;
 }
 
-void Dictionary::loadDictionary(){
+void Dictionary::loadDictionary() {
 
-    QMessageLogger l;
-    QFile file("dictionary.txt");
-    if(file.open(QIODevice::ReadOnly))
-    {
-        QTextStream stream(&file);
-        QString word;
-        while (!stream.atEnd())
-        {
-            word = stream.readLine();
-            setOfWords.insert(word);
-
-        }
-        if(stream.status()!= QTextStream::Ok)
-        {
-            std::cout << "Read file error";
-        }
-        file.close();
+    std::cout<< QDir::currentPath().toStdString() << std::endl;
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(QDir::currentPath() + "/dictionary.db");
+    Logger l;
+    if (!db.open()) {
+        l.printLog(ERROR, "Database doesn't loaded");
+    } else {
+        l.printLog(ERROR, "Base loaded");
     }
-    l.debug("Dictionary loaded");
-    std::cout << "Dictionary loaded" << std::endl;
-
 }
 
 void Dictionary::setUpConnection (QObject* wordCollector) {
@@ -65,16 +62,21 @@ void Dictionary::connectToBot(QObject *bot) {
 //slots
 
 void Dictionary::checkWord(const QString& word) {
-    if (setOfWords.find(word) != setOfWords.end()) {
+    QSqlQuery query(db);
+    query.prepare(CHECK_WORD_QUERY);
+    query.bindValue(":word", word);
+    if (!query.exec()) {
+        exit(EXIT_FAILURE);
+    }
+    if (query.next()) {
         if (usedWords.find(word) == usedWords.end()) {
             usedWords.insert(word);
             emit sendCheckResult(1);
         } else {
             emit sendCheckResult(0);
         }
-    } else {
-        emit sendCheckResult(0);
     }
+
 }
 
 
@@ -82,8 +84,11 @@ void Dictionary::sendDictionary() {
     Logger l;
     l.printLog(DEBUG, "Connected dictionary from bot");
     QVector<QString> words;
-    for (std::set<QString>::iterator it = setOfWords.begin(); it != setOfWords.end(); ++it) {
-        words.push_back(*it);
+    QSqlQuery query(db);
+    query.exec(GET_WORDS_QUERY);
+
+    while (query.next()) {
+        words.push_back(query.value(0).toString());
     }
     emit sendDictionary(words);
 }

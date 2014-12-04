@@ -11,15 +11,24 @@
 
 #include "logger.h"
 
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 /*
  *This is the simplest realization of Directory and it doesn't read dictionary from file or database
  **/
 class Dictionary : public QObject
 {
+
+
+
     Q_OBJECT
     std::set<QString> setOfWords;
     std::set<QString> usedWords;
+    QSqlDatabase db;
+    const char* GET_WORDS_QUERY = "SELECT word FROM Words WHERE id = root_id";
+    const char* TEST_QUERY = "SELECT 1";
+    const char* CHECK_WORD_QUERY = "SELECT word FROM Words WHERE (id = root_id AND :word = word)";
     void loadDictionary();
 public:
     explicit Dictionary(QObject *parent = 0);

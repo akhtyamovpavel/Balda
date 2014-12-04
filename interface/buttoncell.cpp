@@ -17,7 +17,7 @@ void ButtonCell::connectToPanel(QObject *gb)
 void ButtonCell::createMenu() {
     signalMapper_ = new QSignalMapper(this);
     QMenu* menu = new QMenu(tr("Set of letters"));
-    for(wchar_t c = L'а'; c <= L'я'; ++c){
+    for(wchar_t c = L'А'; c <= L'Я'; ++c){
         actions_.push_back(new QAction(QString(c), this));
         menu->addAction(actions_.back());
         signalMapper_->setMapping(actions_.back(), QString(c));

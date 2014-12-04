@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,7 +32,6 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     board.h \
     cell.h \
-    Dictionary.h \
     player.h \
     wordcollector.h \
     bot/bor.h \
@@ -41,6 +40,7 @@ HEADERS  += mainwindow.h \
     logger.h \
     gamemanager.h \
     interface/buttoncell.h \
-    interface/graphicboard.h
+    interface/graphicboard.h \
+    dictionary.h
 
 FORMS    += mainwindow.ui
