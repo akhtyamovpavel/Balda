@@ -7,13 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    gb = new GraphicBoard(this);
-    setCentralWidget(gb);
-
-    gb->runStep();
     createActions();
     createMenus();
-    resize(600, 500);
+    gb = NULL;
+    resize(600, 400);
 }
 
 MainWindow::~MainWindow()
@@ -44,6 +41,6 @@ void MainWindow::startNewGame()
         delete gb;
     }
 
-    gb = new GraphicBoard(this);
+    gb = new GraphicBoard(widthLetters, heightLetters, this);
     setCentralWidget(gb);
 }

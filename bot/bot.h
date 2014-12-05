@@ -26,11 +26,14 @@ public:
     const int HARD = 88;
     const int HARDEST = 228;
 
+    int WIDTH;
+    int HEIGHT;
+
     int level;
 
     Bor borVocabulary;
     QVector<QPair<int, int> > MOVES;
-    explicit Bot(QObject* parent = 0);
+    explicit Bot(int width, int height, QObject* parent = 0);
 
     int maximalLength(QVector<Word> variants);
 
@@ -38,9 +41,12 @@ public:
 
     int hardIndexWord(QVector<Word> variants);
 
-    int hardestIndexWord(QVector<Word> variants, QVector<QVector<QChar> > symbols, QVector<QString> notAllowedWords);
+    int hardestIndexWord(QVector<Word> variants,
+                         QVector<QVector<QChar> > symbols,
+                         QVector<QString> notAllowedWords);
 
-    QVector<Word> trulyAllowedWord(QVector<Word> variants, QVector<QString> notAllowedWords);
+    QVector<Word> trulyAllowedWord(QVector<Word> variants,
+                                   QVector<QString> notAllowedWords);
 
     void setLevel(int difficulty);
 
@@ -48,9 +54,14 @@ public:
 
     void runProcess() Q_DECL_OVERRIDE;
 
-    bool notBelong(QVector<QString> not_allowed_words, QString &check_in);
+    bool notBelong(QVector<QString> not_allowed_words,
+                   QString &check_in);
 
-    void dfs(QVector<QVector<QChar> >  table, QVector<Word> &Words, int x, int y, int cur_position,
+    void dfs(QVector<QVector<QChar> >  table,
+             QVector<Word> &Words,
+             int x,
+             int y,
+             int cur_position,
              QVector<QVector<bool> > cur_used,
              QString &cur_string,
              QVector<QPair<int, int> > &cur_coords,

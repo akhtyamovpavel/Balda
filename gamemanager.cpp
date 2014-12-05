@@ -1,14 +1,25 @@
 #include "gamemanager.h"
 #include <iostream>
-GameManager::GameManager(int playersNumber, QString level, QObject *parent) :
-    QObject(parent), playersNumber(playersNumber)
+GameManager::GameManager(
+        int width,
+        int height,
+        int playersNumber,
+        QString level,
+        QObject *parent) :
+    width(width),
+    height(height),
+    QObject(parent),
+    playersNumber(playersNumber),
+    bot{width, height, this}
 {
+    board.initBoard(width, height);
+
     wc.connectToDictionary(&dict);
     wc.connectToBoard(&board);
     dict.setUpConnection(&wc);
     board.setUpConnection(&wc);
 
-    firstWord = dict.getFirstWord();
+    firstWord = dict.getFirstWord(width);
 
     if (playersNumber == 2) {
         player1.connectToBoard(&board);
@@ -35,7 +46,7 @@ GameManager::GameManager(int playersNumber, QString level, QObject *parent) :
 
     currentPlayer = &player1;
     currentID = FIRST_PLAYER;
-    numberOfSpareCells = 20;
+    numberOfSpareCells = width*(height - 1);
     if (playersNumber == 2) {
         board.connectToPlayers(&player1, &player2);
         board.setFirstPlayer(FIRST_PLAYER);
@@ -138,6 +149,7 @@ QString GameManager::getFirstWord()
 {
     return firstWord;
 }
+
 //Slots
 
 void GameManager::stepEnded() {

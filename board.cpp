@@ -15,15 +15,19 @@ Board::Board(QObject *parent) :
     isChanged = false;
     isApproved = false;
 
-
-    for (int i = 0; i < 5; ++i){
-        for(int j = 0; j <5; ++j) {
-            board_.push_back(QVector<Cell*>());
-            board_[i].push_back(new Cell(QChar('-'), parent));
-        }
-    }
     currentPlayer = FIRST_PLAYER;
 
+}
+
+void Board::initBoard(int width, int height){
+    WIDTH = width;
+    HEIGHT = height;
+    for (int i = 0; i < WIDTH; ++i){
+        for(int j = 0; j < HEIGHT; ++j) {
+            board_.push_back(QVector<Cell*>());
+            board_[i].push_back(new Cell(QChar('-')));
+        }
+    }
 }
 
 
@@ -64,8 +68,8 @@ void Board::connectToGameManager(QObject* gameManager) {
 //Methods
 
 void Board::setFirstWord(QString firstWord) {
-    for (int i = 0; i <  5; ++i) {
-        board_[2][i]->setLetter(firstWord[i]);
+    for (int i = 0; i <  WIDTH; ++i) {
+        board_[HEIGHT/2][i]->setLetter(firstWord[i]);
     }
 }
 
@@ -166,6 +170,7 @@ bool Board::hasChanged() {
 void Board::setChanged(bool changed) {
     isChanged = changed;
 }
+
 
 
 //slots
@@ -270,8 +275,8 @@ void Board::gotCommitQuery() {
 
 void Board::getNumberOfCells() {
     int cnt = 0;
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
+    for (int i = 0; i < WIDTH; ++i) {
+        for (int j = 0; j < HEIGHT; ++j) {
             if (getLetter(i, j) == QChar('-')) {
                 ++cnt;
             }

@@ -35,8 +35,11 @@ class GraphicBoard : public QWidget
     QVBoxLayout* firstPlayerPanel;
     QVBoxLayout* secondPlayerPanel;
 
+    int width;
+    int height;
+
 public:
-    explicit GraphicBoard(QWidget *parent = 0);
+    explicit GraphicBoard(int width, int height, QWidget *parent = 0);
 
     void connectToPlayers(Player* player1, Player* player2);
 

@@ -19,7 +19,7 @@ Dictionary::Dictionary(QObject *parent) :
     loadDictionary();
 }
 
-QString Dictionary::getFirstWord()
+QString Dictionary::getFirstWord(int width)
 {
     srand(time(NULL));
     QVector<QString> firstWordList;
@@ -28,7 +28,7 @@ QString Dictionary::getFirstWord()
     qDebug() << query.lastError();
     while (query.next()) {
         QString word = query.value(0).toString();
-        if (word.length() == 5) {
+        if (word.length() == width) {
             firstWordList.push_back(word);
         }
     }
@@ -75,8 +75,9 @@ void Dictionary::checkWord(const QString& word) {
         } else {
             emit sendCheckResult(0);
         }
+    } else {
+        emit sendCheckResult(0);
     }
-
 }
 
 

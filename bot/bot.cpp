@@ -8,8 +8,10 @@
 #include <string>
 
 
-Bot::Bot(QObject* parent) :
-Player(parent)
+Bot::Bot(int width, int height, QObject* parent) :
+    WIDTH(width),
+    HEIGHT(height),
+    Player(parent)
 {
     MOVES.push_back(qMakePair(0, 1));
     MOVES.push_back(qMakePair(0, -1));
@@ -155,9 +157,9 @@ void Bot::runProcess() {
 
     emit showBoard();
 
-    QVector<QVector<QChar> > symbols(7, QVector<QChar>(7, QChar('#')));
-    for (int i = 1; i <= 5; ++i) {
-        for (int j = 1; j <= 5; ++j) {
+    QVector<QVector<QChar> > symbols(HEIGHT + 2, QVector<QChar>(WIDTH + 2, QChar('#')));
+    for (int i = 1; i <= HEIGHT; ++i) {
+        for (int j = 1; j <= WIDTH; ++j) {
             symbols[i][j] = board[i-1][j-1];
         }
     }

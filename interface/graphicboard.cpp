@@ -4,13 +4,15 @@
 #include "gamemanager.h"
 #include <QStringList>
 
-GraphicBoard::GraphicBoard(QWidget *parent) :
+GraphicBoard::GraphicBoard(int width, int height, QWidget *parent) :
+    width(width),
+    height(height),
     QWidget(parent)
 {
     tableLayout = new QGridLayout;
-    for (int i = 0; i < 5; ++i) {
-        buttons.push_back(QVector<ButtonCell*>(5));
-        for (int j = 0; j < 5; ++j) {
+    for (int i = 0; i < height; ++i) {
+        buttons.push_back(QVector<ButtonCell*>(width));
+        for (int j = 0; j < width; ++j) {
             buttons[i][j] = new ButtonCell();
             buttons[i][j]->connectToPanel(this);
             tableLayout->addWidget(buttons[i][j], i, j);
@@ -49,25 +51,25 @@ GraphicBoard::GraphicBoard(QWidget *parent) :
 
     int players = QInputDialog::getInt(this, tr("Enter number of players"), tr("Введите число игроков"), 1, 1, 2);
     if (players == 2) {
-        gameManager = new GameManager(players);
+        gameManager = new GameManager(width, height, players);
     } else {
         QStringList list;
         list.push_back(tr("EASY"));
         list.push_back(tr("HARD"));
         list.push_back("HARDEST");
         QString level = QInputDialog::getItem(this, tr("Choose level"), tr("Выберите сложность"), list);
-        gameManager = new GameManager(players, level);
+        gameManager = new GameManager(width, height, players, level);
     }
     connectToPlayers(gameManager->getFirstPlayer(), gameManager->getSecondPlayer());
     gameManager->getFirstPlayer()->connectToInterface(this);
     gameManager->getSecondPlayer()->connectToInterface(this);
     QString word = gameManager->getFirstWord();
-    for (int i = 0; i < 5; ++i) {
-        buttons[2][i]->setText(QString(word[i]));
+    for (int i = 0; i < width; ++i) {
+        buttons[height/2][i]->setText(QString(word[i]));
     }
 
-    for (int i = 0; i < 5; ++i) {
-        buttons[2][i]->setMenu(NULL);
+    for (int i = 0; i < width; ++i) {
+        buttons[height/2][i]->setMenu(NULL);
     }
 
     connect(commitButton, SIGNAL(clicked()), this, SLOT(onCommitButtonClicked()));
@@ -107,8 +109,8 @@ void GraphicBoard::onCellPushed()
 {
     int xSender = 0;
     int ySender = 0;
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
             if (reinterpret_cast<ButtonCell*>(sender()) == buttons[i][j]) {
                 xSender = i;
                 ySender = j;
@@ -127,8 +129,8 @@ void GraphicBoard::onCellChosen(QChar letter)
 {
     int xSender = 0;
     int ySender = 0;
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
             if (reinterpret_cast<ButtonCell*>(sender()) == buttons[i][j]) {
                 xSender = i;
                 ySender = j;
