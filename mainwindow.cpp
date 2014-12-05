@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "interface/graphicboard.h"
+#include "external/settingsdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -10,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createActions();
     createMenus();
     gb = NULL;
+    settingsDialog = new SettingsDialog(this, this);
     resize(600, 400);
 }
 
@@ -24,6 +26,8 @@ void MainWindow::createActions()
     connect(newGame, SIGNAL(triggered()), this, SLOT(startNewGame()));
     exitGame = new QAction(tr("Exit"), this);
     connect(exitGame, SIGNAL(triggered()), qApp, SLOT(quit()));
+    settingsAction = new QAction(tr("Settings"), this);
+    connect(settingsAction, SIGNAL(triggered()), this, SLOT(runSettings()));
 }
 
 void MainWindow::createMenus()
@@ -33,6 +37,9 @@ void MainWindow::createMenus()
     menu->addSeparator();
     menu->addAction(exitGame);
     menuBar()->addMenu(menu);
+    settingsMenu = new QMenu(tr("Settings"), this);
+    settingsMenu->addAction(settingsAction);
+    menuBar()->addMenu(settingsMenu);
 }
 
 void MainWindow::startNewGame()
@@ -43,4 +50,21 @@ void MainWindow::startNewGame()
 
     gb = new GraphicBoard(widthLetters, heightLetters, this);
     setCentralWidget(gb);
+}
+
+void MainWindow::setSettings(const QPair<int,int>& coordinates) {
+     widthLetters = coordinates.first;
+     heightLetters = coordinates.second;
+}
+
+int MainWindow::getWidth() {
+    return widthLetters;
+}
+
+int MainWindow::getHeight() {
+    return heightLetters;
+}
+
+void MainWindow::runSettings() {
+    settingsDialog->exec();
 }

@@ -22,8 +22,8 @@ Board::Board(QObject *parent) :
 void Board::initBoard(int width, int height){
     WIDTH = width;
     HEIGHT = height;
-    for (int i = 0; i < WIDTH; ++i){
-        for(int j = 0; j < HEIGHT; ++j) {
+    for (int i = 0; i < HEIGHT; ++i){
+        for(int j = 0; j < WIDTH; ++j) {
             board_.push_back(QVector<Cell*>());
             board_[i].push_back(new Cell(QChar('-')));
         }

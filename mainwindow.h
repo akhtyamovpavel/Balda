@@ -5,7 +5,9 @@
 #include "interface/graphicboard.h"
 #include <QMenu>
 #include <QAction>
-#include "external/settingsdialog.h"
+
+class SettingsDialog;
+
 namespace Ui {
 class MainWindow;
 }
@@ -15,24 +17,25 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 
-    SettingsDialog dialog;
+    SettingsDialog* settingsDialog;
     int widthLetters = 5;
     int heightLetters = 5;
 
     //actions
     QAction* newGame;
     QAction* exitGame;
-    QAction* settingsMenu;
+    QAction* settingsAction;
     //menus
     QMenu* menu;
-    QMenu* settings;
+    QMenu* settingsMenu;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     GraphicBoard* gb;
 
-
+    int getWidth();
+    int getHeight();
 private:
     Ui::MainWindow *ui;
     void createActions();
@@ -41,6 +44,8 @@ private:
 
 public slots:
     void startNewGame();
+    void setSettings(const QPair<int, int> &coordinates);
+    void runSettings();
 };
 
 #endif // MAINWINDOW_H

@@ -214,3 +214,5 @@ void GraphicBoard::finishGame(const QString &message)
 
 
 
+
+

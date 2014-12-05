@@ -69,7 +69,6 @@ public slots:
     void onCommitGiveUpClicked();
 
     void finishGame(const QString& message);
-
 };
 
 #endif // GRAPHICBOARD_H
