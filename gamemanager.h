@@ -27,15 +27,23 @@ class GameManager : public QObject
     const int EASY = 14;
     const int HARD = 88;
     const int HARDEST = 228;
+    int width;
+    int height;
 
     bool isGameEnded();
 public:
-    explicit GameManager(int playersNumber, QString level = "", QObject *parent = 0);
+    explicit GameManager(int width,
+                         int height,
+                         int playersNumber,
+                         QString level = "",
+                         QObject *parent = 0);
     void runGame();
     Player* getFirstPlayer();
     Player* getSecondPlayer();
     int getCurrentPlayer();
     QString getFirstWord();
+
+
 signals:
     void startMoveFirst();
     void startMoveSecond();

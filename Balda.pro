@@ -25,9 +25,9 @@ SOURCES += main.cpp\
     bot/bor.cpp \
     bot/bot.cpp \
     bot/letter.cpp \
-    logger.cpp \
     interface/buttoncell.cpp \
-    interface/graphicboard.cpp
+    interface/graphicboard.cpp \
+    external/settingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     board.h \
@@ -41,6 +41,7 @@ HEADERS  += mainwindow.h \
     gamemanager.h \
     interface/buttoncell.h \
     interface/graphicboard.h \
-    dictionary.h
+    dictionary.h \
+    external/settingsdialog.h
 
 FORMS    += mainwindow.ui

@@ -23,8 +23,8 @@ class Board : public QObject
     const int FIRST_PLAYER = 1;
     const int SECOND_PLAYER = 2;
 
-    const int WIDTH = 5;
-    const int HEIGHT = 5;
+    int WIDTH;
+    int HEIGHT;
 
     void sendError(QString message);
     bool rangeCheck(int x, int y);
@@ -60,7 +60,7 @@ public:
     void setChanged(bool changed);
 
 
-
+    void initBoard(int width, int height);
 signals:
     /*
      *  Signals to WordCollector

@@ -35,8 +35,11 @@ class GraphicBoard : public QWidget
     QVBoxLayout* firstPlayerPanel;
     QVBoxLayout* secondPlayerPanel;
 
+    int width;
+    int height;
+
 public:
-    explicit GraphicBoard(QWidget *parent = 0);
+    explicit GraphicBoard(int width, int height, QWidget *parent = 0);
 
     void connectToPlayers(Player* player1, Player* player2);
 
@@ -66,7 +69,6 @@ public slots:
     void onCommitGiveUpClicked();
 
     void finishGame(const QString& message);
-
 };
 
 #endif // GRAPHICBOARD_H

@@ -8,20 +8,16 @@
 #include "logger.h"
 #include "interface/graphicboard.h"
 #include <QString>
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-    //GameManager gm;
-    //gm.runGame();
 
-
-    GraphicBoard gb;
-    QObject::connect(&gb, SIGNAL(quit()), &a, SLOT(quit()));
-    gb.show();
-    gb.runStep();
+    MainWindow w;
+    w.show();
 
     return a.exec();
 }

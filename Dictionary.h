@@ -33,7 +33,7 @@ class Dictionary : public QObject
 public:
     explicit Dictionary(QObject *parent = 0);
 
-    QString getFirstWord();
+    QString getFirstWord(int width);
 
 
     void setUpConnection(QObject* wordCollector);
