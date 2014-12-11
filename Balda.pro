@@ -27,7 +27,10 @@ SOURCES += main.cpp\
     bot/letter.cpp \
     interface/buttoncell.cpp \
     interface/graphicboard.cpp \
-    external/settingsdialog.cpp
+    external/settingsdialog.cpp \
+    lang/language.cpp \
+    lang/russianlang.cpp \
+    lang/englishlang.cpp
 
 HEADERS  += mainwindow.h \
     board.h \
@@ -42,6 +45,9 @@ HEADERS  += mainwindow.h \
     interface/buttoncell.h \
     interface/graphicboard.h \
     dictionary.h \
-    external/settingsdialog.h
+    external/settingsdialog.h \
+    lang/language.h \
+    lang/russianlang.h \
+    lang/englishlang.h
 
 FORMS    += mainwindow.ui

@@ -8,10 +8,11 @@
 #include <string>
 
 
-Bot::Bot(int width, int height, QObject* parent) :
+Bot::Bot(Language *language, int width, int height, QObject* parent) :
     WIDTH(width),
     HEIGHT(height),
-    Player(parent)
+    Player(parent),
+    language(language)
 {
     MOVES.push_back(qMakePair(0, 1));
     MOVES.push_back(qMakePair(0, -1));
@@ -322,9 +323,9 @@ void Bot::dfs(QVector<QVector<QChar> >  table, QVector<Word> &words,
     if (table[x][y] == QChar('-') && !usedEmpty)  // Если мы пришли в пустую клетку во время работы дфса, то ставим туда всевозможные буквы и пытаемся продлить слово.
     {
 
-
-        for (wchar_t c = L'А'; c <= L'Я'; ++c) {
-            QChar cc = QChar(c);
+    QVector <QChar> letters = language->getList();
+        for (int i=0; i < letters.size(); i++) {
+            QChar cc = QChar(letters[i]);
             table[x][y] = cc;
             if (borVocabulary.borVertices[curPosition].findChildren(cc) != -1)
                 dfs(table, words, x, y, borVocabulary.borVertices[curPosition].findChildren(cc), curUsed, curString, curCoords, true);
