@@ -57,6 +57,26 @@ int Bot::easyIndexWord(QVector<Word> variants) {
 
 }
 
+int Bot::mediumIndexWord(QVector<Word> variants) {
+
+    int sz = variants.size() - 1;
+
+    int val = 0;
+    for (int i = 0; i < sz; ++i) {
+        val += variants[i].possibleWord.length()*variants[i].possibleWord.length();
+    }
+
+    int ran = rand()%val;
+
+    int cur = 0;
+    for(int i = 0; i < variants.size(); ++i) {
+        cur += variants[i].possibleWord.length()*variants[i].possibleWord.length();
+        if (cur >= ran)
+            return i;
+    }
+
+}
+
 int Bot::hardIndexWord(QVector<Word> variants) {
 
     int sz = variants.size();
@@ -182,6 +202,10 @@ void Bot::runProcess() {
         id = easyIndexWord(variants);
     }
 
+    if (level == MEDIUM) {
+        id = mediumIndexWord(variants);
+    }
+
     if (level == HARD) {
         id = hardIndexWord(variants);
     }
@@ -233,7 +257,31 @@ void Bot::runProcess() {
             tempCommited = false;
             return;
         }
-        ++id;
+        //++id;
+        QVector<Word> :: iterator it = variants.begin() + id;
+        variants.erase(it);
+
+        if (level == EASY) {
+            id = easyIndexWord(variants);
+        }
+
+        if (level == HARD) {
+            id = hardIndexWord(variants);
+        }
+
+        if (level == MEDIUM) {
+            id = mediumIndexWord(variants);
+        }
+
+
+        if (level == HARDEST) {
+            id = hardestIndexWord(variants, symbols, notAllowedWords);
+        }
+
+
+         if (id == -1) {
+             emit dontMakeMove();
+         }
 
 
     }

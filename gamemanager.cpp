@@ -33,6 +33,8 @@ GameManager::GameManager(
         dict.connectToBot(&bot);
         if (level == "EASY") {
             bot.setLevel(EASY);
+        } else if (level == "MEDIUM") {
+            bot.setLevel(MEDIUM);
         } else if (level == "HARD") {
             bot.setLevel(HARD);
         } else if (level == "HARDEST") {

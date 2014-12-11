@@ -4,7 +4,7 @@
 #include <QObject>
 #include "board.h"
 #include "Dictionary.h"
-#include "Player.h"
+#include "player.h"
 #include "wordcollector.h"
 #include "bot/bot.h"
 
@@ -26,6 +26,7 @@ class GameManager : public QObject
     int currentID;
     const int EASY = 14;
     const int HARD = 88;
+    const int MEDIUM = 265;
     const int HARDEST = 228;
     int width;
     int height;
