@@ -1,6 +1,7 @@
 #include "gamemanager.h"
 #include <iostream>
 GameManager::GameManager(
+        Language *language,
         int width,
         int height,
         int playersNumber,
@@ -10,7 +11,7 @@ GameManager::GameManager(
     height(height),
     QObject(parent),
     playersNumber(playersNumber),
-    bot{width, height, this}
+    bot{language, width, height, this}
 {
     board.initBoard(width, height);
 

@@ -7,6 +7,7 @@
 #include "player.h"
 #include "wordcollector.h"
 #include "bot/bot.h"
+#include <lang/language.h>
 
 class GameManager : public QObject
 {
@@ -33,7 +34,8 @@ class GameManager : public QObject
 
     bool isGameEnded();
 public:
-    explicit GameManager(int width,
+    explicit GameManager(Language *language,
+                         int width,
                          int height,
                          int playersNumber,
                          QString level = "",

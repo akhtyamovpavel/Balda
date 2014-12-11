@@ -12,6 +12,7 @@
 #include <utility>
 
 #include "logger.h"
+#include <lang/language.h>
 
 
 
@@ -31,10 +32,10 @@ public:
     int HEIGHT;
 
     int level;
-
+    Language *language;
     Bor borVocabulary;
     QVector<QPair<int, int> > MOVES;
-    explicit Bot(int width, int height, QObject* parent = 0);
+    explicit Bot(Language *language, int width, int height, QObject* parent = 0);
 
     int maximalLength(QVector<Word> variants);
 

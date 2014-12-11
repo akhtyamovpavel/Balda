@@ -8,6 +8,7 @@
 #include <QSignalMapper>
 #include "cell.h"
 #include <QMessageBox>
+#include <lang/language.h>
 
 class WordCollector;
 
@@ -22,9 +23,10 @@ class ButtonCell : public QToolButton
     QSignalMapper* signalMapper_;
     QMenu* currentMenu_;
     GraphicBoard* parent_;
+    Language* language;
 
 public:
-    ButtonCell(QToolButton *parent = 0);
+    ButtonCell(Language* language, QToolButton *parent = 0);
     void connectToPanel(QObject *gb);
     void createMenu();
 

@@ -3,17 +3,31 @@
 #include <QInputDialog>
 #include "gamemanager.h"
 #include <QStringList>
+#include <lang/language.h>
+#include <lang/englishlang.h>
+#include <lang/russianlang.h>
 
 GraphicBoard::GraphicBoard(int width, int height, QWidget *parent) :
     width(width),
     height(height),
     QWidget(parent)
 {
+    Language *language;
+    QStringList langList;
+    langList.push_back("Russian");
+    langList.push_back("English");
+    QString gameLang = QInputDialog::getItem(this, tr("Choose language of the game"), tr("Выберите язык игры"), langList);
+    if (gameLang == "Russian"){
+        language = new RussianLang;
+    }
+    else{
+        language = new EnglishLang;
+    }
     tableLayout = new QGridLayout;
     for (int i = 0; i < height; ++i) {
         buttons.push_back(QVector<ButtonCell*>(width));
         for (int j = 0; j < width; ++j) {
-            buttons[i][j] = new ButtonCell();
+            buttons[i][j] = new ButtonCell(language);
             buttons[i][j]->connectToPanel(this);
             tableLayout->addWidget(buttons[i][j], i, j);
         }
@@ -51,7 +65,7 @@ GraphicBoard::GraphicBoard(int width, int height, QWidget *parent) :
 
     int players = QInputDialog::getInt(this, tr("Enter number of players"), tr("Введите число игроков"), 1, 1, 2);
     if (players == 2) {
-        gameManager = new GameManager(width, height, players);
+        gameManager = new GameManager(language, width, height, players);
     } else {
         QStringList list;
         list.push_back(tr("EASY"));
@@ -59,7 +73,7 @@ GraphicBoard::GraphicBoard(int width, int height, QWidget *parent) :
         list.push_back(tr("HARD"));
         list.push_back("HARDEST");
         QString level = QInputDialog::getItem(this, tr("Choose level"), tr("Выберите сложность"), list);
-        gameManager = new GameManager(width, height, players, level);
+        gameManager = new GameManager(language, width, height, players, level);
     }
     connectToPlayers(gameManager->getFirstPlayer(), gameManager->getSecondPlayer());
     gameManager->getFirstPlayer()->connectToInterface(this);
