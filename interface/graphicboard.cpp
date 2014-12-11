@@ -55,6 +55,7 @@ GraphicBoard::GraphicBoard(int width, int height, QWidget *parent) :
     } else {
         QStringList list;
         list.push_back(tr("EASY"));
+        list.push_back("MEDIUM");
         list.push_back(tr("HARD"));
         list.push_back("HARDEST");
         QString level = QInputDialog::getItem(this, tr("Choose level"), tr("Выберите сложность"), list);

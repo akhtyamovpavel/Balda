@@ -1,7 +1,7 @@
 #ifndef BOT_H
 #define BOT_H
 
-#include <Qobject>
+#include <QObject>
 #include <QVector>
 #include <QPair>
 #include <QString>
@@ -25,6 +25,7 @@ public:
     const int EASY = 14;
     const int HARD = 88;
     const int HARDEST = 228;
+    const int MEDIUM = 265;
 
     int WIDTH;
     int HEIGHT;
@@ -38,6 +39,8 @@ public:
     int maximalLength(QVector<Word> variants);
 
     int easyIndexWord(QVector<Word> variants);
+
+    int mediumIndexWord(QVector<Word> variants);
 
     int hardIndexWord(QVector<Word> variants);
 
