@@ -1,10 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include<QApplication>
 #include <QMainWindow>
 #include "interface/graphicboard.h"
 #include <QMenu>
 #include <QAction>
+#include <QLabel>
+#include <QString>
 
 class SettingsDialog;
 
@@ -28,6 +31,8 @@ class MainWindow : public QMainWindow
     //menus
     QMenu* menu;
     QMenu* settingsMenu;
+    //rules
+    QLabel* label;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -40,12 +45,14 @@ private:
     Ui::MainWindow *ui;
     void createActions();
     void createMenus();
+    void rules();
 
 
 public slots:
     void startNewGame();
     void setSettings(const QPair<int, int> &coordinates);
     void runSettings();
+    void resetField();
 };
 
 #endif // MAINWINDOW_H
