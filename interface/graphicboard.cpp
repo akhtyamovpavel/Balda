@@ -93,7 +93,7 @@ GraphicBoard::GraphicBoard(int width, int height, QWidget *parent) :
 
     connect(gameManager, SIGNAL(gameEnded(const QString&)),
             this, SLOT(finishGame(const QString&)));
-
+    connect(this, SIGNAL(quit()), parent, SLOT(resetField()));
 }
 
 void GraphicBoard::connectToPlayers(Player *player1, Player* player2)

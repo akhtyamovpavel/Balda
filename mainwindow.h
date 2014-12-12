@@ -32,7 +32,7 @@ class MainWindow : public QMainWindow
     QMenu* menu;
     QMenu* settingsMenu;
     //rules
-    QLabel label;
+    QLabel* label;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -52,6 +52,7 @@ public slots:
     void startNewGame();
     void setSettings(const QPair<int, int> &coordinates);
     void runSettings();
+    void resetField();
 };
 
 #endif // MAINWINDOW_H
