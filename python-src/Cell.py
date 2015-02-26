@@ -1,5 +1,5 @@
 __author__ = 'user1'
-from PySide import *
+from PySide import QtCore
 
 
 class Cell(QtCore.QObject):

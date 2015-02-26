@@ -1,14 +1,10 @@
-import PySide
-from PySide.QtCore import QObject
-from PySide.QtCore import Signal
-from PySide.QtCore import Slot
 from Cell import Cell
 from Letter import CellLetter, Coordinates
-
+from PySide import QtCore
 __author__ = 'user1'
 
 
-class Board(QObject):
+class Board(QtCore.QObject):
 
     def __init__(self):
         super(Board, self).__init__()
@@ -23,33 +19,34 @@ class Board(QObject):
         self.HEIGHT = 5
 
         """signals to WordCollector"""
-        self.commit_letter = Signal(str)
-        self.commit_x = Signal(int)
-        self.commit_y = Signal(int)
-        self.commit_word = Signal()
-        self.commit_new = Signal()
-        self.add_new_letter = Signal(CellLetter)
 
-        self.move_ended = Signal(str)
-        self.choose_error = Signal(str)
-        self.letter_chosen = Signal(tuple)
-        self.send_board_first = Signal(list)
-        self.reset_word_first = Signal(Coordinates)
+        self.commit_letter = QtCore.Signal(str)
+        self.commit_x = QtCore.Signal(int)
+        self.commit_y = QtCore.Signal(int)
+        self.commit_word = QtCore.Signal()
+        self.commit_new = QtCore.Signal()
+        self.add_new_letter = QtCore.Signal(CellLetter)
 
-        self.move_ended_second = Signal(str)
-        self.choose_error_second = Signal(str)
-        self.letter_chosen_second = Signal(tuple)
-        self.send_board_second = Signal(list)
-        self.reset_word_second = Signal(Coordinates)
+        self.move_ended = QtCore.Signal(str)
+        self.choose_error = QtCore.Signal(str)
+        self.letter_chosen = QtCore.Signal(tuple)
+        self.send_board_first = QtCore.Signal(list)
+        self.reset_word_first = QtCore.Signal(Coordinates)
+
+        self.move_ended_second = QtCore.Signal(str)
+        self.choose_error_second = QtCore.Signal(str)
+        self.letter_chosen_second = QtCore.Signal(tuple)
+        self.send_board_second = QtCore.Signal(list)
+        self.reset_word_second = QtCore.Signal(Coordinates)
 
         """signals to GameManager"""
 
-        self.send_cells_number = Signal(int)
+        self.send_cells_number = QtCore.Signal(int)
 
     """Slots from WordCollector"""
 
-    @Slot(tuple)
-    def reset_state(self, coordinates: Coordinates):
+    @QtCore.Slot(Coordinates)
+    def reset_state(self, coordinates : Coordinates):
         self.__is_changed__ = False
         for i in range(self.WIDTH):
             for j in range(self.HEIGHT):
@@ -63,7 +60,7 @@ class Board(QObject):
         else:
             self.reset_word_second.emit(coordinates)
 
-    @Slot(str)
+    @QtCore.Slot(str)
     def remake_move(self, word):
         print("New move")
         self.__is_changed__ = False
@@ -79,23 +76,23 @@ class Board(QObject):
             else:
                 self.move_ended_second.emit(word)
 
-    @Slot()
+    @QtCore.Slot()
     def set_approved(self):
         self.__is_approved__ = True
 
     """Slots from Player"""
 
-    @Slot(CellLetter)
-    def choose_letter_first(self, letter: CellLetter):
+    @QtCore.Slot(CellLetter)
+    def choose_letter_first(self, letter : CellLetter):
         self.change_letter(letter.x, letter.y, letter.letter)
         print("GET")
 
 
-    @Slot(CellLetter)
+    @QtCore.Slot(CellLetter)
     def choose_letter_second(self, letter: CellLetter):
         self.change_letter(letter.x, letter.y, letter.letter)
 
-    @Slot()
+    @QtCore.Slot()
     def show_board_to_player(self):
         result = []
         for i in range(self.HEIGHT):
@@ -108,21 +105,21 @@ class Board(QObject):
         else:
             self.send_board_second.emit(result)
 
-    @Slot(Coordinates)
+    @QtCore.Slot(Coordinates)
     def push_letter_first(self, coordinates: Coordinates):
         self.push_letter(coordinates)
 
-    @Slot(Coordinates)
+    @QtCore.Slot(Coordinates)
     def push_letter_second(self, coordinates: Coordinates):
         self.push_letter(coordinates)
 
-    @Slot()
+    @QtCore.Slot()
     def got_commit_query(self):
         self.commit_word.emit()
 
     """Slots from GameManager"""
 
-    @Slot()
+    @QtCore.Slot()
     def get_number_of_cells(self):
         cnt = 0
         for i in range(self.WIDTH):
@@ -131,7 +128,7 @@ class Board(QObject):
                     cnt += 1
         self.send_cells_number.emit(cnt)
 
-    @Slot()
+    @QtCore.Slot()
     def show_board_to_manager(self):
         self.show_board()
 
@@ -152,8 +149,8 @@ class Board(QObject):
         self.__current_player__ = player
 
     def set_first_word(self, first_word: str):
-        for i in range(self.WIDTH):
-            self.__board__[self.HEIGHT/2].set_letter(first_word[i])
+        for i in range(self.HEIGHT):
+            self.__board__[self.WIDTH // 2][i].set_letter(first_word[i])
 
     def setup_connection(self, word_collector):
         pass
@@ -165,10 +162,12 @@ class Board(QObject):
         pass
 
     def show_board(self):
-        for row in self.__board__:
-            for cell in row:
-                print(row.get_letter(), end=" ")
+        cnt = 0
+        for index_row in range(self.WIDTH):
+            for index_cell in range(self.HEIGHT):
+                print(self.__board__[index_row][index_cell].get_letter(), end=" ")
             print()
+
 
     def change_letter(self, x, y, letter):
         if self.has_changed():
@@ -223,4 +222,10 @@ class Board(QObject):
         for i in range(width):
             for j in range(height):
                 self.__board__.append([])
-                self.__board__[i].append(Cell, '-')
+                self.__board__[i].append(Cell('-'))
+
+if __name__ == '__main__':
+    b = Board()
+    b.init_board(6, 5)
+    b.set_first_word('carry')
+    b.show_board()
