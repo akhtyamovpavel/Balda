@@ -1,10 +1,39 @@
+import unittest
 from Cell import Cell
 from Letter import CellLetter, Coordinates
 from PySide import QtCore
+from WordCollector import WordCollector
+
 __author__ = 'user1'
 
 
 class Board(QtCore.QObject):
+
+    #signals to WordCollector
+
+
+    commit_letter = QtCore.Signal(str)
+    commit_x = QtCore.Signal(int)
+    commit_y = QtCore.Signal(int)
+    commit_word = QtCore.Signal()
+    commit_new = QtCore.Signal()
+    add_new_letter = QtCore.Signal(CellLetter)
+    move_ended = QtCore.Signal(str)
+    choose_error = QtCore.Signal(str)
+    letter_chosen = QtCore.Signal(tuple)
+    send_board_first = QtCore.Signal(list)
+    reset_word_first = QtCore.Signal(Coordinates)
+
+    move_ended_second = QtCore.Signal(str)
+    choose_error_second = QtCore.Signal(str)
+    letter_chosen_second = QtCore.Signal(tuple)
+    send_board_second = QtCore.Signal(list)
+    reset_word_second = QtCore.Signal(Coordinates)
+
+    """signals to GameManager"""
+
+    send_cells_number = QtCore.Signal(int)
+
 
     def __init__(self):
         super(Board, self).__init__()
@@ -18,30 +47,7 @@ class Board(QtCore.QObject):
         self.WIDTH = 5
         self.HEIGHT = 5
 
-        """signals to WordCollector"""
 
-        self.commit_letter = QtCore.Signal(str)
-        self.commit_x = QtCore.Signal(int)
-        self.commit_y = QtCore.Signal(int)
-        self.commit_word = QtCore.Signal()
-        self.commit_new = QtCore.Signal()
-        self.add_new_letter = QtCore.Signal(CellLetter)
-
-        self.move_ended = QtCore.Signal(str)
-        self.choose_error = QtCore.Signal(str)
-        self.letter_chosen = QtCore.Signal(tuple)
-        self.send_board_first = QtCore.Signal(list)
-        self.reset_word_first = QtCore.Signal(Coordinates)
-
-        self.move_ended_second = QtCore.Signal(str)
-        self.choose_error_second = QtCore.Signal(str)
-        self.letter_chosen_second = QtCore.Signal(tuple)
-        self.send_board_second = QtCore.Signal(list)
-        self.reset_word_second = QtCore.Signal(Coordinates)
-
-        """signals to GameManager"""
-
-        self.send_cells_number = QtCore.Signal(int)
 
     """Slots from WordCollector"""
 
@@ -152,8 +158,13 @@ class Board(QtCore.QObject):
         for i in range(self.HEIGHT):
             self.__board__[self.WIDTH // 2][i].set_letter(first_word[i])
 
-    def setup_connection(self, word_collector):
-        pass
+    def setup_connection(self, word_collector: WordCollector):
+        self.commit_letter.connect(word_collector.add_letter)
+        self.commit_x.connect(word_collector.add_x)
+        self.commit_y.connect(word_collector.add_y)
+        self.commit_word.connect(word_collector.check_word)
+        self.commit_new.connect(word_collector.add_new)
+        self.add_new_letter.connect(word_collector.add_changed_cell)
 
     def connect_to_players(self, player1, player2):
         pass
@@ -224,8 +235,27 @@ class Board(QtCore.QObject):
                 self.__board__.append([])
                 self.__board__[i].append(Cell('-'))
 
+
+def setup_connection(board : Board, word_collector: WordCollector):
+    board.commit_letter.connect(word_collector.add_letter)
+    board.commit_x.connect(word_collector.add_x)
+    board.commit_y.connect(word_collector.add_y)
+    board.commit_word.connect(word_collector.check_word)
+    board.commit_new.connect(word_collector.add_new)
+    board.add_new_letter.connect(word_collector.add_changed_cell)
+
+
+class BoardConnectionTest(unittest.TestCase):
+    def setUp(self):
+        self.board = Board()
+        self.wc = WordCollector()
+        self.board.init_board(5,5)
+        self.board.set_first_word('carry')
+
+    def test_connect(self):
+        setup_connection(self.board, self.wc)
+
+
+
 if __name__ == '__main__':
-    b = Board()
-    b.init_board(6, 5)
-    b.set_first_word('carry')
-    b.show_board()
+    unittest.main()

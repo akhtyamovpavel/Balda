@@ -104,5 +104,10 @@ class DictionaryTest(unittest.TestCase):
         for i in range(10):
             self.assertTrue(self.dictionary.is_word_good(self.dictionary.get_first_word(5)))
 
+        for i in range(10):
+            self.assertTrue(self.dictionary.is_word_good(self.dictionary.get_first_word(6)))
+
+
+
 if __name__ == '__main__':
     unittest.main()

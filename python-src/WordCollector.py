@@ -8,7 +8,7 @@ __author__ = 'user1'
 class WordCollector(QtCore.QObject):
 
     def __init__(self):
-        super(WordCollector, self).__init__()
+        QtCore.QObject.__init__(self)
         self.__word__ = ''
 
         self.__x_list__ = list()
