@@ -1,4 +1,4 @@
-import Board
+from Board import Board
 from Letter import CellLetter, Coordinates
 
 __author__ = 'akhtyamovpavel'
@@ -113,3 +113,9 @@ class Player(QtCore.QObject):
 
     def get_score(self):
         return self.__score__
+
+
+if __name__ == '__main__':
+    b = Board()
+    p = Player()
+    p.connect_to_board(b)
