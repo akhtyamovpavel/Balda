@@ -2,7 +2,9 @@ from random import Random
 from Dictionary import Dictionary
 from Letter import CellLetter, Coordinates
 from Player import Player
-from bot.Bor import Bor, PRE_VERTEX
+from bot.Bor import Bor, PRE_VERTEX, NOT_FOUND
+from bot.Word import Word
+from lang.Language import Language
 
 __author__ = 'akhtyamovpavel'
 
@@ -32,8 +34,9 @@ class Bot(Player):
         for word in words:
             self.__bor_vocabulary__.add_word(word)
 
-    def __init__(self, language, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT):
+    def __init__(self, language: Language, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT):
         super(Bot, self).__init__()
+        self.__language__ = language
         self.__width__ = width
         self.__height__ = height
         self.__moves__ = [(0, 1), (0, -1), (1, 0), (-1, 0)]
@@ -53,8 +56,8 @@ class Bot(Player):
     def medium_index_word(self, variants):
         size = len(variants) - 1
         val = 0
-        for variant in variants:
-            val += len(variant.possible_word) * len(variant.possible_word)
+        for i in range(size):
+            val += len(variants[i].possible_word) * len(variants[i].possible_word)
 
         random_number = int(Random().random() * val)
 
@@ -160,7 +163,47 @@ class Bot(Player):
         return True
 
     def dfs(self, table, words, x, y, cur_position, cur_used, cur_string, cur_coords, used_empty):
-        pass
+        cur_used[x][y] = True
+        if self.__bor_vocabulary__.bor_vertices[cur_position].is_leaf() and used_empty:
+            cur_coords.append(Coordinates(x, y))
+            cur_string += table[x][y]
+            words.append(Word(cur_string, cur_coords))
+            cur_string = cur_string[:-2]
+            cur_coords.pop(-1)
+
+        if table[x][y] == '-' and not used_empty:
+            letters = self.__language__.get_list()
+            for letter in letters:
+                table[x][y] = letter
+
+                if self.__bor_vocabulary__.bor_vertices[cur_position].find_children(letter) != -1:
+                    self.dfs(table, words, x, y,
+                             self.__bor_vocabulary__.bor_vertices[cur_position].find_children(letter),
+                             cur_used, cur_string, cur_coords, True)
+            table[x][y] = '-'
+        else:
+            for (dx, dy) in self.__moves__:
+                xx = x + dx
+                yy = y + dy
+                if table[xx][yy] == '#':
+                    continue
+                if table[xx][yy] == '-' and used_empty:
+                    continue
+                if cur_used[xx][yy]:
+                    continue
+
+                cur_coords.append(Coordinates(x, y))
+                cur_string += table[x][y]
+
+                if table[xx][yy] != '-':
+                    if self.__bor_vocabulary__[cur_position].find_children(table[xx][yy]) != NOT_FOUND:
+                        self.dfs(table, words, xx, yy,
+                            self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[xx][yy]),
+                            cur_used, cur_string, cur_coords, used_empty)
+                else:
+                    dfs(table, words, xx, yy, cur_position, cur_used, cur_string, cur_coords, used_empty)
+        cur_used[x][y] = False
+
 
     def possible_variants(self, table):
         N = len(table) - 2

@@ -1,5 +1,5 @@
 import unittest
-from bot.Letter import Letter
+from bot.BorLetter import Letter
 
 __author__ = 'akhtyamovpavel'
 

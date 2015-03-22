@@ -23,10 +23,10 @@ class WordCollector(QtCore.QObject):
         self.end_of_transaction = QtCore.Signal(str)
         self.approve_word = QtCore.Signal()
 
-    def connect_to_dictionary(self):
+    def connect_to_dictionary(self, dictionary):
         pass
 
-    def connect_to_board(self):
+    def connect_to_board(self, board):
         pass
 
     def clear_word(self):

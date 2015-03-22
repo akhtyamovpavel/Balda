@@ -30,7 +30,7 @@ class Dictionary(QtCore.QObject):
         else:
             print("Base loaded")
 
-    def setup_connection(self):
+    def setup_connection(self, word_collector):
         pass
 
     def get_first_word(self, width):
