@@ -167,10 +167,20 @@ class Board(QtCore.QObject):
         self.add_new_letter.connect(word_collector.add_changed_cell)
 
     def connect_to_players(self, player1, player2):
-        pass
+        self.move_ended.connect(player1.approve_word)
+        self.choose_error.connect(player1.bad_choose_letter)
+        self.letter_chosen.connect(player1.letter_chosen)
+        self.send_board_first.connect(player1.set_current_board)
+        self.reset_word_first.connect(player1.on_board_reset_word)
+
+        self.move_ended_second.connect(player2.approve_word)
+        self.choose_error.connect(player2.bad_choose_letter)
+        self.letter_chosen_second.connect(player2.letter_chosen)
+        self.send_board_second.connect(player2.set_current_board)
+        self.reset_word_second.connect(player2.on_board_reset_word)
 
     def connect_to_game_manager(self, game_manager):
-        pass
+        self.send_cells_number.connect(game_manager.get_number_of_cells)
 
     def show_board(self):
         cnt = 0

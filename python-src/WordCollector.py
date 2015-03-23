@@ -6,6 +6,10 @@ __author__ = 'user1'
 
 
 class WordCollector(QtCore.QObject):
+    send_to_dictionary = QtCore.Signal(str)
+    clear_state = QtCore.Signal()
+    end_of_transaction = QtCore.Signal(str)
+    approve_word = QtCore.Signal()
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -18,16 +22,14 @@ class WordCollector(QtCore.QObject):
         self.__changed_cell__ = Coordinates()
         self.__is_approved__ = False
 
-        self.send_to_dictionary = QtCore.Signal(str)
-        self.clear_state = QtCore.Signal()
-        self.end_of_transaction = QtCore.Signal(str)
-        self.approve_word = QtCore.Signal()
 
     def connect_to_dictionary(self, dictionary):
-        pass
+        self.send_to_dictionary.connect(dictionary.check_word)
 
     def connect_to_board(self, board):
-        pass
+        self.clear_state.connect(board.reset_state)
+        self.end_of_transaction.connect(board.remake_move)
+        self.approve_word.connect(board.set_approved)
 
     def clear_word(self):
         if not self.__is_approved__:
