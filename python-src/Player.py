@@ -103,10 +103,14 @@ class Player(QtCore.QObject):
 
 
     def connect_to_manager(self, game_manager):
-        pass
+        self.move_ended.connect(game_manager.step_ended)
+        self.don_t_make_move.connect(game_manager.game_ending)
 
     def connect_to_interface(self, graphic_board):
-        pass
+        self.after_letter_chosen.connect(graphic_board.after_cell_chosen)
+        self.after_letter_pushed.connect(graphic_board.after_cell_pushed)
+        self.after_word_committed.connect(graphic_board.after_word_committed)
+        self.reset_word.connect(graphic_board.on_player_reset_word)
 
     def run_process(self):
         pass

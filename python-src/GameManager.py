@@ -69,6 +69,7 @@ class GameManager(QtCore.QObject):
         self.__board__.init_board(width, height)
 
         self.__dictionary__ = Dictionary()
+        self.__dictionary__.load_dictionary()
         self.__wc__ = WordCollector()
         self.__wc__.connect_to_dictionary(self.__dictionary__)
         self.__wc__.connect_to_board(self.__board__)
@@ -83,13 +84,13 @@ class GameManager(QtCore.QObject):
 
         if players_number == 2:
             self.__player1__.connect_to_board(self.__board__)
-            self.__player1__.connect_to_game_manager(self)
+            self.__player1__.connect_to_manager(self)
 
             self.__player2__.connect_to_board(self.__board__)
-            self.__player2__.connect_to_game_manager(self)
+            self.__player2__.connect_to_manager(self)
         else:
             self.__player1__.connect_to_board(self.__board__)
-            self.__player1__.connect_to_game_manager(self)
+            self.__player1__.connect_to_manager(self, self)
             self.__dictionary__.connect_to_bot(self.__bot__)
             if level == 'EASY':
                 self.__bot__.set_level(EASY)
@@ -122,7 +123,7 @@ class GameManager(QtCore.QObject):
         else:
             self.start_move_second.connect(self.__bot__.begin_step)
 
-        self.__board__.set_first_word(first_word)
+        self.__board__.set_first_word(self.__first_word__)
 
     def run_game(self):
         if not self.is_game_ended():

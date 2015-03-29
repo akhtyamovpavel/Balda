@@ -16,7 +16,7 @@ class Board(QtCore.QObject):
     commit_x = QtCore.Signal(int)
     commit_y = QtCore.Signal(int)
     commit_word = QtCore.Signal()
-    commit_new = QtCore.Signal()
+    commit_new = QtCore.Signal(int)
     add_new_letter = QtCore.Signal(CellLetter)
     move_ended = QtCore.Signal(str)
     choose_error = QtCore.Signal(str)
@@ -215,8 +215,8 @@ class Board(QtCore.QObject):
         if self.get_letter(coordinates.x, coordinates.y) == '-':
             return
         self.commit_letter.emit(self.get_letter(coordinates.x, coordinates.y))
-        self.commit_x(coordinates.x)
-        self.commit_y(coordinates.y)
+        self.commit_x.emit(coordinates.x)
+        self.commit_y.emit(coordinates.y)
         if self.is_marked(coordinates.x, coordinates.y):
             self.commit_new.emit(1)
         else:
@@ -229,7 +229,7 @@ class Board(QtCore.QObject):
         self.__board__[x][y].set_marked(value)
 
     def get_letter(self, x, y):
-        return self.__board__[x][y]
+        return self.__board__[x][y].get_letter()
 
     def set_letter(self, x, y, letter):
         self.__board__[x][y].set_letter(letter)

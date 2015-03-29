@@ -31,6 +31,7 @@ class Dictionary(QtCore.QObject):
             print("Base loaded")
 
     def setup_connection(self, word_collector):
+        #TODO realize
         pass
 
     def get_first_word(self, width):
@@ -48,6 +49,7 @@ class Dictionary(QtCore.QObject):
 
 
     def connect_to_bot(self, bot):
+        #TODO realize
         pass
 
     @QtCore.Slot(str)
