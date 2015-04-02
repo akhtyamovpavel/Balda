@@ -1,0 +1,27 @@
+{% load staticfiles %}
+
+
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/base-min.css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static 'balda_game/indextitle.css' %}" />
+    <title>Balda site</title>
+</head>
+<body>
+
+    <div id="main">
+        {% block main %}{% endblock %}
+    </div>
+
+
+</body>
+
+<footer>
+        See project on <a href="https://github.com/akhtyamovpavel">GitHub</a>
+</footer>
+</html>

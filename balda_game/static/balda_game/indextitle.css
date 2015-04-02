@@ -1,0 +1,43 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Open Sans", sans-serif;
+}
+
+#main {
+    height: 100%;
+}
+
+#comes {
+    margin: 0 auto;
+    padding-top: 10%;
+    width: 250px;
+    min-height: 500px;
+}
+
+#big_come {
+    font-size: 700%;
+}
+
+#coming {
+    padding-left: 40px;
+    font-size: 200%;
+    margin: 0 auto;
+    width: 240px;
+}
+
+footer {
+    position: relative;
+    padding-top: 50px;
+    padding-left: 45%;
+    margin-top: -180px;
+    font-family: 'Open Sans', sans-serif;
+    height: 180px;
+    clear: both;
+    font-size: 140%;
+    background-color: #e0e0e0;
+}

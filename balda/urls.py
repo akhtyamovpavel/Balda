@@ -6,5 +6,6 @@ urlpatterns = patterns('',
     # url(r'^$', 'balda.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
+    url(r'^', include('balda_game.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
