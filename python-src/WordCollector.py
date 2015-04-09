@@ -13,14 +13,14 @@ class WordCollector(QtCore.QObject):
 
     def __init__(self):
         QtCore.QObject.__init__(self)
-        self.__word__ = ''
+        self._word_ = ''
 
-        self.__x_list__ = list()
-        self.__y_list__ = list()
+        self._x_list_ = list()
+        self._y_list_ = list()
 
-        self.__is_new__ = list()
-        self.__changed_cell__ = Coordinates()
-        self.__is_approved__ = False
+        self._is_new_ = list()
+        self._changed_cell_ = Coordinates()
+        self._is_approved_ = False
 
 
     def connect_to_dictionary(self, dictionary):
@@ -32,74 +32,81 @@ class WordCollector(QtCore.QObject):
         self.approve_word.connect(board.set_approved)
 
     def clear_word(self):
-        if not self.__is_approved__:
-            self.clear_state.emit(self.__changed_cell__)
-        sent_word = copy.deepcopy(self.__word__)
-        self.__word__ = ''
-        self.__x_list__ = list()
-        self.__y_list__ = list()
-        self.__is_new__ = list()
+        if not self._is_approved_:
+            self.clear_state.emit(self._changed_cell_)
+        sent_word = copy.deepcopy(self._word_)
+        self._word_ = ''
+        self._x_list_ = list()
+        self._y_list_ = list()
+        self._is_new_ = list()
         self.end_of_transaction.emit(sent_word)
 
     def end_move(self):
         print("Move ended")
-        print("Approved word " + self.__word__)
-        self.approve_word()
+        print("Approved word " + self._word_)
+        self.approve_word.emit()
 
     @QtCore.Slot(str)
     def add_letter(self, letter):
-        self.__word__ += letter
+        self._word_ += letter
 
     @QtCore.Slot(int)
     def add_x(self, x):
-        self.__x_list__.append(x)
+        self._x_list_.append(x)
 
     @QtCore.Slot(int)
     def add_y(self, y):
-        self.__y_list__.append(y)
+        self._y_list_.append(y)
 
     @QtCore.Slot(Coordinates)
     def add_changed_cell(self, coordinates: Coordinates):
-        self.__changed_cell__ = coordinates
+        self._changed_cell_ = coordinates
 
     @QtCore.Slot()
     def has_approved(self):
-        return self.__is_approved__
+        return self._is_approved_
 
     @QtCore.Slot(int)
     def add_new(self, is_new_value):
-        self.__is_new__.append(is_new_value)
+        self._is_new_.append(is_new_value)
 
     @QtCore.Slot()
     def check_word(self):
-        if len(self.__x_list__) == 0:
-            self.__is_approved__ = False
+        if len(self._x_list_) == 0:
+            self._is_approved_ = False
             self.clear_word()
             return
-        self.__is_approved__ = True
+        self._is_approved_ = True
         cnt_new = 0
-        for i in range(1, len(self.__x_list__)):
-            if abs(self.__x_list__[i] - self.__x_list__[i - 1]) + abs(self.__y_list__[i] - self.__y_list__[i - 1]) != 1:
-                self.__is_approved__ = False
+        for i in range(1, len(self._x_list_)):
+            if abs(self._x_list_[i] - self._x_list_[i - 1]) + abs(self._y_list_[i] - self._y_list_[i - 1]) != 1:
+                self._is_approved_ = False
+
+
+        for i in range(len(self._x_list_)):
+            if self._x_list_[i] == self._changed_cell_.x and self._y_list_[i] == self._changed_cell_.y:
+                cnt_new += 1
         if cnt_new != 1:
-            self.__is_approved__ = False
+            self._is_approved_ = False
 
-        for i in range(0, len(self.__x_list__)):
-            for j in range(i + 1, len(self.__y_list__)):
-                if self.__x_list__[i] == self.__x_list__[j] and self.__y_list__[i] == self.__y_list__[j]:
-                    self.__is_approved__ = False
+        for i in range(0, len(self._x_list_)):
+            for j in range(i + 1, len(self._y_list_)):
+                if self._x_list_[i] == self._x_list_[j] and self._y_list_[i] == self._y_list_[j]:
+                    self._is_approved_ = False
 
-        if self.__is_approved__:
-            self.send_to_dictionary.emit(self.__word__)
+        if self._is_approved_:
+            self.send_to_dictionary.emit(self._word_)
 
-        if self.__is_approved__:
+        if self._is_approved_:
             self.end_move()
+
+        self.clear_word()
 
 
 
     @QtCore.Slot(int)
     def set_word_approved(self, value):
-        self.__is_approved__ = value
+        self._is_approved_ = value
 
 
 if __name__ == '__main__':

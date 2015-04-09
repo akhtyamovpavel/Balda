@@ -23,8 +23,8 @@ class Player(QtCore.QObject):
         super(Player, self).__init__()
 
         self.__list_of_words__ = list()
-        self.__is_chosen__ = False
-        self.__score__ = 0
+        self._is_chosen_ = False
+        self._score_ = 0
 
         self.__temp_committed__ = False
         self.__is_committed__ = False
@@ -41,21 +41,21 @@ class Player(QtCore.QObject):
     @QtCore.Slot(CellLetter)
     def letter_chosen(self, letter: CellLetter):
         print('Letter chosen')
-        self.__is_chosen__ = True
+        self._is_chosen_ = True
         self.after_letter_chosen.emit(letter)
 
     @QtCore.Slot(str)
     def approve_word(self, word):
         self.__is_committed__ = True
-        self.score += len(word)
+        self._score_ += len(word)
         self.__list_of_words__.append(word)
         print('Word approved')
-        print('Your current score is', self.__score__)
+        print('Your current score is', self._score_)
         self.__is_committed__ = False
-        self.__is_chosen__ = False
+        self._is_chosen_ = False
         self.__temp_committed__ = True
         self.move_ended.emit()
-        self.after_word_committed(word)
+        self.after_word_committed.emit(word)
 
     @QtCore.Slot(list)
     def set_current_board(self, data):
@@ -63,7 +63,7 @@ class Player(QtCore.QObject):
 
     @QtCore.Slot(Coordinates)
     def on_board_reset_word(self, coordinates: Coordinates):
-        self.__is_chosen__ = False
+        self._is_chosen_ = False
         self.__is_committed__ = False
         self.reset_word.emit(coordinates)
 
@@ -71,13 +71,13 @@ class Player(QtCore.QObject):
 
     @QtCore.Slot(CellLetter)
     def on_letter_chosen(self, letter: CellLetter):
-        if self.__is_chosen__:
+        if self._is_chosen_:
             return
         self.choose_letter.emit(letter)
 
     @QtCore.Slot(Coordinates)
     def on_letter_pushed(self, coordinates: Coordinates):
-        if not self.__is_chosen__:
+        if not self._is_chosen_:
             return
         self.push_letter.emit(coordinates)
         self.after_letter_pushed.emit(coordinates)
@@ -116,7 +116,7 @@ class Player(QtCore.QObject):
         pass
 
     def get_score(self):
-        return self.__score__
+        return self._score_
 
 
 if __name__ == '__main__':

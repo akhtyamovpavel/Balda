@@ -23,7 +23,7 @@ class GameManager(QtCore.QObject):
 
     @QtCore.Slot()
     def step_ended(self):
-        if self.__current_player__ == FIRST_PLAYER:
+        if self.__current_id__ == FIRST_PLAYER:
             self.__current_id__ =  SECOND_PLAYER
         else:
             self.__current_id__ = FIRST_PLAYER

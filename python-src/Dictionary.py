@@ -11,14 +11,16 @@ CHECK_WORD_QUERY = "SELECT word FROM Words WHERE (id = root_id AND :word = word)
 
 class Dictionary(QtCore.QObject):
 
+    send_check_result = QtCore.Signal(int)
+    send_dictionary = QtCore.Signal(list)
+
     def __init__(self):
         super(Dictionary, self).__init__()
         self.__set_of_words__ = set()
         self.__used_words__ = set()
         self.db = QtSql.QSqlDatabase()
 
-        self.send_check_result = QtCore.Signal(int)
-        self.send_dictionary = QtCore.Signal(list)
+
         self.random = Random()
 
     def load_dictionary(self):
@@ -31,8 +33,7 @@ class Dictionary(QtCore.QObject):
             print("Base loaded")
 
     def setup_connection(self, word_collector):
-        #TODO realize
-        pass
+        self.send_check_result.connect(word_collector.set_word_approved)
 
     def get_first_word(self, width):
 
@@ -49,8 +50,7 @@ class Dictionary(QtCore.QObject):
 
 
     def connect_to_bot(self, bot):
-        #TODO realize
-        pass
+        self.send_dictionary.connect(bot.setup_dictionary)
 
     @QtCore.Slot(str)
     def check_word(self, word):

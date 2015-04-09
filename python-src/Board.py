@@ -200,14 +200,15 @@ class Board(QtCore.QObject):
             self.send_error("Error cell chosen")
             return
         self.__board__[x][y].set_letter(letter)
-        self.__is_changed__ = True
+        self.__is_changed__  = True
+        self.set_marked(x, y, True)
         self.show_board()
         send_letter = CellLetter(x, y, letter)
         self.add_new_letter.emit(send_letter)
         if self.__current_player__ == self.FIRST_PLAYER:
             self.letter_chosen.emit(send_letter)
         else:
-            self.letter_chosen.emit(send_letter)
+            self.letter_chosen_second.emit(send_letter)
 
     def push_letter(self, coordinates: Coordinates):
         if not self.range_check(coordinates.x, coordinates.y):
