@@ -41,3 +41,7 @@ footer {
     font-size: 140%;
     background-color: #e0e0e0;
 }
+
+table {
+    border: 5px;
+}

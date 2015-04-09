@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+
+{% block field %}
+    <div class="first_player">
+        <div class="user_id">User 1</div>
+        <div class="score_first">Score 1</div>
+        <ul class="words_first">
+            <li>МАМА(4)</li>
+            <li>ПАПА(4)</li>
+        </ul>
+    </div>
+
+    <div class="times"> Time to end </div>
+
+    <div class="game_field">
+        <table>
+            {% for row in field %}
+                <tr>
+                    {% for item in row %}
+                        <td> {{item}} </td>
+                    {% endfor %}
+                </tr>
+
+            {% endfor %}
+        </table>
+
+    </div>
+
+    <div class="second_player">
+        <div class="user_id">User 2</div>
+        <div class="score_second">Score 2</div>
+        <ul class="words_second">
+            <li>БАБА(4)</li>
+            <li>ДЕДА(4)</li>
+        </ul>
+    </div>
+
+{% endblock %}
