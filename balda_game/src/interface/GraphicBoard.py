@@ -22,14 +22,15 @@ class GraphicBoard(QtGui.QWidget):
     give_up_first = QtCore.Signal()
     give_up_second = QtCore.Signal()
     
-    def __init__(self, width, height, parent):
+    def __init__(self, width, height, game_lang=None, players=2, parent=None):
         super(GraphicBoard, self).__init__()
 
         self.__width__ = width
         self.__height__ = height
         self.__language__ = None
         lang_list = ['Russian', 'English']
-        game_lang, flag2 = QtGui.QInputDialog.getItem(self, 'Choose language of the game', 'Выберите язык игры', lang_list)
+        if game_lang is None:
+            game_lang, flag2 = QtGui.QInputDialog.getItem(self, 'Choose language of the game', 'Выберите язык игры', lang_list)
         if game_lang == 'Russian':
             self.__language__ = RussianLanguage()
         else:
@@ -78,8 +79,8 @@ class GraphicBoard(QtGui.QWidget):
         self.game_panel.addLayout(self.second_player_panel)
 
         self.setLayout(self.game_panel)
-
-        players, flag = QtGui.QInputDialog.getInt(self, 'Enter number of players', 'Введите число игроков', 1, 1, 2)
+        if players is None:
+            players, flag = QtGui.QInputDialog.getInt(self, 'Enter number of players', 'Введите число игроков', 1, 1, 2)
         if players == 2:
             self.__game_manager__ = GameManager(self.__language__, width=width, height=height, players_number=players)
         else:
@@ -103,8 +104,8 @@ class GraphicBoard(QtGui.QWidget):
 
         self.__game_manager__.game_ended.connect(self.finish_game)
 
-
-        self.quit.connect(parent.reset_field)
+        if parent is not None:
+            self.quit.connect(parent.reset_field)
 
 
     @QtCore.Slot()

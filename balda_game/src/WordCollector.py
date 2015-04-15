@@ -105,7 +105,6 @@ class WordCollector(QtCore.QObject):
 
 
 
-    @QtCore.Slot(int)
     def set_word_approved(self, value):
         self._is_approved_ = value
 

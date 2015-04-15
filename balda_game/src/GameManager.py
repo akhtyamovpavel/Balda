@@ -1,7 +1,7 @@
 from PySide import QtCore
 from balda_game.src.Board import Board
-from balda_game.src.Dictionary import Dictionary
 from balda_game.src.Player import Player
+from balda_game.src.SingletonDictionary import dictionary
 from balda_game.src.WordCollector import WordCollector
 from balda_game.src.bot.Bot import Bot, EASY, MEDIUM, HARD, HARDEST
 from balda_game.src.lang.Language import Language
@@ -69,16 +69,15 @@ class GameManager(QtCore.QObject):
         self.__board__= Board()
         self.__board__.init_board(width, height)
 
-        self.__dictionary__ = Dictionary()
-        self.__dictionary__.load_dictionary()
+
         self.__wc__ = WordCollector()
-        self.__wc__.connect_to_dictionary(self.__dictionary__)
+        self.__wc__.connect_to_dictionary(dictionary)
         self.__wc__.connect_to_board(self.__board__)
 
-        self.__dictionary__.setup_connection(self.__wc__)
+        dictionary.setup_connection(self.__wc__)
         self.__board__.setup_connection(self.__wc__)
 
-        self.__first_word__ = self.__dictionary__.get_first_word(width)
+        self.__first_word__ = dictionary.get_first_word(width)
 
         self.__player1__ = Player()
         self.__player2__ = Player()
@@ -92,7 +91,7 @@ class GameManager(QtCore.QObject):
         else:
             self.__player1__.connect_to_board(self.__board__)
             self.__player1__.connect_to_manager(self, self)
-            self.__dictionary__.connect_to_bot(self.__bot__)
+            dictionary.connect_to_bot(self.__bot__)
             if level == 'EASY':
                 self.__bot__.set_level(EASY)
             elif level == 'MEDIUM':
@@ -103,7 +102,7 @@ class GameManager(QtCore.QObject):
                 self.__bot__.set_level(HARDEST)
             self.__bot__.connect_to_board(self.__board__)
             self.__bot__.connect_to_manager(self)
-            self.__bot__.connect_to_dictionary(self.__dictionary__)
+            self.__bot__.connect_to_dictionary(dictionary)
 
         self.__current_player__ = self.__player1__
         self.__current_id__ = FIRST_PLAYER
