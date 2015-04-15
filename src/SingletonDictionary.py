@@ -1,4 +1,4 @@
-from balda_game.src.Dictionary import Dictionary
+from Dictionary import Dictionary
 
 __author__ = 'akhtyamovpavel'
 

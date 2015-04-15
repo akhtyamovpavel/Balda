@@ -1,5 +1,6 @@
 from PySide import QtGui, QtCore
-from balda_game.src.interface.GraphicBoard import GraphicBoard
+
+from interface import GraphicBoard
 
 
 __author__ = 'akhtyamovpavel'

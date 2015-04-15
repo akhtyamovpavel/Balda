@@ -1,10 +1,11 @@
 from PySide import QtCore
-from balda_game.src.Board import Board
-from balda_game.src.Player import Player
-from balda_game.src.SingletonDictionary import dictionary
-from balda_game.src.WordCollector import WordCollector
-from balda_game.src.bot.Bot import Bot, EASY, MEDIUM, HARD, HARDEST
-from balda_game.src.lang.Language import Language
+
+from Board import Board
+from Player import Player
+from SingletonDictionary import dictionary
+from bot.Bot import Bot, EASY, MEDIUM, HARD, HARDEST
+from lang.Language import Language
+from WordCollector import WordCollector
 
 
 __author__ = 'akhtyamovpavel'

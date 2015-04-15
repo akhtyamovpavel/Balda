@@ -1,11 +1,12 @@
 from PySide import QtGui, QtCore
-from balda_game.src.GameManager import GameManager
-from balda_game.src.Letter import Coordinates
-from balda_game.src.Letter import CellLetter
-from balda_game.src.Player import Player
-from balda_game.src.interface.ButtonCell import ButtonCell
-from balda_game.src.lang.EnglishLanguage import EnglishLanguage
-from balda_game.src.lang.RussianLanguage import RussianLanguage
+
+from GameManager import GameManager
+from Letter import Coordinates
+from Letter import CellLetter
+from Player import Player
+from interface.ButtonCell import ButtonCell
+from lang.EnglishLanguage import EnglishLanguage
+from lang.RussianLanguage import RussianLanguage
 
 
 __author__ = 'akhtyamovpavel'

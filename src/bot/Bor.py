@@ -1,5 +1,6 @@
 import unittest
-from balda_game.src.bot.BorLetter import Letter
+
+from bot.BorLetter import Letter
 
 
 __author__ = 'akhtyamovpavel'

@@ -1,5 +1,5 @@
-from balda_game.src.Board import Board
-from balda_game.src.Letter import CellLetter, Coordinates
+from Board import Board
+from Letter import CellLetter, Coordinates
 
 __author__ = 'akhtyamovpavel'
 

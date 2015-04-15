@@ -1,7 +1,9 @@
+import copy
 
 from PySide import QtCore
-import copy
-from balda_game.src.Letter import Coordinates
+
+from Letter import Coordinates
+
 
 __author__ = 'user1'
 
