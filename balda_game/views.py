@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 
 # Create your views here.
@@ -8,8 +9,9 @@ def index(request):
     field = [['-' for i in range(5)] for j in range(5)]
     field[2] = ['Б', 'А', 'Л', 'Д', 'А']
 
-    for i in range(10):
-        print('BaldaLogGame', i, 'start')
+    file = open('src/log/1.txt', 'w')
+    file.write('BaldaLogGame 1 start')
+    file.close()
     return render(request, 'field.html', {'field': field})
 
 
