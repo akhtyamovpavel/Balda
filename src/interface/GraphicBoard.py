@@ -1,9 +1,11 @@
 from PySide import QtGui, QtCore
 
 from GameManager import GameManager
+#from Interactor import factory
 from Letter import Coordinates
 from Letter import CellLetter
 from Player import Player
+from Pool import factory
 from interface.ButtonCell import ButtonCell
 from lang.EnglishLanguage import EnglishLanguage
 from lang.RussianLanguage import RussianLanguage
@@ -22,13 +24,14 @@ class GraphicBoard(QtGui.QWidget):
     quit = QtCore.Signal()
     give_up_first = QtCore.Signal()
     give_up_second = QtCore.Signal()
-    
-    def __init__(self, width, height, game_lang=None, players=2, parent=None):
+
+    def __init__(self, width, height, game_id, game_lang=None, players=2, parent=None):
         super(GraphicBoard, self).__init__()
 
         self.__width__ = width
         self.__height__ = height
         self.__language__ = None
+        self._game_id = game_id
         lang_list = ['Russian', 'English']
         if game_lang is None:
             game_lang, flag2 = QtGui.QInputDialog.getItem(self, 'Choose language of the game', 'Выберите язык игры', lang_list)
@@ -107,7 +110,16 @@ class GraphicBoard(QtGui.QWidget):
 
         if parent is not None:
             self.quit.connect(parent.reset_field)
+        factory.on_game_started(self, first_word=word)
 
+    def get_first_player_score(self):
+        return self.__game_manager__.get_first_player().get_score()
+
+    def get_second_player_score(self):
+        return self.__game_manager__.get_second_player().get_score()
+
+    def get_game_id(self):
+        return self._game_id
 
     @QtCore.Slot()
     def on_cell_pushed(self):
@@ -144,25 +156,36 @@ class GraphicBoard(QtGui.QWidget):
     def after_cell_pushed(self, coordinates: Coordinates):
         self.current_word.setText(self.current_word.text() +
                                       self.buttons[coordinates.x][coordinates.y].text())
+        factory.on_letter_pushed(self, x=coordinates.x, y=coordinates.y, word=self.current_word.text)
 
     @QtCore.Slot(CellLetter)
     def after_cell_chosen(self, coordinates: CellLetter):
         self.buttons[coordinates.x][coordinates.y].setMenu(None)
         self.buttons[coordinates.x][coordinates.y].setText(coordinates.letter)
+        factory.on_letter_chosen(self, x=coordinates.x, y=coordinates.y, letter=coordinates.letter)
 
 
     @QtCore.Slot(str)
     def after_word_committed(self, word):
         self.current_word.setText(None)
+        player_number = 0
         if self.sender() == self.__game_manager__.get_first_player():
             self.first_player_words.addItem(word)
             score = self.__game_manager__.get_first_player().get_score()
             self.first_player_score.setText(str(score))
+            player_number = 1
         else:
             self.second_player_words.addItem(word)
             score = self.__game_manager__.get_second_player().get_score()
             self.second_player_score.setText(str(score))
+            player_number = 2
         self.run_step()
+        factory.on_commit_result(self,
+                                 score1=self.get_first_player_score(),
+                                 score2=self.get_second_player_score(),
+                                 player=player_number, word=word)
+
+
 
 
     @QtCore.Slot(Coordinates)
@@ -170,6 +193,7 @@ class GraphicBoard(QtGui.QWidget):
         self.buttons[coordinates.x][coordinates.y].createMenu()
         self.buttons[coordinates.x][coordinates.y].setText('')
         self.current_word.setText('')
+        factory.on_word_reset(self, x=coordinates.x, y=coordinates.y)
 
     @QtCore.Slot()
     def on_commit_button_clicked(self):
@@ -189,10 +213,8 @@ class GraphicBoard(QtGui.QWidget):
     def finish_game(self, message):
         box = QtGui.QMessageBox(self)
         box.setText(message)
-        ok_button = box.addButton(QtGui.QMessageBox.Ok)
-        box.exec_()
-        if box.clickedButton() == ok_button:
-            self.quit.emit()
+
+        factory.end_game(self, score1=self.get_first_player_score(), score2=self.get_second_player_score())
 
     def connect_to_players(self, player1: Player, player2: Player):
         self.choose_letter_first.connect(player1.on_letter_chosen)
@@ -213,3 +235,5 @@ class GraphicBoard(QtGui.QWidget):
 
 
 
+def create_simple_graphic_board(game_id):
+    return GraphicBoard(5, 5, game_id, game_lang='Russian', players=2, parent=None)

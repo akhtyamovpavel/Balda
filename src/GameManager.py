@@ -2,11 +2,11 @@ from PySide import QtCore
 
 from Board import Board
 from Player import Player
+
 from SingletonDictionary import dictionary
 from bot.Bot import Bot, EASY, MEDIUM, HARD, HARDEST
 from lang.Language import Language
 from WordCollector import WordCollector
-
 
 __author__ = 'akhtyamovpavel'
 
@@ -57,7 +57,9 @@ class GameManager(QtCore.QObject):
                 message = 'Draw'
             else:
                 message = 'Computer win'
+
         self.game_ended.emit(message)
+
 
 
     def __init__(self, language: Language, width, height, players_number, level=''):
@@ -166,3 +168,5 @@ class GameManager(QtCore.QObject):
     def is_game_ended(self):
         self.ask_for_cells.emit()
         return self.__number_of_spare_cells__ == 0
+
+
