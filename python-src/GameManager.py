@@ -90,7 +90,7 @@ class GameManager(QtCore.QObject):
             self.__player2__.connect_to_manager(self)
         else:
             self.__player1__.connect_to_board(self.__board__)
-            self.__player1__.connect_to_manager(self, self)
+            self.__player1__.connect_to_manager(self)
             self.__dictionary__.connect_to_bot(self.__bot__)
             if level == 'EASY':
                 self.__bot__.set_level(EASY)
@@ -103,6 +103,8 @@ class GameManager(QtCore.QObject):
             self.__bot__.connect_to_board(self.__board__)
             self.__bot__.connect_to_manager(self)
             self.__bot__.connect_to_dictionary(self.__dictionary__)
+            self.__bot__.get_dictionary.emit()
+
 
         self.__current_player__ = self.__player1__
         self.__current_id__ = FIRST_PLAYER
