@@ -88,7 +88,7 @@ class Dictionary(QtCore.QObject):
 
         while query.next():
             words.append(str(query.value(0)))
-        print(words)
+        #print(words[0])
 
         self.send_dictionary.emit(words)
 

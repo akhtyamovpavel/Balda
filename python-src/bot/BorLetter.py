@@ -4,7 +4,7 @@ __author__ = 'akhtyamovpavel'
 class Letter:
 
     def __init__(self, symbol=' ', leaf=False):
-        self.__symbol__ = ' '
+        self.__symbol__ = symbol
         self.__children__ = list()
         self.__children_letters__ = list()
         self.__leaf__ = leaf

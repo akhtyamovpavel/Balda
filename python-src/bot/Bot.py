@@ -82,7 +82,7 @@ class Bot(Player):
         self.__level__ = difficulty
 
     def connect_to_dictionary(self, dictionary: Dictionary):
-        self.get_dictionary.connect(dictionary.send_dictionary)
+        self.get_dictionary.connect(dictionary.send_dict)
 
     def begin_step(self):
         self.run_process()
@@ -117,19 +117,20 @@ class Bot(Player):
 
         while not self.__temp_committed__:
             cnt = 0
-            for coordinate in variants[id].coordinates:
+            for coordinate in variants[id].__coordinates__:
                 x = coordinate.x - 1
                 y = coordinate.y - 1
                 if self.__board__[x][y] == '-':
+                    print(cnt)
                     used_x = x
                     used_y = y
-                    c = variants[id].possible_word[cnt]
+                    c = variants[id].__possible_word__[cnt]
                 cnt += 1
 
             res = CellLetter(used_x, used_y, c)
             self.choose_letter.emit(res)
 
-            for coordinate in variants[id].coordinates:
+            for coordinate in variants[id].__coordinates__:
                 x = coordinate.x - 1
                 y = coordinate.y - 1
                 coordinates = Coordinates(x, y)
@@ -167,9 +168,9 @@ class Bot(Player):
         if self.__bor_vocabulary__.bor_vertices[cur_position].is_leaf() and used_empty:
             cur_coords.append(Coordinates(x, y))
             cur_string += table[x][y]
-            words.append(Word(cur_string, cur_coords))
-            cur_string = cur_string[:-2]
-            cur_coords.pop(-1)
+            words.append(Word(cur_string, cur_coords[:]))
+            cur_string = cur_string[:-1]
+            cur_coords.pop()
 
         if table[x][y] == '-' and not used_empty:
             letters = self.__language__.get_list()
@@ -196,29 +197,39 @@ class Bot(Player):
                 cur_string += table[x][y]
 
                 if table[xx][yy] != '-':
-                    if self.__bor_vocabulary__[cur_position].find_children(table[xx][yy]) != NOT_FOUND:
+                    if self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[xx][yy]) != NOT_FOUND:
                         self.dfs(table, words, xx, yy,
                             self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[xx][yy]),
                             cur_used, cur_string, cur_coords, used_empty)
                 else:
-                    dfs(table, words, xx, yy, cur_position, cur_used, cur_string, cur_coords, used_empty)
+                    self.dfs(table, words, xx, yy, cur_position, cur_used, cur_string, cur_coords, used_empty)
+
+                cur_string = cur_string[:-1]
+                cur_coords.pop()
+
         cur_used[x][y] = False
 
 
     def possible_variants(self, table):
         N = len(table) - 2
         M = len(table[0]) - 2
-
         words = list()
-        cur_string = str()
+
+        s = 0
+        for v in self.__bor_vocabulary__.bor_vertices:
+            if (v.is_leaf()):
+                s += 1
+        print(s, len(self.__bor_vocabulary__.bor_vertices))
+
         for i in range(1, N + 1):
             for j in range(1, M + 1):
                 cur_used = [[False for k in range(M + 2)] for l in range(N + 2)]
                 cur_coordinates = list()
+                cur_string = str()
                 cur_position = 0
                 if table[i][j] != '-' and self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[i][j]) != -1:
-                    self.dfs(table, self.words, i, j,
-                             self.__bor_vocabulary__[cur_position].find_children(table[i][j]),
+                    self.dfs(table, words, i, j,
+                             self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[i][j]),
                              cur_used, cur_string, cur_coordinates, False)
                 else:
                     if table[i][j] == '-':

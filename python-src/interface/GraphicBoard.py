@@ -163,7 +163,7 @@ class GraphicBoard(QtGui.QWidget):
 
     @QtCore.Slot(Coordinates)
     def on_player_reset_word(self, coordinates: Coordinates):
-        self.buttons[coordinates.x][coordinates.y].createMenu()
+        self.buttons[coordinates.x][coordinates.y].create_menu()
         self.buttons[coordinates.x][coordinates.y].setText('')
         self.current_word.setText('')
 
