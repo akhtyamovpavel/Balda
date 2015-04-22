@@ -20,7 +20,8 @@ DEFAULT_HEIGHT = 5
 
 
 class Bot(Player):
-    get_dictionary = QtCore.Signal()
+    __get_dictionary__ = QtCore.Signal()
+    __get_used_words__ = QtCore.Signal()
     send_letter = QtCore.Signal(CellLetter)
     send_word = QtCore.Signal(str)
 
@@ -34,6 +35,10 @@ class Bot(Player):
         for word in words:
             self.__bor_vocabulary__.add_word(word)
 
+    @QtCore.Slot()
+    def get_used_dictionary(self, used_words):
+        self.__not_allowed_words__ = used_words
+
     def __init__(self, language: Language, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT):
         super(Bot, self).__init__()
         self.__language__ = language
@@ -43,54 +48,124 @@ class Bot(Player):
 
         self.__level__ = EASY #default value
         self.__bor_vocabulary__ = Bor()
+        self.__not_allowed_words__ = set()
 
     def maximal_length(self, variants):
-        pass
+        if len(variants) == 0:
+            return 0
+        return max(len(variant.__possible_word__) for variant in variants)
+
+    def allowed_variants(self, variants, not_allowed_word):
+        return [variant for variant in variants if variant not in self.__not_allowed_words__ and variant != not_allowed_word]
+
 
     def easy_index_word(self, variants):
-        size = len(variants) - 1
+        print("easy")
+        size = len(variants)
         random = Random()
-        d = int(size*random.random())
-        return d
+        random_number = int(size * random.random())
+        return min(random_number, size - 1)
 
     def medium_index_word(self, variants):
-        size = len(variants) - 1
+        print("medium")
+        size = len(variants)
         val = 0
         for i in range(size):
-            val += len(variants[i].possible_word) * len(variants[i].possible_word)
+            val += len(variants[i].__possible_word__) * len(variants[i].__possible_word__)
 
-        random_number = int(Random().random() * val)
+        random = Random()
+        random_number = int(random.random() * val)
 
         cur = 0
         cnt = 0
         for variant in variants:
-            cur += len(variant.possible_word) * len(variant.possible_word)
-            if cur >= random_number:
+            cur += len(variant.__possible_word__) * len(variant.__possible_word__)
+            if cur > random_number:
                 return cnt
             cnt += 1
 
-        return 0
+        return size - 1
 
 
     def hard_index_word(self, variants):
-        pass
+        print("hard")
+        size = len(variants)
+        if (size == 0):
+            return -1
 
-    def hardest_index_word(self, variants, symbols, not_allowed_words):
-        pass
+        max_len = self.maximal_length(variants)
+        maximal_variants = [variant for variant in variants if len(variant.__possible_word__) == max_len]
+        maximal_size = len(maximal_variants)
+        if (maximal_size == 0):
+            return -1
+
+        random = Random()
+        random_number = min(maximal_size - 1, int(maximal_size * random.random()))
+        for cnt in range(size):
+            if variants[cnt] == maximal_variants[random_number]:
+                return cnt
+
+        return -1
+
+    def hardest_index_word(self, variants, symbols):
+        best_index = -1
+        max_score = -self.__width__ * self.__height__
+
+        max_lens = {len(variant.__possible_word__) for variant in variants}
+        for i in range(3):
+            if (len(max_lens) > 0):
+                min_len = max(max_lens)
+            max_lens.remove(min_len)
+        maximal_variants = [variant for variant in variants if len(variant.__possible_word__) >= min_len]
+
+        for index in range(len(maximal_variants)):
+            for i in range(len(maximal_variants[index].__coordinates__)):
+                x = maximal_variants[index].__coordinates__[i].x
+                y = maximal_variants[index].__coordinates__[i].y
+                if symbols[x][y] == '-':
+                    used_x = x
+                    used_y = y
+                    c = maximal_variants[index].__possible_word__[i]
+
+            symbols[used_x][used_y] = c
+            new_variants = self.possible_variants(symbols)
+            symbols[used_x][used_y] = '-'
+            new_allowed_variants = self.allowed_variants(new_variants, maximal_variants[index].__possible_word__)
+
+            bot_score = len(maximal_variants[index].__possible_word__)
+            player_score = self.maximal_length(new_allowed_variants)
+            if (bot_score - player_score > max_score):
+                max_score = bot_score - player_score
+                best_index = index
+
+        if (best_index == -1):
+            return -1
+
+        for cnt in range(len(variants)):
+            if variants[cnt] == maximal_variants[best_index]:
+                return cnt
+        return -1
+
 
     def set_level(self, difficulty):
         self.__level__ = difficulty
 
     def connect_to_dictionary(self, dictionary: Dictionary):
-        self.get_dictionary.connect(dictionary.send_dict)
+        self.__get_dictionary__.connect(dictionary.send_dictionary)
+
+    def get_dictionary(self):
+        self.__get_dictionary__.emit()
+
+    def connect_to_used_dictionary(self, dictionary: Dictionary):
+        self.__get_used_words__.connect(dictionary.send_used_words)
 
     def begin_step(self):
         self.run_process()
 
     def run_process(self):
-        not_allowed_words = list()
-
         self.show_board.emit()
+        self.__get_used_words__.emit()
+        print(self.__not_allowed_words__)
 
         symbols = [['#' for i in range(self.__width__ + 2)] for j in range(self.__height__ + 2)]
 
@@ -110,7 +185,7 @@ class Bot(Player):
         elif self.__level__ == HARD:
             id = self.hard_index_word(variants)
         else:
-            id = self.hardest_index_word(variants, symbols, not_allowed_words)
+            id = self.hardest_index_word(variants, symbols[:])
 
         if id == -1:
             self.don_t_make_move.emit()
@@ -150,7 +225,7 @@ class Bot(Player):
             elif self.__level__ == HARD:
                 id = self.hard_index_word(variants)
             else:
-                id = self.hardest_index_word(variants, symbols, not_allowed_words)
+                id = self.hardest_index_word(variants, symbols[:])
 
             if id == -1:
                 self.don_t_make_move.emit()
@@ -168,7 +243,7 @@ class Bot(Player):
         if self.__bor_vocabulary__.bor_vertices[cur_position].is_leaf() and used_empty:
             cur_coords.append(Coordinates(x, y))
             cur_string += table[x][y]
-            words.append(Word(cur_string, cur_coords[:]))
+            words.append(Word(cur_string, cur_coords))
             cur_string = cur_string[:-1]
             cur_coords.pop()
 
@@ -215,12 +290,6 @@ class Bot(Player):
         M = len(table[0]) - 2
         words = list()
 
-        s = 0
-        for v in self.__bor_vocabulary__.bor_vertices:
-            if (v.is_leaf()):
-                s += 1
-        print(s, len(self.__bor_vocabulary__.bor_vertices))
-
         for i in range(1, N + 1):
             for j in range(1, M + 1):
                 cur_used = [[False for k in range(M + 2)] for l in range(N + 2)]
@@ -231,8 +300,7 @@ class Bot(Player):
                     self.dfs(table, words, i, j,
                              self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[i][j]),
                              cur_used, cur_string, cur_coordinates, False)
-                else:
-                    if table[i][j] == '-':
+                elif table[i][j] == '-':
                         self.dfs(table, words, i, j, PRE_VERTEX, cur_used, cur_string, cur_coordinates, False)
 
         corrects = list()
