@@ -83,7 +83,7 @@ class GraphicBoard(QtGui.QWidget):
         else:
             list_levels = ['EASY', 'MEDIUM', 'HARD', 'HARDEST']
             level = QtGui.QInputDialog.getItem(self, 'Choose level', 'Выберите сложность', list_levels)
-            self.__game_manager__ = GameManager(self.__language__, width, height, players, level)
+            self.__game_manager__ = GameManager(self.__language__, width, height, players, level[0])
 
         self.connect_to_players(self.__game_manager__.get_first_player(),
                                 self.__game_manager__.get_second_player())
