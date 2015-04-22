@@ -1,2 +1,5 @@
 *.pyc
 .idea/
+/src/*.txt
+log/
+results/

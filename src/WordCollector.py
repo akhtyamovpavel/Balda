@@ -1,7 +1,9 @@
+import copy
 
 from PySide import QtCore
-import copy
-from balda_game.src.Letter import Coordinates
+
+from Letter import Coordinates
+
 
 __author__ = 'user1'
 
@@ -105,7 +107,6 @@ class WordCollector(QtCore.QObject):
 
 
 
-    @QtCore.Slot(int)
     def set_word_approved(self, value):
         self._is_approved_ = value
 

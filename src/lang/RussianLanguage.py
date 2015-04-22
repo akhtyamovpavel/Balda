@@ -1,4 +1,4 @@
-from balda_game.src.lang.Language import Language
+from lang.Language import Language
 
 __author__ = 'akhtyamovpavel'
 

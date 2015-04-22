@@ -1,11 +1,11 @@
 from random import Random
 
-from balda_game.src.Dictionary import Dictionary
-from balda_game.src.Letter import CellLetter, Coordinates
-from balda_game.src.Player import Player
-from balda_game.src.bot.Bor import Bor, PRE_VERTEX, NOT_FOUND
-from balda_game.src.bot.Word import Word
-from balda_game.src.lang.Language import Language
+from Dictionary import Dictionary
+from Letter import CellLetter, Coordinates
+from Player import Player
+from bot.Bor import Bor, PRE_VERTEX, NOT_FOUND
+from bot.Word import Word
+from lang.Language import Language
 
 __author__ = 'akhtyamovpavel'
 

@@ -1,9 +1,10 @@
 import unittest
 
 from PySide import QtCore
-from balda_game.src.Cell import Cell
-from balda_game.src.Letter import CellLetter, Coordinates
-from balda_game.src.WordCollector import WordCollector
+
+from Cell import Cell
+from Letter import CellLetter, Coordinates
+from WordCollector import WordCollector
 
 
 __author__ = 'user1'

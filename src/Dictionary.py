@@ -9,22 +9,34 @@ GET_WORDS_QUERY = "SELECT word FROM Words WHERE id = root_id"
 TEST_QUERY = "SELECT 1"
 CHECK_WORD_QUERY = "SELECT word FROM Words WHERE (id = root_id AND :word = word)"
 
+
+
 class Dictionary(QtCore.QObject):
+
+
 
     send_check_result = QtCore.Signal(int)
     send_dictionary = QtCore.Signal(list)
 
+    send_check_result_pool = [QtCore.Signal(int) for i in range(100)]
+
+    sz = 100
+    send_dictionary_pool = list()
+
+
+    pool_dictionary = dict()
+
+    signal_mapper = QtCore.QSignalMapper()
+
     def __init__(self):
         super(Dictionary, self).__init__()
-        self.__set_of_words__ = set()
-        self.__used_words__ = set()
+        self.__used_words__ = list()
         self.db = QtSql.QSqlDatabase()
 
 
         self.random = Random()
 
-    def load_dictionary(self):
-        print(getcwd())
+    def init_dictionary(self):
         self.db = QtSql.QSqlDatabase.addDatabase("QSQLITE")
         self.db.setDatabaseName(getcwd() + "/dictionary.db")
         if not self.db.open():
@@ -32,8 +44,16 @@ class Dictionary(QtCore.QObject):
         else:
             print("Base loaded")
 
+    def load_dictionary(self):
+        pass
+
     def setup_connection(self, word_collector):
-        self.send_check_result.connect(word_collector.set_word_approved)
+
+        pool_size = len(self.pool_dictionary)
+        self.pool_dictionary[word_collector] = pool_size
+        self.__used_words__.append(set())
+
+        #self.send_check_result.connect(word_collector.set_word_approved)
 
     def get_first_word(self, width):
 
@@ -48,19 +68,24 @@ class Dictionary(QtCore.QObject):
         first_word = first_word_list[int(self.random.random()*len(first_word_list))]
         return first_word
 
-
+    # TODO This method is buggy, need to rewrite in pool way
     def connect_to_bot(self, bot):
         self.send_dictionary.connect(bot.setup_dictionary)
 
+
     @QtCore.Slot(str)
     def check_word(self, word):
-        if self.is_word_good(word):
-            self.send_check_result.emit(1)
+        number_id = self.pool_dictionary.get(self.sender())
+        if number_id is None:
+            return
+
+        if self.is_word_good(word, number_id):
+            self.sender().set_word_approved(1)
         else:
-            self.send_check_result.emit(0)
+            self.sender().set_word_approved(0)
 
 
-    def is_word_good(self, word):
+    def is_word_good(self, word, number_id):
         query = QtSql.QSqlQuery(self.db)
         query.prepare(CHECK_WORD_QUERY)
         query.bindValue(":word", word)
@@ -68,8 +93,10 @@ class Dictionary(QtCore.QObject):
             print("BAD")
             return
         if query.next():
-            if word not in self.__used_words__:
-                self.__used_words__.add(word)
+            current_set = self.__used_words__[number_id]
+            if word not in current_set:
+                current_set.add(word)
+                self.__used_words__[number_id] = current_set
                 print("WORD FOUND")
                 return True
             else:
