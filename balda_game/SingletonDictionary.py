@@ -8,4 +8,3 @@ __author__ = 'akhtyamovpavel'
 
 
 dictionary = Dictionary()
-dictionary.init_dictionary()

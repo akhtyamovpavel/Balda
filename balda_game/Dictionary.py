@@ -1,5 +1,6 @@
 from os import getcwd
 from random import Random
+from functools import wraps
 import unittest
 from PySide import QtCore, QtSql
 from sqlite3 import connect
@@ -14,16 +15,12 @@ CHECK_WORD_QUERY = "SELECT word FROM Words WHERE (id = root_id AND word = ?)"
 
 class Dictionary(QtCore.QObject):
 
-
-
-
     sz = 100
     send_dictionary_pool = list()
 
 
     pool_dictionary = dict()
 
-    signal_mapper = QtCore.QSignalMapper()
 
     def __init__(self):
         super(Dictionary, self).__init__()
@@ -36,8 +33,12 @@ class Dictionary(QtCore.QObject):
     def init_dictionary(self):
         self.db = connect(getcwd() + "/dictionary.db")
 
+    def close_connection(self):
+        self.db.close()
+
     def load_dictionary(self):
         pass
+
 
     def setup_connection(self, game_id):
 
@@ -46,8 +47,10 @@ class Dictionary(QtCore.QObject):
         self.__used_words__.append(set())
 
 
-    def get_first_word(self, width):
 
+    def get_first_word(self, width):
+        # TODO Realize with decorators
+        self.init_dictionary()
         first_word_list = list()
         cursor = self.db.cursor()
         cursor.execute(GET_WORDS_QUERY)
@@ -57,6 +60,7 @@ class Dictionary(QtCore.QObject):
                 first_word_list.append(word)
         print(len(first_word_list))
         first_word = first_word_list[int(self.random.random()*len(first_word_list))]
+        self.close_connection()
         return first_word
 
     # TODO This method is buggy, need to rewrite in pool way
@@ -91,17 +95,22 @@ class Dictionary(QtCore.QObject):
         return False
 
     def check_word(self, number_id, x_list, y_list, changed_cell, word):
+        self.init_dictionary()
         number_id = self.pool_dictionary.get(self.sender())
+
+
         if number_id is None:
-            return
+            return False
 
         if not self.is_word_correct_built(x_list, y_list, changed_cell):
             return False
 
-
-        return  self.is_word_good(word, number_id)
+        value = self.is_word_good(word, number_id)
+        self.close_connection()
+        return value
 
     def is_word_good(self, word, number_id):
+        self.init_dictionary()
         cursor = self.db.cursor()
         cursor.execute(CHECK_WORD_QUERY, (word))
 
@@ -111,10 +120,13 @@ class Dictionary(QtCore.QObject):
                 current_set.add(word)
                 self.__used_words__[number_id] = current_set
                 print("WORD FOUND")
+                self.close_connection()
                 return True
             else:
                 print("WORD NOT FOUND")
+                self.close_connection()
                 return False
+        self.close_connection()
         print("WORD NOT FOUND")
         return False
 

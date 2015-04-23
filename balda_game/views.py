@@ -2,16 +2,14 @@ from os import path
 from django.shortcuts import render
 
 # Create your views here.
-
+from balda_game.SingletonDictionary import dictionary
 
 
 def index(request):
     field = [['-' for i in range(5)] for j in range(5)]
     field[2] = ['Б', 'А', 'Л', 'Д', 'А']
-
-    file = open('src/log/1.txt', 'w')
-    file.write('BaldaLogGame 1 start')
-    file.close()
+    first_word = dictionary.get_first_word(5)
+    print(first_word)
     return render(request, 'field.html', {'field': field})
 
 
