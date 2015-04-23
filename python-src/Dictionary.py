@@ -12,7 +12,8 @@ CHECK_WORD_QUERY = "SELECT word FROM Words WHERE (id = root_id AND :word = word)
 class Dictionary(QtCore.QObject):
 
     send_check_result = QtCore.Signal(int)
-    send_dictionary = QtCore.Signal(list)
+    __send_dictionary__ = QtCore.Signal(list)
+    __send_used_words__ = QtCore.Signal(set)
 
     def __init__(self):
         super(Dictionary, self).__init__()
@@ -45,12 +46,15 @@ class Dictionary(QtCore.QObject):
             if len(word) == width:
                 first_word_list.append(word)
         print(len(first_word_list))
-        first_word = first_word_list[int(self.random.random()*len(first_word_list))]
+        first_word = first_word_list[int(self.random.random() * len(first_word_list))]
+        self.__used_words__.add(first_word)
         return first_word
 
-
     def connect_to_bot(self, bot):
-        self.send_dictionary.connect(bot.setup_dictionary)
+        self.__send_dictionary__.connect(bot.setup_dictionary)
+
+    def used_words_to_bot(self, bot):
+        self.__send_used_words__.connect(bot.get_used_dictionary)
 
     @QtCore.Slot(str)
     def check_word(self, word):
@@ -81,17 +85,20 @@ class Dictionary(QtCore.QObject):
 
 
     @QtCore.Slot()
-    def send_dict(self):
+    def send_dictionary(self):
         words = list()
         query = QtSql.QSqlQuery(self.db)
         query.exec_(GET_WORDS_QUERY)
 
         while query.next():
             words.append(str(query.value(0)))
-        print(words)
+        #print(words[0])
 
-        self.send_dictionary.emit(words)
+        self.__send_dictionary__.emit(words)
 
+    @QtCore.Slot()
+    def send_used_words(self):
+        self.__send_used_words__.emit(self.__used_words__)
 
 class DictionaryTest(unittest.TestCase):
     def setUp(self):

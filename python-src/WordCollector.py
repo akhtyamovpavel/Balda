@@ -7,7 +7,7 @@ __author__ = 'user1'
 
 class WordCollector(QtCore.QObject):
     send_to_dictionary = QtCore.Signal(str)
-    clear_state = QtCore.Signal()
+    clear_state = QtCore.Signal(Coordinates)
     end_of_transaction = QtCore.Signal(str)
     approve_word = QtCore.Signal()
 
