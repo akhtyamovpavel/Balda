@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from balda_game.SingletonDictionary import dictionary
+from balda_game.models import UserPlayer
 
 
 def index(request):
@@ -52,6 +53,14 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             new_user = form.save()
+            user1 = UserPlayer()
+            user1.wins = 0
+            user1.loses = 0
+            user1.draws = 0
+            user1.rating = 0
+            user1.user = new_user
+            user1.save()
+            user = UserPlayer.objects.create
             return HttpResponseRedirect('/')
     form = UserCreationForm()
     return render(request, "register.html", {
@@ -68,7 +77,7 @@ def login_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect('/')
+                return HttpResponseRedirect('/')
             else:
                 return render(request, 'login.html', {"message": "Wrong login or password"})
     else:
@@ -79,3 +88,7 @@ def logout_view(request):
     logout(request)
     return redirect('/')
 
+@login_required
+def profile(request):
+    user_profile = UserPlayer.objects.get(user=request.user)
+    return render(request, 'profile.html', {'user_profile': user_profile})
