@@ -9,5 +9,9 @@ urlpatterns = patterns('',
 
     url(r'^run_game/$', views.run_game, name='game'),
 
-    url(r'^game/(?P<game_id>\d+)', views.start_game, name='start_game')
+    url(r'^game/(?P<game_id>\d+)', views.start_game, name='start_game'),
+
+    url(r'^login/$', views.login_view, name='login_view'),
+    url(r'^logout/$', views.logout_view, name='logout_view'),
+    url(r'^register/$', views.register, name='register'),
 )

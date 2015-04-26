@@ -1,5 +1,9 @@
 from os import path
-from django.shortcuts import render
+from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from balda_game.SingletonDictionary import dictionary
@@ -42,3 +46,36 @@ def start_game(request, game_id):
     field[2] = [first_word[i] for i in range(5)]
 
     return render(request, 'field.html', {'field': field})
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            return HttpResponseRedirect('/')
+    form = UserCreationForm()
+    return render(request, "register.html", {
+        'form': form
+    })
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', False)
+        password = request.POST.get('password', False)
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect('/')
+            else:
+                return render(request, 'login.html', {"message": "Wrong login or password"})
+    else:
+        return render(request, 'login.html', {})
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('/')
+

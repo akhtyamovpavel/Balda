@@ -14,6 +14,16 @@
 </head>
 <body>
 
+    {% load url from future %}
+    <div id="login">
+        {% if  user.is_authenticated %}
+            Hello, {{ user.username }}
+            <p><a href="{% url 'logout_view' %}">Logout</a></p>
+        {% else %}
+            <p><a href="{% url 'login_view' %}">Login</a></p>
+            <p><a href="{% url 'register' %}"> Register </a></p>
+        {% endif %}
+    </div>
     <div id="main">
         {% block main %}{% endblock %}
     </div>
@@ -22,6 +32,6 @@
 </body>
 
 <footer>
-        See project on <a href="https://github.com/akhtyamovpavel">GitHub</a>
+        See project on <a href="https://github.com/akhtyamovpavel/Balda">GitHub</a>
 </footer>
 </html>

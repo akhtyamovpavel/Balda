@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block main %}
+    {% load url from future %}
+
+    {% if message %}
+        <div id="login_error">
+            {{ message }}
+        </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'login_view' %}">
+    {% csrf_token %}
+        <table>
+            <tr>
+                <td> Username</td>
+                <td><input type="text" name="username"></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input type="password" name="password"> </td>
+            </tr>
+        </table>
+        <input type="submit" value="login">
+        <input type="hidden" name="next" value="/">
+    </form>
+{% endblock %}
