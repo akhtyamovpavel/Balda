@@ -1,11 +1,13 @@
+import json
 from os import path
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
+from balda_game.GameManagerProcessor import GameProcessor
 from balda_game.SingletonDictionary import dictionary
 from balda_game.models import UserPlayer
 
@@ -26,25 +28,10 @@ def run_game(request):
 
 
 def start_game(request, game_id):
-    file_path = path.join('src/log', '.'.join([str(game_id), 'txt']))
-    file = open(file_path, 'w')
-    file.writelines(['BaldaLogGame ', str(game_id), ' start'])
-    file.close()
-    file_path_read = path.join('src/results', str(game_id), '0.txt')
-    file_read_from = None
-    while True:
-        try:
-            file_read_from = open(file_path_read, 'r')
-            break
-        except FileNotFoundError as e:
-            continue
-
-    command = file_read_from.readline()
-    data = eval(file_read_from.readline())
-    print(data)
-    first_word = data.get('first_word')
     field = [['-' for i in range(5)] for j in range(5)]
-    field[2] = [first_word[i] for i in range(5)]
+    #TODO check for errors
+    word = GameProcessor.list_first_words.get(int(game_id))
+    field[2] = [letter for letter in word]
 
     return render(request, 'field.html', {'field': field})
 
@@ -92,3 +79,15 @@ def logout_view(request):
 def profile(request):
     user_profile = UserPlayer.objects.get(user=request.user)
     return render(request, 'profile.html', {'user_profile': user_profile})
+
+
+@login_required
+def game_wait(request):
+    GameProcessor.add_player(request.user)
+    return render(request, 'game_wait.html', {})
+
+@login_required
+def wait_query(request):
+    value = GameProcessor.add_waiting_player(request.user)
+    json_result = {'game': value}
+    return HttpResponse(json.dumps(json_result), content_type="application/json")

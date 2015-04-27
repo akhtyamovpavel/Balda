@@ -3,3 +3,4 @@
 /src/*.txt
 log/
 results/
+*.sqlite3

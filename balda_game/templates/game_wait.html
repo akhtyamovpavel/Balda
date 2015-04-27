@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block js_files %}
+    <script src="{% static 'balda_game/jquery-2.1.3.min.js' %}"></script>
+    <script src="{% static 'balda_game/game.js' %}"></script>
+{% endblock %}
+
+
+{% block main %}
+    Waiting for opponent
+{% endblock %}

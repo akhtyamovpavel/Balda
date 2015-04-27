@@ -14,5 +14,9 @@ urlpatterns = patterns('',
     url(r'^login/$', views.login_view, name='login_view'),
     url(r'^logout/$', views.logout_view, name='logout_view'),
     url(r'^register/$', views.register, name='register'),
-    url(r'^profile/$', views.profile, name='profile')
+    url(r'^profile/$', views.profile, name='profile'),
+
+    #GameProcess Links
+    url(r'^game_wait/$', views.game_wait, name='game_wait'),
+    url(r'^wait_query/$', views.wait_query, name='wait_query')
 )
