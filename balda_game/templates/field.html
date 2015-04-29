@@ -1,4 +1,9 @@
 {% extends "index.html" %}
+{% load staticfiles %}
+{% block js_files %}
+    <script src="{% static 'balda_game/jquery-2.1.3.min.js' %}"></script>
+    <script src="{% static 'balda_game/game_process.js' %}"></script>
+{% endblock %}
 
 {% block field %}
     <div class="first_player">
@@ -17,7 +22,10 @@
             {% for row in field %}
                 <tr>
                     {% for item in row %}
-                        <td><button class="cell"> {{ item }}</button> </td>
+                        <td>
+                            <button class="cell"> {{ item }} </button>
+                            <div class="if_clicked">true</div>
+                        </td>
                     {% endfor %}
                 </tr>
 
