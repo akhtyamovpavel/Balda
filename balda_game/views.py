@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
+from balda_game.CellState import SPARE, FIXED
 from balda_game.GameManagerProcessor import GameProcessor
 from balda_game.SingletonDictionary import dictionary
 from balda_game.models import UserPlayer
@@ -17,23 +18,22 @@ def index(request):
     field[2] = ['Б', 'А', 'Л', 'Д', 'А']
     first_word = dictionary.get_first_word(5)
     print(first_word)
-    return render(request, 'field.html', {'field': field})
+    return render(request, 'index.html')
 
 
 def run_game(request):
     field = [['-' for i in range(5)] for j in range(5)]
     field[2] = ['Б', 'А', 'Л', 'Д', 'А']
-    print('BaldaGameLog', 1, )
     return render(request, 'field.html', {'field': field})
 
 
 def start_game(request, game_id):
-    field = [['-' for i in range(5)] for j in range(5)]
+    field = [[['.', SPARE] for i in range(5)] for j in range(5)]
     #TODO check for errors
     word = GameProcessor.list_first_words.get(int(game_id))
-    field[2] = [letter for letter in word]
-
-    return render(request, 'field.html', {'field': field})
+    GameProcessor.start_game(int(game_id))
+    field[2] = [[letter, FIXED] for letter in word]
+    return render(request, 'field.html', {'field': field, 'game_id': game_id})
 
 def register(request):
     if request.method == 'POST':
@@ -91,3 +91,23 @@ def wait_query(request):
     value = GameProcessor.add_waiting_player(request.user)
     json_result = {'game': value}
     return HttpResponse(json.dumps(json_result), content_type="application/json")
+
+@login_required
+def get_field(request, game_id):
+    game_id = int(game_id)
+    field_pack = GameProcessor.get_field(game_id)
+    current_player = GameProcessor.get_current_player(game_id)
+
+    first_player, second_player = GameProcessor.get_players(game_id)
+
+    user_player = 1
+    if request.user == first_player:
+        user_player = 0
+
+    is_your_move = user_player == current_player
+    json_result = {"field": field_pack, "current_player": current_player, "is_your_move": is_your_move}
+    return HttpResponse(json.dumps(json_result), content_type="application/json")
+
+@login_required
+def commit_word(request, game_id):
+    pass

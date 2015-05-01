@@ -3,44 +3,56 @@
 {% block js_files %}
     <script src="{% static 'balda_game/jquery-2.1.3.min.js' %}"></script>
     <script src="{% static 'balda_game/game_process.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'balda_game/field.css' %}" />
 {% endblock %}
 
 {% block field %}
-    <div class="first_player">
-        <div class="user_id">User 1</div>
-        <div class="score_first">Score 1</div>
-        <ul class="words_first">
-            <li>МАМА(4)</li>
-            <li>ПАПА(4)</li>
-        </ul>
-    </div>
 
-    <div class="times"> Time to end </div>
 
-    <div class="game_field">
-        <table>
-            {% for row in field %}
-                <tr>
-                    {% for item in row %}
-                        <td>
-                            <button class="cell"> {{ item }} </button>
-                            <div class="if_clicked">true</div>
-                        </td>
-                    {% endfor %}
-                </tr>
+    <form id="game_space" action="{% url 'commit_word' game_id %}">
+        <div class="first_player">
+            <div class="user_id">User 1</div>
+            <div class="score_first">Score 1</div>
+            <ul class="words_first">
+                <li>МАМА(4)</li>
+                <li>ПАПА(4)</li>
+            </ul>
+        </div>
 
-            {% endfor %}
-        </table>
+        <div class="times"> Time to end </div>
 
-    </div>
 
-    <div class="second_player">
-        <div class="user_id">User 2</div>
-        <div class="score_second">Score 2</div>
-        <ul class="words_second">
-            <li>БАБА(4)</li>
-            <li>ДЕДА(4)</li>
-        </ul>
-    </div>
+
+        <div class="game_field">
+            <table id="field_up">
+                {% for row in field %}
+                    <tr>
+                        {% for item in row %}
+                            <td>
+                                <button class="cell"> {{ item.0 }} </button>
+                                <div class="state">{{ item.1 }}</div>
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="second_player">
+            <div class="user_id">User 2</div>
+            <div class="score_second">Score 2</div>
+            <ul class="words_second">
+                <li>БАБА(4)</li>
+                <li>ДЕДА(4)</li>
+            </ul>
+        </div>
+
+        <div class="control_panel">
+            <button class="post">
+
+            </button>
+        </div>
+    </form>
 
 {% endblock %}
