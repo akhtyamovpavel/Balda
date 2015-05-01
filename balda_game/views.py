@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect
 from balda_game.CellState import SPARE, FIXED
 from balda_game.GameManagerProcessor import GameProcessor
 from balda_game.SingletonDictionary import dictionary
+from balda_game.lang.RussianLanguage import RussianLanguage
 from balda_game.models import UserPlayer
 
 
@@ -33,7 +34,8 @@ def start_game(request, game_id):
     word = GameProcessor.list_first_words.get(int(game_id))
     GameProcessor.start_game(int(game_id))
     field[2] = [[letter, FIXED] for letter in word]
-    return render(request, 'field.html', {'field': field, 'game_id': game_id})
+    lang_list = RussianLanguage().get_list()
+    return render(request, 'field.html', {'field': field, 'game_id': game_id, 'lang_list': lang_list})
 
 def register(request):
     if request.method == 'POST':

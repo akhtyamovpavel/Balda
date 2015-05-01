@@ -5,3 +5,7 @@
 .state {
     display: none;
 }
+
+#letters_panel {
+    display: None;
+}

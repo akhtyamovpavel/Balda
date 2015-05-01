@@ -49,9 +49,12 @@
         </div>
 
         <div class="control_panel">
-            <button class="post">
-
-            </button>
+            <div id="letters_panel">
+                {% for letter in lang_list %}
+                    <button class="letter_button"> {{ letter }} </button>
+                {% endfor %}
+            </div>
+            <button class="post">Commit</button> <!-- TODO make post form via AJAX -->
         </div>
     </form>
 
