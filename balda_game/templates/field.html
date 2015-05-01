@@ -48,13 +48,16 @@
             </ul>
         </div>
 
+        <input type="text" name="word" class="current_word">
+
         <div class="control_panel">
+            <button id="reset">Reset</button>
             <div id="letters_panel">
                 {% for letter in lang_list %}
                     <button class="letter_button"> {{ letter }} </button>
                 {% endfor %}
             </div>
-            <button class="post">Commit</button> <!-- TODO make post form via AJAX -->
+            <button id="post">Commit</button> <!-- TODO make post form via AJAX -->
         </div>
     </form>
 
