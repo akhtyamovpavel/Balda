@@ -19,6 +19,6 @@ urlpatterns = patterns('',
     #GameProcess Links
     url(r'^game_wait/$', views.game_wait, name='game_wait'),
     url(r'^wait_query/$', views.wait_query, name='wait_query'),
-    url(r'^commit_word/(?P<game_id>\d+)', views.commit_word, name='commit_word'),
+    url(r'^commit_word/(?P<game_id>\d+)/$', views.commit_word, name='commit_word'),
     url(r'^get_field/(?P<game_id>\d+)', views.get_field, name='get_field'),
 )

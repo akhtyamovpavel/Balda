@@ -7,5 +7,9 @@
 }
 
 #letters_panel {
-    display: None;
+    display: none;
+}
+
+.current_word {
+    pointer-events: none;
 }

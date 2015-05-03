@@ -1,5 +1,4 @@
 import json
-from os import path
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -9,6 +8,8 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from balda_game.CellState import SPARE, FIXED
 from balda_game.GameManagerProcessor import GameProcessor
+from balda_game.Letter import Coordinates
+from balda_game.Packer import pack_game_message_with_action, deserialize_int, deserialize_list
 from balda_game.SingletonDictionary import dictionary
 from balda_game.lang.RussianLanguage import RussianLanguage
 from balda_game.models import UserPlayer
@@ -96,20 +97,24 @@ def wait_query(request):
 
 @login_required
 def get_field(request, game_id):
-    game_id = int(game_id)
-    field_pack = GameProcessor.get_field(game_id)
-    current_player = GameProcessor.get_current_player(game_id)
-
-    first_player, second_player = GameProcessor.get_players(game_id)
-
-    user_player = 1
-    if request.user == first_player:
-        user_player = 0
-
-    is_your_move = user_player == current_player
-    json_result = {"field": field_pack, "current_player": current_player, "is_your_move": is_your_move}
+    json_result = pack_game_message_with_action(game_id, request.user)
     return HttpResponse(json.dumps(json_result), content_type="application/json")
 
 @login_required
 def commit_word(request, game_id):
-    pass
+    game_id = deserialize_int(game_id)
+    pinned_height = deserialize_int(request.POST.get('pinned_height', False))
+    pinned_width = deserialize_int(request.POST.get('pinned_width', False))
+    word = request.POST.get('word', False)
+    heights = deserialize_list(request.POST.getlist('heights[]', []))
+    widths = deserialize_list(request.POST.getlist('widths[]', []))
+    pinned_letter = request.POST.get('pinned_letter', False)
+    flag = True
+    flag &= GameProcessor.check_board_consistency(game_id, pinned_height, pinned_width, word, heights, widths)
+    flag &= dictionary.check_word(game_id, heights, widths, Coordinates(pinned_height, pinned_width), word)
+    flag &= GameProcessor.change_move(request.user, game_id, word, pinned_height, pinned_width, pinned_letter)
+    if not flag:
+        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
+                            content_type="application/json")
+    else:
+        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'ok'), content_type="application/json")

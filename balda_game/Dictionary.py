@@ -12,19 +12,17 @@ TEST_QUERY = "SELECT 1"
 CHECK_WORD_QUERY = "SELECT word FROM Words WHERE (id = root_id AND word = ?)"
 
 
-
-class Dictionary(QtCore.QObject):
+class Dictionary():
 
     sz = 100
-    send_dictionary_pool = list()
 
 
     pool_dictionary = dict()
+    used_words = dict()
 
 
     def __init__(self):
         super(Dictionary, self).__init__()
-        self.__used_words__ = list()
         self.db = QtSql.QSqlDatabase()
 
 
@@ -41,12 +39,15 @@ class Dictionary(QtCore.QObject):
 
 
     def setup_connection(self, game_id):
-
         pool_size = len(self.pool_dictionary)
         self.pool_dictionary[game_id] = pool_size
-        self.__used_words__.append(set())
+        self.used_words[game_id] = set()
 
-
+    def pin_first_word(self, game_id, word):
+        if self.used_words.get(game_id) is not None:
+            current_set = self.used_words.get(game_id)
+            current_set.add(word)
+            self.used_words[game_id] = current_set
 
     def get_first_word(self, width):
         # TODO Realize with decorators
@@ -69,7 +70,7 @@ class Dictionary(QtCore.QObject):
 
 
     def is_word_correct_built(self, _x_list_, _y_list_, _changed_cell_):
-        if len(self._x_list_) == 0:
+        if len(_x_list_) == 0:
             return False
         _is_approved_ = True
         cnt_new = 0
@@ -78,7 +79,7 @@ class Dictionary(QtCore.QObject):
                 _is_approved_ = False
 
 
-        for i in range(len(self._x_list_)):
+        for i in range(len(_x_list_)):
             if _x_list_[i] == _changed_cell_.x and _y_list_[i] == _changed_cell_.y:
                 cnt_new += 1
         if cnt_new != 1:
@@ -96,8 +97,6 @@ class Dictionary(QtCore.QObject):
 
     def check_word(self, number_id, x_list, y_list, changed_cell, word):
         self.init_dictionary()
-        number_id = self.pool_dictionary.get(self.sender())
-
 
         if number_id is None:
             return False
@@ -109,16 +108,18 @@ class Dictionary(QtCore.QObject):
         self.close_connection()
         return value
 
+
+
     def is_word_good(self, word, number_id):
         self.init_dictionary()
         cursor = self.db.cursor()
-        cursor.execute(CHECK_WORD_QUERY, (word))
+        cursor.execute(CHECK_WORD_QUERY, (word,))
 
         for row in cursor:
-            current_set = self.__used_words__[number_id]
+            current_set = self.used_words.get(number_id)
             if word not in current_set:
                 current_set.add(word)
-                self.__used_words__[number_id] = current_set
+                self.used_words[number_id] = current_set
                 print("WORD FOUND")
                 self.close_connection()
                 return True
