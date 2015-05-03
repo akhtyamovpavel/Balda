@@ -29,6 +29,7 @@ class GameManagerProcess:
 
     scores = dict()
 
+
     cnt = 0
 
     def add_player(self, user):
