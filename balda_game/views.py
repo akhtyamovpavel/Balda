@@ -1,5 +1,4 @@
 import json
-from os import path
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -7,7 +6,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from balda_game import Letter
 from balda_game.CellState import SPARE, FIXED
 from balda_game.GameManagerProcessor import GameProcessor
 from balda_game.Letter import Coordinates

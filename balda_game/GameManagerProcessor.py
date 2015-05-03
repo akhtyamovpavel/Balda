@@ -65,8 +65,10 @@ class GameManagerProcess:
         return self.list_first_words[game_id]
 
     def get_players(self, game_id):
-
         return self.list_games[game_id]
+
+    def get_scores(self, game_id):
+        return self.scores.get(game_id)
 
     def get_current_player(self, game_id):
         return self.current_moves.get(game_id)

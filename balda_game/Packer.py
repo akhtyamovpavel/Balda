@@ -15,11 +15,19 @@ def pack_game_message_with_action(game_id, user, action='none'):
     if user == first_player:
         user_player = 0
 
+    score1, score2 = GameProcessor.get_scores(game_id)
+    player1, player2 = GameProcessor.get_players(game_id)
     is_your_move = user_player == current_player
     json_result = {"action": action,
                    "field": field_pack,
                    "current_player": current_player,
-                   "is_your_move": is_your_move}
+                   "is_your_move": is_your_move,
+                   "score1": score1,
+                   "score2": score2,
+                   "player1": player1.username,
+                   "player2": player2.username
+                   }
+    print(json_result)
     return json.dumps(json_result)
 
 

@@ -12,7 +12,7 @@ TEST_QUERY = "SELECT 1"
 CHECK_WORD_QUERY = "SELECT word FROM Words WHERE (id = root_id AND word = ?)"
 
 
-class Dictionary(QtCore.QObject):
+class Dictionary():
 
     sz = 100
 

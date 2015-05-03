@@ -151,14 +151,26 @@ $(document).ready(function() {
 
 
     function onWait() {
-        $.get('/get_field/' + game_id.toString() + '/').done(function(data) {
+        $.get('/get_field/' + game_id.toString(), "json").done(function(data2) {
+            var data = $.parseJSON(data2);
             var value = data.is_your_move;
             // TODO know player order
             if (value == false) {
                 $(".game_field").css('pointer-events', 'none');
+                lockTable();
             } else {
                 $(".game_field").css('pointer-events', 'auto');
             }
+
+            var score1 = data.score1;
+            var score2 = data.score2;
+            var player1 = data.player1;
+            var player2 = data.player2;
+
+            $(".user_id_first").text(player1);
+            $(".user_id_second").text(player2);
+            $(".score_first").text(score1);
+            $(".score_second").text(score2);
             var table = $("#field_up");
 
             var cell_values = jQuery.parseJSON(data.field);
