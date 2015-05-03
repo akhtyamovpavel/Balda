@@ -4,9 +4,25 @@
  */
 $(document).ready(function() {
 
+    // sending a csrftoken with every ajax request
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        crossDomain: false, // obviates need for sameOrigin test
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+            }
+        }
+    });
+
     var pinnedWeightLevel = -1;
     var pinnedHeightLevel = -1;
     var isPinned = false;
+
+
 
     var game_id = $(location).attr('pathname').split('/')[2];
 
@@ -15,6 +31,7 @@ $(document).ready(function() {
     var currentWeightLevelWord = [];
     var currentHeightLevelWord = [];
     var currentWordStr = "";
+    var pinnedLetter;
 
     function resetWord() {
         currentWord = [];
@@ -100,7 +117,10 @@ $(document).ready(function() {
 
         var cell = getCellElement(pinnedHeightLevel, pinnedWeightLevel);
 
+
         $($($(cell)[0]).children()[0]).text($(this).text());
+
+        pinnedLetter = ($(this).text()).trim();
         $($($(cell)[0]).children()[1]).text('1');
 
         $($($(this).parent())[0]).css('display', 'none');
@@ -108,11 +128,30 @@ $(document).ready(function() {
         isPinned = true;
     });
 
+    $("#game_space").submit(function (e) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        $.ajax({
+            type:"POST",
+            url: '/commit_word/' + game_id.toString() + '/',
+            data: {
+                pinned_height: pinnedHeightLevel,
+                pinned_width: pinnedWeightLevel,
+                pinned_letter: pinnedLetter,
+                word: currentWordStr,
+                'heights[]' : currentHeightLevelWord,
+                'widths[]' : currentWeightLevelWord
+            }
+         });
+    });
+
 
 
 
     function onWait() {
-        $.get('/get_field/' + game_id.toString()).done(function(data) {
+        $.get('/get_field/' + game_id.toString() + '/').done(function(data) {
             var value = data.is_your_move;
             // TODO know player order
             if (value == false) {
