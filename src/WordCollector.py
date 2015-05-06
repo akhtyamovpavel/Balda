@@ -74,36 +74,6 @@ class WordCollector(QtCore.QObject):
         self._is_new_.append(is_new_value)
 
     @QtCore.Slot()
-    def check_word(self):
-        if len(self._x_list_) == 0:
-            self._is_approved_ = False
-            self.clear_word()
-            return
-        self._is_approved_ = True
-        cnt_new = 0
-        for i in range(1, len(self._x_list_)):
-            if abs(self._x_list_[i] - self._x_list_[i - 1]) + abs(self._y_list_[i] - self._y_list_[i - 1]) != 1:
-                self._is_approved_ = False
-
-
-        for i in range(len(self._x_list_)):
-            if self._x_list_[i] == self._changed_cell_.x and self._y_list_[i] == self._changed_cell_.y:
-                cnt_new += 1
-        if cnt_new != 1:
-            self._is_approved_ = False
-
-        for i in range(0, len(self._x_list_)):
-            for j in range(i + 1, len(self._y_list_)):
-                if self._x_list_[i] == self._x_list_[j] and self._y_list_[i] == self._y_list_[j]:
-                    self._is_approved_ = False
-
-        if self._is_approved_:
-            self.send_to_dictionary.emit(self._word_)
-
-        if self._is_approved_:
-            self.end_move()
-
-        self.clear_word()
 
 
 
