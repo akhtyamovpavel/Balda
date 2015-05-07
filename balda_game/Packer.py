@@ -15,6 +15,10 @@ def pack_game_message_with_action(game_id, user, action='none'):
     if user == first_player:
         user_player = 0
 
+    if GameProcessor.is_game_ended(game_id):
+        action='end'
+        GameProcessor.end_game(game_id)
+
     score1, score2 = GameProcessor.get_scores(game_id)
     player1, player2 = GameProcessor.get_players(game_id)
     is_your_move = user_player == current_player
@@ -27,6 +31,7 @@ def pack_game_message_with_action(game_id, user, action='none'):
                    "player1": player1.username,
                    "player2": player2.username
                    }
+
     print(json_result)
     return json.dumps(json_result)
 

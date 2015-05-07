@@ -28,7 +28,8 @@ class GameManagerProcess:
     second_players = dict()
 
     scores = dict()
-
+    number_of_spare_cells = dict()
+    ended_games = set()
 
     cnt = 0
 
@@ -40,6 +41,7 @@ class GameManagerProcess:
             return self.mapped_games[user]
         else:
             for player in self.list_waiting_players:
+                #TODO fix these rule for ending game
                 if user.username != player.username and self.mapped_players.get(player) is None:
                     self.mapped_players[player] = user
                     self.mapped_players[user] = player
@@ -61,6 +63,7 @@ class GameManagerProcess:
             self.field_states[game_id] = FieldState(5, 5, word)
             self.current_moves[game_id] = FIRST_PLAYER
             self.scores[game_id] = (0, 0)
+            self.number_of_spare_cells[game_id] = 5*4
 
     def get_first_word_for_game(self, game_id):
         return self.list_first_words[game_id]
@@ -74,6 +77,12 @@ class GameManagerProcess:
     def get_current_player(self, game_id):
         return self.current_moves.get(game_id)
 
+    def is_game_ended(self, game_id):
+        if self.number_of_spare_cells.get(game_id) is None:
+            return True
+        return self.number_of_spare_cells.get(game_id) == 0
+
+
     def get_field(self, game_id):
         field_state = self.field_states.get(game_id)
         list_fields = []
@@ -85,6 +94,8 @@ class GameManagerProcess:
 
     def end_game(self, game_id, given_up_user = None):
         first_player, second_player = self.get_players(game_id)
+        if game_id in self.ended_games:
+            return
         if given_up_user is not None:
             lost_user = None
             win_user = None
@@ -125,6 +136,7 @@ class GameManagerProcess:
                 draw2_user.draws += 1
                 draw1_user.save()
                 draw2_user.save()
+        self.ended_games.add(game_id)
 
     def check_board_consistency(self, game_id, pinned_height, pinned_width, word, heights, widths):
         field_state = self.field_states.get(game_id)
@@ -146,6 +158,7 @@ class GameManagerProcess:
         return flag
 
     def change_move(self, user, game_id, word, pinned_height, pinned_width, pinned_letter):
+
         first_player, second_player = self.get_players(game_id)
         score = len(word)
         field_state = self.field_states.get(game_id)
@@ -153,6 +166,10 @@ class GameManagerProcess:
         score1, score2 = self.scores.get(game_id)
 
         #check for hacks
+        if self.number_of_spare_cells.get(game_id) is None:
+            return False
+        if self.number_of_spare_cells.get(game_id) == 0:
+            return False
         if self.current_moves.get(game_id) is None:
             return False
         if first_player == user and self.current_moves.get(game_id) != FIRST_PLAYER:
@@ -169,7 +186,8 @@ class GameManagerProcess:
         # TODO need field state update or not?
 
         self.scores[game_id] = (score1, score2)
-
+        self.number_of_spare_cells[game_id] = self.number_of_spare_cells.get(game_id) - 1
+        # print(self.number_of_spare_cells.get(game_id))
         return True
 
 

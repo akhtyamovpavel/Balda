@@ -190,6 +190,10 @@ $(document).ready(function() {
             $($(cellDOMObject).children()[0]).text(letter);
             $($(cellDOMObject).children()[1]).text(cell_state.toString());
         }
+        if (action == 'end') {
+            alert(player1 + " " + score1 +  " : " + score2 + " " + player2);
+            window.location.replace('/')
+        }
     }
 
     $("#game_space").submit(function (e) {

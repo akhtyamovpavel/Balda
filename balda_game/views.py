@@ -110,11 +110,13 @@ def commit_word(request, game_id):
     widths = deserialize_list(request.POST.getlist('widths[]', []))
     pinned_letter = request.POST.get('pinned_letter', False)
     flag = True
-    flag &= GameProcessor.check_board_consistency(game_id, pinned_height, pinned_width, word, heights, widths)
-    flag &= dictionary.check_word(game_id, heights, widths, Coordinates(pinned_height, pinned_width), word)
-    flag &= GameProcessor.change_move(request.user, game_id, word, pinned_height, pinned_width, pinned_letter)
-    if not flag:
+    if not GameProcessor.check_board_consistency(game_id, pinned_height, pinned_width, word, heights, widths):
         return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
                             content_type="application/json")
-    else:
-        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'ok'), content_type="application/json")
+    if not dictionary.check_word(game_id, heights, widths, Coordinates(pinned_height, pinned_width), word):
+        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
+                            content_type="application/json")
+    if not GameProcessor.change_move(request.user, game_id, word, pinned_height, pinned_width, pinned_letter):
+        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
+                            content_type="application/json")
+    return HttpResponse(pack_game_message_with_action(game_id, request.user, 'ok'), content_type="application/json")
