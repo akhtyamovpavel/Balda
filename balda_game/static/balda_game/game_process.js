@@ -157,7 +157,8 @@ $(document).ready(function() {
         var player1 = data.player1;
         var player2 = data.player2;
         var action = data.action;
-
+        var firstWords = data.words1;
+        var secondWords = data.words2;
 
         if (action == 'reset') {
             resetWord();
@@ -169,9 +170,23 @@ $(document).ready(function() {
         $(".user_id_second").text(player2);
         $(".score_first").text(score1);
         $(".score_second").text(score2);
+
+        var tag = $('<ul class=words_first>');
+        for (var i = 0; i < firstWords.length; ++i) {
+            tag.append($('<li>').text(firstWords[i]));
+        }
+        $(".words_first").replaceWith(tag);
+
+
+        var tag2 = $('<ul class=words_second>');
+        for (var i = 0; i < secondWords.length; ++i) {
+            tag2.append($('<li>').text(secondWords[i]));
+        }
+        $(".words_second").replaceWith(tag2);
         var table = $("#field_up");
 
         var cell_values = jQuery.parseJSON(data.field);
+
         for (var i = 0; i < cell_values.length; ++i) {
             var current_cell = cell_values[i];
             var heightLevel = current_cell.height_level;

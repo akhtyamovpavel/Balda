@@ -21,6 +21,7 @@ class GameManagerProcess:
     mapped_games = dict()
     list_first_words = dict()
 
+
     field_states = dict()
     current_moves = dict()
     first_players = dict()
@@ -29,6 +30,9 @@ class GameManagerProcess:
     scores = dict()
     number_of_spare_cells = dict()
     ended_games = set()
+
+    first_player_words = dict()
+    second_player_words = dict()
 
     cnt = 0
 
@@ -64,6 +68,9 @@ class GameManagerProcess:
             self.current_moves[game_id] = FIRST_PLAYER
             self.scores[game_id] = (0, 0)
             self.number_of_spare_cells[game_id] = 2
+            self.first_player_words[game_id] = []
+            self.second_player_words[game_id] = []
+
 
     def get_first_word_for_game(self, game_id):
         return self.list_first_words[game_id]
@@ -91,6 +98,9 @@ class GameManagerProcess:
                 state, letter = field_state.get_letter_state(i, j)
                 list_fields.append({"height_level": i, "width_level": j, "letter": letter, "cell_state": state})
         return json.dumps(list_fields)
+
+    def get_list_of_words(self, game_id):
+        return (self.first_player_words.get(game_id), self.second_player_words.get(game_id))
 
     def end_game(self, game_id, given_up_user = None):
         first_player, second_player = self.get_players(game_id)
@@ -183,11 +193,18 @@ class GameManagerProcess:
         if second_player == user and self.current_moves.get(game_id) != SECOND_PLAYER:
             return False
 
+
         if first_player == user:
             score1 += score
+            list1 = self.first_player_words.get(game_id)
+            list1.append(word)
+            self.first_player_words[game_id] = list1
             self.current_moves[game_id] = SECOND_PLAYER
         else:
             score2 += score
+            list1 = self.second_player_words.get(game_id)
+            list1.append(word)
+            self.second_player_words[game_id] = list1
             self.current_moves[game_id] = FIRST_PLAYER
         # TODO need field state update or not?
 
