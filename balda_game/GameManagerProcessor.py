@@ -1,5 +1,4 @@
 import json
-from django.dispatch import dispatcher
 from balda_game.CellState import FIXED, PINNED, SPARE
 from balda_game.FieldState import FieldState
 from balda_game.SingletonDictionary import dictionary
@@ -13,7 +12,7 @@ SECOND_PLAYER = 1
 
 class GameManagerProcess:
 
-    list_waiting_players = list()
+    list_waiting_players = set()
 
     mapped_players = dict()
 
@@ -34,7 +33,7 @@ class GameManagerProcess:
     cnt = 0
 
     def add_player(self, user):
-        self.list_waiting_players.append(user)
+        self.list_waiting_players.add(user)
 
     def add_waiting_player(self, user):
         if not self.mapped_players.get(user) is None:
@@ -51,6 +50,7 @@ class GameManagerProcess:
                     self.mapped_games[player] = self.cnt
                     word = dictionary.get_first_word(5)
                     self.list_first_words[self.cnt] = word
+
                     return self.cnt
         return -1
 
@@ -63,7 +63,7 @@ class GameManagerProcess:
             self.field_states[game_id] = FieldState(5, 5, word)
             self.current_moves[game_id] = FIRST_PLAYER
             self.scores[game_id] = (0, 0)
-            self.number_of_spare_cells[game_id] = 5*4
+            self.number_of_spare_cells[game_id] = 2
 
     def get_first_word_for_game(self, game_id):
         return self.list_first_words[game_id]
@@ -137,6 +137,12 @@ class GameManagerProcess:
                 draw1_user.save()
                 draw2_user.save()
         self.ended_games.add(game_id)
+        self.list_waiting_players.remove(first_player)
+        self.list_waiting_players.remove(second_player)
+        self.mapped_games.pop(first_player)
+        self.mapped_games.pop(second_player)
+        self.mapped_players.pop(first_player)
+        self.mapped_players.pop(second_player)
 
     def check_board_consistency(self, game_id, pinned_height, pinned_width, word, heights, widths):
         field_state = self.field_states.get(game_id)

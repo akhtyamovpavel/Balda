@@ -19,7 +19,7 @@ def index(request):
     field = [['-' for i in range(5)] for j in range(5)]
     field[2] = ['Б', 'А', 'Л', 'Д', 'А']
     first_word = dictionary.get_first_word(5)
-    print(first_word)
+    # print(first_word)
     return render(request, 'index.html')
 
 
