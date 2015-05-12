@@ -1,18 +1,17 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block main %}
-
         <div class="user_name">
-            {{ user_profile.user.username }}
+            Ваш логин: {{ user_profile.user.username }}
         </div>
         <div class="user_wins">
-            Wins: {{ user_profile.wins }}
+            Победы: {{ user_profile.wins }}
         </div>
         <div class="user_draws">
-            Draws: {{ user_profile.draws }}
+            Ничьи: {{ user_profile.draws }}
         </div>
         <div class="user_loses">
-            Loses: {{ user_profile.loses }}
+            Поражения: {{ user_profile.loses }}
         </div>
-
 {% endblock %}

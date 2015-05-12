@@ -11,5 +11,38 @@
 }
 
 .current_word {
+    margin-top: 20px;
     pointer-events: none;
+}
+
+.first_player {
+    width: 200px;
+}
+
+.middle {
+    width: 300px;
+}
+
+td {
+    vertical-align: top;
+}
+
+.second_player {
+    width: 200px;
+}
+
+table {
+    border-spacing: 10px 15px;
+}
+
+#reset {
+    margin-right: 5px;
+}
+
+#letters_panel {
+    margin-top: 10px;
+}
+
+#commit {
+
 }
