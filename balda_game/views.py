@@ -2,7 +2,8 @@ import json
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -126,3 +127,15 @@ def give_up(request, game_id):
     GameProcessor.give_up(game_id, request.user)
     json_result = pack_game_message_with_action(game_id, request.user)
     return HttpResponse(json.dumps(json_result), content_type="application/json")
+
+
+def view_profile(request, username):
+    user = User.objects.get(username=username)
+    if user is None:
+        raise Http404
+    else:
+        user_profile = UserPlayer.objects.get(user=user)
+        if user_profile is None:
+            raise Http404
+        else:
+            return render(request, 'profile.html', {'user_profile': user_profile})

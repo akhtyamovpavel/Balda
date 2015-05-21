@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 
 {% block main %}
-
         <div class="user_name">
             {{ user_profile.user.username }}
+        </div>
+        <div class="online">
+            Last seen: {% if user_profile.last_seen %} {{ user_profile.last_seen|timesince }} {% else %} awhile
+            {% endif %}
         </div>
         <div class="user_wins">
             Wins: {{ user_profile.wins }}
