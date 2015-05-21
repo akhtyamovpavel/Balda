@@ -48,7 +48,7 @@ def register(request):
             user1.wins = 0
             user1.loses = 0
             user1.draws = 0
-            user1.rating = 0
+            user1.rating = 1500
             user1.user = new_user
             user1.save()
             user = UserPlayer.objects.create

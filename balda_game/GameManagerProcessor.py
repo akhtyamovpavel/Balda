@@ -107,6 +107,43 @@ class GameManagerProcess:
         self.end_game(game_id, user)
         self.number_of_spare_cells[game_id] = 0
 
+
+    def recalculate_rating(self, user1, user2, won_user=None):
+        """
+        Elo rating implemented
+        :param user1: First User
+        :param user2: Second User
+        :param won_user: Won User
+        """
+        player1 = UserPlayer.objects.get(user=user1)
+        player2 = UserPlayer.objects.get(user=user2)
+        rating1 = player1.rating
+        rating2 = player2.rating
+        points1 = 0.0
+        points2 = 0.0
+        if won_user is None:
+            points1 = 0.5
+            points2 = 0.5
+        elif player1 == won_user:
+            points1 = 1.0
+            points2 = 0.0
+        else:
+            points1 = 0.0
+            points2 = 1.0
+        K = 20.0
+        expectation1 = 1./(1. + pow(10., (rating2 - rating1) / 400.))
+        expectation2 = 1./(1. + pow(10., (rating1 - rating2) / 400.))
+
+        new_rating1 = rating1 + K*(points1 - expectation1)
+        new_rating2 = rating2 + K*(points2 - expectation2)
+
+        player1.rating = int(new_rating1)
+        player2.rating = int(new_rating2)
+        player1.save()
+        player2.save()
+
+
+
     def end_game(self, game_id, given_up_user = None):
         first_player, second_player = self.get_players(game_id)
         if game_id in self.ended_games:
@@ -134,7 +171,6 @@ class GameManagerProcess:
             if first_score < second_score:
                 lost_user = UserPlayer.objects.get(user=first_player)
                 win_user = UserPlayer.objects.get(user=second_player)
-                # TODO Elo rating system
             elif first_score > second_score:
                 lost_user = UserPlayer.objects.get(user=second_player)
                 win_user = UserPlayer.objects.get(user=first_player)
@@ -151,6 +187,7 @@ class GameManagerProcess:
                 draw2_user.draws += 1
                 draw1_user.save()
                 draw2_user.save()
+        self.recalculate_rating(first_player, second_player, win_user)
         self.ended_games.add(game_id)
         self.list_waiting_players.remove(first_player)
         self.list_waiting_players.remove(second_player)
