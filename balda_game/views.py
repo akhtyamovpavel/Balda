@@ -120,3 +120,9 @@ def commit_word(request, game_id):
         return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
                             content_type="application/json")
     return HttpResponse(pack_game_message_with_action(game_id, request.user, 'ok'), content_type="application/json")
+
+def give_up(request, game_id):
+    game_id = deserialize_int(game_id)
+    GameProcessor.give_up(game_id, request.user)
+    json_result = pack_game_message_with_action(game_id, request.user)
+    return HttpResponse(json.dumps(json_result), content_type="application/json")

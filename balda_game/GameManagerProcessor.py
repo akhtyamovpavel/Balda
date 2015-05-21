@@ -102,6 +102,11 @@ class GameManagerProcess:
     def get_list_of_words(self, game_id):
         return (self.first_player_words.get(game_id), self.second_player_words.get(game_id))
 
+
+    def give_up(self, game_id, user):
+        self.end_game(game_id, user)
+        self.number_of_spare_cells[game_id] = 0
+
     def end_game(self, game_id, given_up_user = None):
         first_player, second_player = self.get_players(game_id)
         if game_id in self.ended_games:

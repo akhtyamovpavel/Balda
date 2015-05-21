@@ -9,6 +9,8 @@ $(document).ready(function() {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
+
+
     $.ajaxSetup({
         crossDomain: false, // obviates need for sameOrigin test
         beforeSend: function(xhr, settings) {
@@ -17,6 +19,45 @@ $(document).ready(function() {
             }
         }
     });
+    var timer = null;
+    function simple_timer(sec, block, direction) {
+        var time    = sec;
+        direction   = direction || false;
+
+        var hour    = parseInt(time / 3600);
+        if ( hour < 1 ) hour = 0;
+        time = parseInt(time - hour * 3600);
+        if ( hour < 10 ) hour = '0'+hour;
+
+        var minutes = parseInt(time / 60);
+        if ( minutes < 1 ) minutes = 0;
+        time = parseInt(time - minutes * 60);
+        if ( minutes < 10 ) minutes = '0'+minutes;
+
+        var seconds = time;
+        if ( seconds < 10 ) seconds = '0'+seconds;
+
+        block.innerHTML = minutes+':'+seconds;
+
+        if ( direction ) {
+            sec++;
+
+            timer = setTimeout(function(){ simple_timer(sec, block, direction); }, 1000);
+        } else {
+            sec--;
+
+            if ( sec > 0 ) {
+                timer = setTimeout(function(){ simple_timer(sec, block, direction); }, 1000);
+            } else {
+
+                $.get('/give_up/' + game_id.toString(), "json").done(function(data2) {
+                   var data = $.parseJSON(data2);
+                    performData(data);
+                });
+
+            }
+        }
+    }
 
     var pinnedWeightLevel = -1;
     var pinnedHeightLevel = -1;
@@ -143,13 +184,18 @@ $(document).ready(function() {
     function performData(data) {
         var value = data.is_your_move;
         // TODO know player order
+
+        var timer_block = document.getElementById('timer');
         if (value == false) {
             isYourMove = false;
-            //$(".game_field").css('pointer-events', 'none');
-            //lockTable();
+            clearTimeout(timer);
+            timer = null;
+            timer_block.innerHTML = "01:00";
         } else {
             isYourMove = true;
-            //$(".game_field").css('pointer-events', 'auto');
+            if (timer == null) {
+                simple_timer(20, timer_block, false);
+            }
         }
 
         var score1 = data.score1;
@@ -253,3 +299,5 @@ $(document).ready(function() {
     onWait();
     setInterval(onWait, 5000);
 });
+
+
