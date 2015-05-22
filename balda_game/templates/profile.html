@@ -14,4 +14,14 @@
         <div class="user_loses">
             Поражения: {{ user_profile.loses }}
         </div>
+        <div class="rating">
+            Рейтинг: {{ user_profile.rating }}
+        </div>
+
+        <div class="online">
+            В последний раз был в сети {% if user_profile.last_seen %} {{ user_profile.last_seen|timesince }} {% else %} давно
+            {% endif %}
+        </div>
+
+
 {% endblock %}

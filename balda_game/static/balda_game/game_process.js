@@ -185,7 +185,7 @@ $(document).ready(function() {
         var value = data.is_your_move;
         // TODO know player order
 
-        var timer_block = document.getElementById('timer');
+        var timer_block = document.getElementsByClassName('times')[0];
         if (value == false) {
             isYourMove = false;
             clearTimeout(timer);

@@ -8,58 +8,55 @@
 {% endblock %}
 
 {% block field %}
+    <table class="game">
+    <tr>
+        <form id="game_space" action="{% url 'commit_word' game_id %}">
+            <td class="first_player">
+                <div class="user_id_first">User 1</div>
+                <div class="score_first">Score 1</div>
+                <ul class="words_first">
+                    <li>МАМА(4)</li>
+                    <li>ПАПА(4)</li>
+                </ul>
+            </td>
 
+            <td class="middle">
+                <div class="times"> Time to end </div>
+                <table id="field_up">
+                    {% for row in field %}
+                        <tr>
+                            {% for item in row %}
+                                <td>
+                                    <button class="cell"> {{ item.0 }} </button>
+                                    <div class="state">{{ item.1 }}</div>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
 
-    <form id="game_space" action="{% url 'commit_word' game_id %}">
-        <div class="first_player">
-            <div class="user_id_first">User 1</div>
-            <div class="score_first">Score 1</div>
-            <ul class="words_first">
-                <li>МАМА(4)</li>
-                <li>ПАПА(4)</li>
-            </ul>
-        </div>
-
-        <div id="timer"> Time to end </div>
-
-
-
-        <div class="game_field">
-            <table id="field_up">
-                {% for row in field %}
-                    <tr>
-                        {% for item in row %}
-                            <td>
-                                <button class="cell"> {{ item.0 }} </button>
-                                <div class="state">{{ item.1 }}</div>
-                            </td>
+                <div id="control_panel">
+                    <input type="text" name="word" class="current_word">
+                    <div id="letters_panel">
+                        {% for letter in lang_list %}
+                            <button class="letter_button"> {{ letter }} </button>
                         {% endfor %}
-                    </tr>
-
-                {% endfor %}
-            </table>
-        </div>
-
-        <div class="second_player">
-            <div class="user_id_second">User 2</div>
-            <div class="score_second">Score 2</div>
-            <ul class="words_second">
-                <li>БАБА(4)</li>
-                <li>ДЕДА(4)</li>
-            </ul>
-        </div>
-
-        <input type="text" name="word" class="current_word">
-
-        <div class="control_panel">
-            <button id="reset">Reset</button>
-            <div id="letters_panel">
-                {% for letter in lang_list %}
-                    <button class="letter_button"> {{ letter }} </button>
-                {% endfor %}
-            </div>
-            <button id="post">Commit</button> <!-- TODO make post form via AJAX -->
-        </div>
-    </form>
-
+                    </div>
+                    <p>
+                    <button id="reset">Reset</button>
+                    <button id="commit">Commit</button> <!-- TODO make post form via AJAX -->
+                    </p>
+                </div>
+            </td>
+            <td class="second_player">
+                <div class="user_id_second">User 2</div>
+                <div class="score_second">Score 2</div>
+                <ul class="words_second">
+                    <li>БАБА(4)</li>
+                    <li>ДЕДА(4)</li>
+                </ul>
+            </td>
+        </form>
+    </tr>
+    </table>
 {% endblock %}
