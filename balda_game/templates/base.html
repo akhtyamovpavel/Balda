@@ -1,7 +1,5 @@
 {% load staticfiles %}
 
-
-
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -16,34 +14,38 @@
     <title>Balda site</title>
 </head>
 <body>
-
-    <div id="goto_main">
-        <a href="/">Main page</a>
-    </div>
-    {% load url from future %}
-    <div id="login">
-        {% if  user.is_authenticated %}
-            Hello, {{ user.username }}
-            <div id="view_profile">
-                <a href="{% url 'profile' %}">Profile</a>
-            </div>
-            <p><a href="{% url 'logout_view' %}">Logout</a></p>
-        {% else %}
-            <p><a href="{% url 'login_view' %}">Login</a></p>
-            <p><a href="{% url 'register' %}"> Register </a></p>
-        {% endif %}
-    </div>
-    <div id="start_game">
-        <a href="{% url 'game_wait' %}">Start game</a>
-    </div>
-    <div id="main">
-        {% block main %}{% endblock %}
-    </div>
-
+   <div id="leftcol">
+        <div id="goto_main">
+            <a href="/">
+                <!--<img src="static/balda-game/images/logo.png" height="50" width="150"> -->
+                Главная страница
+            </a>
+        </div>
+        {% load url from future %}
+        <div id="login">
+            {% if  user.is_authenticated %}
+                <p><a href="{% url 'profile' %}">Профиль</a></p>
+                <p><a href="{% url 'logout_view' %}">Выйти</a></p>
+            {% else %}
+                <p><a href="{% url 'login_view' %}">Вход</a></p>
+                <p><a href="{% url 'register' %}">Регистрация</a></p>
+            {% endif %}
+        </div>
+        <div id="start_game">
+            <a href="{% url 'game_wait' %}">Играть!</a>
+        </div>
+   </div>
+   <div id="rightcol">
+        <div id="hello">
+            {% if  user.is_authenticated %}
+                <h3> Вы зашли под пользователем: {{ user.username }}. </h3>
+            {% endif %}
+        </div>
+        <div id="main">
+            {% block main %}{% endblock %}
+        </div>
+   </div>
 
 </body>
 
-<footer>
-        See project on <a href="https://github.com/akhtyamovpavel/Balda">GitHub</a>
-</footer>
 </html>
