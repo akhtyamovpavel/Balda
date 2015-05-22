@@ -12,5 +12,5 @@
     }
 
     onWait();
-    setInterval(onWait, 5000)
+    setInterval(onWait, 3000)
 })();

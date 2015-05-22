@@ -1,8 +1,11 @@
+import datetime
 import json
+from django.conf import settings
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, redirect
 
@@ -88,22 +91,33 @@ def profile(request):
 @login_required
 def game_wait(request):
     GameProcessor.add_player(request.user)
+    now = datetime.datetime.now()
+    cache.set('wait_%s' %(request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
     return render(request, 'game_wait.html', {})
 
 @login_required
 def wait_query(request):
     value = GameProcessor.add_waiting_player(request.user)
     json_result = {'game': value}
+    if value > 0:
+        now = datetime.datetime.now()
+        cache.set('seen_%d_%s' % (value, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
+
     return HttpResponse(json.dumps(json_result), content_type="application/json")
 
 @login_required
 def get_field(request, game_id):
+    game_id = deserialize_int(game_id)
+    now = datetime.datetime.now()
+    cache.set('seen_%d_%s' % (game_id, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
     json_result = pack_game_message_with_action(game_id, request.user)
     return HttpResponse(json.dumps(json_result), content_type="application/json")
 
 @login_required
 def commit_word(request, game_id):
     game_id = deserialize_int(game_id)
+    now = datetime.datetime.now()
+    cache.set('seen_%d_%s' % (game_id, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
     pinned_height = deserialize_int(request.POST.get('pinned_height', False))
     pinned_width = deserialize_int(request.POST.get('pinned_width', False))
     word = request.POST.get('word', False)
@@ -124,6 +138,8 @@ def commit_word(request, game_id):
 
 def give_up(request, game_id):
     game_id = deserialize_int(game_id)
+    now = datetime.datetime.now()
+    cache.set('seen_%d_%s' % (game_id, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
     GameProcessor.give_up(game_id, request.user)
     json_result = pack_game_message_with_action(game_id, request.user)
     return HttpResponse(json.dumps(json_result), content_type="application/json")

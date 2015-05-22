@@ -25,6 +25,13 @@ class UserPlayer(models.Model):
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)
 
+    def last_seen_in_game(self, game_id):
+        print(cache.get('seen_%d_%s' %(game_id, self.user.username)))
+        return cache.get('seen_%d_%s' %(game_id, self.user.username))
+
+    def last_waited(self):
+        return cache.get('wait_%s' %(self.user.username))
+
     def online(self):
         if self.last_seen():
             now = datetime.datetime.now()
@@ -34,3 +41,20 @@ class UserPlayer(models.Model):
                 return True
         else:
             return False
+
+    def online_in_game(self, game_id):
+        if self.last_seen_in_game(game_id) or self.last_waited():
+            now = datetime.datetime.now()
+            if self.last_seen_in_game(game_id):
+                in_game = self.last_seen_in_game(game_id)
+                if now <= in_game + datetime.timedelta(seconds=settings.USER_ONLINE_GAME_TIMEOUT):
+                    return True
+            if self.last_waited():
+                waited = self.last_waited()
+                if now <= waited + datetime.timedelta(seconds=settings.USER_ONLINE_GAME_TIMEOUT):
+                    return True
+            else:
+                return False
+        else:
+            return False
+

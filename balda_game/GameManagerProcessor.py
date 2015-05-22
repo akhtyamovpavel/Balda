@@ -102,6 +102,16 @@ class GameManagerProcess:
     def get_list_of_words(self, game_id):
         return (self.first_player_words.get(game_id), self.second_player_words.get(game_id))
 
+    def check_for_connection(self, game_id):
+        first_user, second_user = self.get_players(game_id)
+        player1 = UserPlayer.objects.get(user=first_user)
+        player2 = UserPlayer.objects.get(user=second_user)
+        if not player1.online_in_game(game_id):
+            self.give_up(game_id, first_user)
+        if not player2.online_in_game(game_id):
+            self.give_up(game_id, second_user)
+
+
 
     def give_up(self, game_id, user):
         self.end_game(game_id, user)

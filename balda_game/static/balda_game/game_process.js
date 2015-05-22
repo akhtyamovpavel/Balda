@@ -190,11 +190,11 @@ $(document).ready(function() {
             isYourMove = false;
             clearTimeout(timer);
             timer = null;
-            timer_block.innerHTML = "01:00";
+            timer_block.innerHTML = "02:00";
         } else {
             isYourMove = true;
             if (timer == null) {
-                simple_timer(20, timer_block, false);
+                simple_timer(60, timer_block, false);
             }
         }
 
@@ -297,7 +297,7 @@ $(document).ready(function() {
 
 
     onWait();
-    setInterval(onWait, 5000);
+    setInterval(onWait, 4000);
 });
 
 

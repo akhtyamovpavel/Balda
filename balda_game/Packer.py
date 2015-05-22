@@ -9,7 +9,9 @@ def pack_game_message_with_action(game_id, user, action='none'):
     field_pack = GameProcessor.get_field(game_id)
     current_player = GameProcessor.get_current_player(game_id)
 
+    GameProcessor.check_for_connection(game_id)
     first_player, second_player = GameProcessor.get_players(game_id)
+
 
     user_player = 1
     if user == first_player:
