@@ -1,13 +1,15 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block main %}
     <div id="register_name">
-        <h1>Register User</h1>
+        <h1>Регистрация нового пользователя.</h1>
     </div>
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" class="button" value="Register">
-    </form>
-
+    <div class="center">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" class="button" value="Register">
+        </form>
+    </div>
 {% endblock %}

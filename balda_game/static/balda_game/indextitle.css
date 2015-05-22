@@ -6,47 +6,33 @@ html, body {
 
 body {
     font-family: "Open Sans", sans-serif;
+    margin: 15px;
+}
+
+#leftcol { /* Левая колонка */
+  float: left; /* Обтекание справа */
+  width: 200px; /* Ширина колонки */
+}
+#rightcol { /* Правая колонка */
+  margin-left: 225px; /* Отступ слева */
 }
 
 #main {
     height: 100%;
 }
 
-#comes {
-    margin: 0 auto;
-    padding-top: 10%;
-    width: 250px;
-    min-height: 10%;
+#center {
+    text-align: center;
 }
 
-#big_come {
-    font-size: 700%;
-}
-
-#coming {
-    padding-left: 40px;
-    font-size: 200%;
-    margin: 0 auto;
-    width: 240px;
-}
-
-footer {
-    position: relative;
-    padding-top: 50px;
-    padding-left: 45%;
-    margin-top: -180px;
-    font-family: 'Open Sans', sans-serif;
-    height: 180px;
-    clear: both;
-    font-size: 140%;
-    background-color: #e0e0e0;
-}
-
-table {
-    border: 5px;
+tr{
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .cell {
+    /*background: url("/images/box.png") no-repeat right bottom;*/
     width: 30px;
     height: 30px;
 }
+
