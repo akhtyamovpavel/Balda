@@ -9,6 +9,8 @@ $(document).ready(function() {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
+
+
     $.ajaxSetup({
         crossDomain: false, // obviates need for sameOrigin test
         beforeSend: function(xhr, settings) {
@@ -17,6 +19,45 @@ $(document).ready(function() {
             }
         }
     });
+    var timer = null;
+    function simple_timer(sec, block, direction) {
+        var time    = sec;
+        direction   = direction || false;
+
+        var hour    = parseInt(time / 3600);
+        if ( hour < 1 ) hour = 0;
+        time = parseInt(time - hour * 3600);
+        if ( hour < 10 ) hour = '0'+hour;
+
+        var minutes = parseInt(time / 60);
+        if ( minutes < 1 ) minutes = 0;
+        time = parseInt(time - minutes * 60);
+        if ( minutes < 10 ) minutes = '0'+minutes;
+
+        var seconds = time;
+        if ( seconds < 10 ) seconds = '0'+seconds;
+
+        block.innerHTML = minutes+':'+seconds;
+
+        if ( direction ) {
+            sec++;
+
+            timer = setTimeout(function(){ simple_timer(sec, block, direction); }, 1000);
+        } else {
+            sec--;
+
+            if ( sec > 0 ) {
+                timer = setTimeout(function(){ simple_timer(sec, block, direction); }, 1000);
+            } else {
+
+                $.get('/give_up/' + game_id.toString(), "json").done(function(data2) {
+                   var data = $.parseJSON(data2);
+                    performData(data);
+                });
+
+            }
+        }
+    }
 
     var pinnedWeightLevel = -1;
     var pinnedHeightLevel = -1;
@@ -143,13 +184,18 @@ $(document).ready(function() {
     function performData(data) {
         var value = data.is_your_move;
         // TODO know player order
+
+        var timer_block = document.getElementsByClassName('times')[0];
         if (value == false) {
             isYourMove = false;
-            //$(".game_field").css('pointer-events', 'none');
-            //lockTable();
+            clearTimeout(timer);
+            timer = null;
+            timer_block.innerHTML = "02:00";
         } else {
             isYourMove = true;
-            //$(".game_field").css('pointer-events', 'auto');
+            if (timer == null) {
+                simple_timer(60, timer_block, false);
+            }
         }
 
         var score1 = data.score1;
@@ -157,7 +203,8 @@ $(document).ready(function() {
         var player1 = data.player1;
         var player2 = data.player2;
         var action = data.action;
-
+        var firstWords = data.words1;
+        var secondWords = data.words2;
 
         if (action == 'reset') {
             resetWord();
@@ -169,9 +216,23 @@ $(document).ready(function() {
         $(".user_id_second").text(player2);
         $(".score_first").text(score1);
         $(".score_second").text(score2);
+
+        var tag = $('<ul class=words_first>');
+        for (var i = 0; i < firstWords.length; ++i) {
+            tag.append($('<li>').text(firstWords[i]));
+        }
+        $(".words_first").replaceWith(tag);
+
+
+        var tag2 = $('<ul class=words_second>');
+        for (var i = 0; i < secondWords.length; ++i) {
+            tag2.append($('<li>').text(secondWords[i]));
+        }
+        $(".words_second").replaceWith(tag2);
         var table = $("#field_up");
 
         var cell_values = jQuery.parseJSON(data.field);
+
         for (var i = 0; i < cell_values.length; ++i) {
             var current_cell = cell_values[i];
             var heightLevel = current_cell.height_level;
@@ -189,6 +250,10 @@ $(document).ready(function() {
             var cellDOMObject = $($($($(table).children()[0]).children()[heightLevel]).children()[widthLevel]);
             $($(cellDOMObject).children()[0]).text(letter);
             $($(cellDOMObject).children()[1]).text(cell_state.toString());
+        }
+        if (action == 'end') {
+            alert(player1 + " " + score1 +  " : " + score2 + " " + player2);
+            window.location.replace('/')
         }
     }
 
@@ -232,5 +297,7 @@ $(document).ready(function() {
 
 
     onWait();
-    setInterval(onWait, 5000);
+    setInterval(onWait, 4000);
 });
+
+

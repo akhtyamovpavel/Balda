@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^login/$', views.login_view, name='login_view'),
     url(r'^logout/$', views.logout_view, name='logout_view'),
     url(r'^register/$', views.register, name='register'),
+    url(r'^profile/(?P<username>\w+)$', views.view_profile, name='view_profile'),
     url(r'^profile/$', views.profile, name='profile'),
 
     #GameProcess Links
@@ -21,4 +22,5 @@ urlpatterns = patterns('',
     url(r'^wait_query/$', views.wait_query, name='wait_query'),
     url(r'^commit_word/(?P<game_id>\d+)/$', views.commit_word, name='commit_word'),
     url(r'^get_field/(?P<game_id>\d+)', views.get_field, name='get_field'),
+    url(r'^give_up/(?P<game_id>\d+)', views.give_up, name='give_up'),
 )

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+
 {% block main %}
     {% load url from future %}
 
@@ -8,20 +9,22 @@
             {{ message }}
         </div>
     {% endif %}
+    <div id="enter_form">
+        <form method="post" action="{% url 'login_view' %}">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>Логин</td>
+                    <td><input type="text" name="username"></td>
+                </tr>
 
-    <form method="post" action="{% url 'login_view' %}">
-    {% csrf_token %}
-        <table>
-            <tr>
-                <td> Username</td>
-                <td><input type="text" name="username"></td>
-            </tr>
-            <tr>
-                <td>Password</td>
-                <td><input type="password" name="password"> </td>
-            </tr>
-        </table>
-        <input type="submit" value="login">
-        <input type="hidden" name="next" value="/">
-    </form>
+                <tr>
+                    <td>Пароль</td>
+                    <td><input type="password" name="password"> </td>
+                </tr>
+            </table>
+            <input type="submit" value="Вход">
+            <input type="hidden" name="next" value="/">
+        </form>
+    </div>
 {% endblock %}

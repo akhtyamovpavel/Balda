@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from django.conf.global_settings import CACHES
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -47,7 +49,22 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'middleware.ActiveUserMiddleware.ActiveUserMiddleware',
 )
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'default-cache'
+    }
+}
+
+
+USER_ONLINE_TIMEOUT = 60
+USER_ONLINE_GAME_TIMEOUT = 30
+
+USER_LAST_SEEN_TIMEOUT = 60 * 60 *24 *7
+
 
 ROOT_URLCONF = 'balda.urls'
 
@@ -63,6 +80,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

@@ -4,7 +4,4 @@ __author__ = 'akhtyamovpavel'
 
 
 
-__author__ = 'akhtyamovpavel'
-
-
 dictionary = Dictionary()

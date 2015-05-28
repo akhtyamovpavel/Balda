@@ -149,6 +149,5 @@ class DictionaryTest(unittest.TestCase):
             self.assertTrue(self.dictionary.is_word_good(self.dictionary.get_first_word(6)))
 
 
-
 if __name__ == '__main__':
     unittest.main()
