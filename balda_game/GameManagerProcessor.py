@@ -67,7 +67,7 @@ class GameManagerProcess:
             self.field_states[game_id] = FieldState(5, 5, word)
             self.current_moves[game_id] = FIRST_PLAYER
             self.scores[game_id] = (0, 0)
-            self.number_of_spare_cells[game_id] = 2
+            self.number_of_spare_cells[game_id] = 20
             self.first_player_words[game_id] = []
             self.second_player_words[game_id] = []
 
