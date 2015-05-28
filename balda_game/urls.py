@@ -17,6 +17,9 @@ urlpatterns = patterns('',
     url(r'^profile/(?P<username>\w+)$', views.view_profile, name='view_profile'),
     url(r'^profile/$', views.profile, name='profile'),
 
+
+    url(r'^load_best/$', views.load_best, name='load_best'),
+
     #GameProcess Links
     url(r'^game_wait/$', views.game_wait, name='game_wait'),
     url(r'^wait_query/$', views.wait_query, name='wait_query'),

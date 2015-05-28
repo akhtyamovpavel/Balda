@@ -20,7 +20,7 @@ class UserPlayer(models.Model):
 
     def __str__(self):
         return self.user.username + " Wins: " + str(self.wins) + " Draws: " + str(self.draws) \
-               + " Loses: " + str(self.loses)
+               + " Loses: " + str(self.loses) + " Rating: " + str(self.rating)
 
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)

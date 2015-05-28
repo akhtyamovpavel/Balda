@@ -13,8 +13,47 @@ body {
   float: left; /* Обтекание справа */
   width: 200px; /* Ширина колонки */
 }
+
 #rightcol { /* Правая колонка */
   margin-left: 225px; /* Отступ слева */
+}
+
+.rating_field {
+    border: 3px solid;
+    border-radius: 5px;
+}
+
+.rating_field .rating_head
+{
+    background-color: darkgrey;
+}
+
+.rating_field td {
+    border: 2px solid;
+}
+
+.rating_field .rating_place {
+    width: 5em;
+}
+
+.rating_field .rating_user {
+    width: 10em;
+}
+
+.rating_field .rating_quantity {
+    width: 7em;
+}
+
+
+
+#rating_table {
+    margin-top: 200px;
+    position: relative;
+}
+
+#rating_table .rating_name {
+    font-size: 20px;
+    margin-left: 80px;
 }
 
 #main {

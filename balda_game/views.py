@@ -155,3 +155,14 @@ def view_profile(request, username):
             raise Http404
         else:
             return render(request, 'profile.html', {'user_profile': user_profile})
+
+
+def load_best(request):
+    users = UserPlayer.objects.order_by('-rating')[:10]
+    result = []
+    for i in range(len(users)):
+        result.append({"place": i+1, "user": users[i].user.username, "rating": users[i].rating })
+    objects = {"field": result}
+    
+
+    return HttpResponse(json.dumps(objects), content_type="application/json")

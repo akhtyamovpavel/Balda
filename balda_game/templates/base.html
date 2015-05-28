@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'balda_game/indextitle.css' %}" />
 
     {% block js_files %} {% endblock %}
+    {% block js_rating_files %} {% endblock %}
     {% block css_files %} {% endblock %}
     <title>Balda site</title>
 </head>
@@ -34,6 +35,7 @@
         <div id="start_game">
             <a href="{% url 'game_wait' %}">Играть!</a>
         </div>
+        {% block ratingblock %} {% endblock %}
    </div>
    <div id="rightcol">
         <div id="hello">
@@ -45,6 +47,8 @@
             {% block main %}{% endblock %}
         </div>
    </div>
+
+
 
 </body>
 

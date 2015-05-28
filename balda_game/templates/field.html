@@ -5,6 +5,12 @@
     <script src="{% static 'balda_game/jquery.cookie.js' %}"></script>
     <script src="{% static 'balda_game/game_process.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'balda_game/field.css' %}" />
+    <style type="text/css">
+        .cell {
+            background: url("{% static 'balda_game/images/tree_back.jpg' %}");
+        }
+    </style>
+
 {% endblock %}
 
 {% block field %}
