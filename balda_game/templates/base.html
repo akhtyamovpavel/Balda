@@ -15,41 +15,93 @@
     <title>Balda site</title>
 </head>
 <body>
-   <div id="leftcol">
-        <div id="goto_main">
-            <a href="/">
-                <img src="{% static 'balda_game/images/logo.png' %}" height="50" width="150">
-                Главная страница
-            </a>
-        </div>
-        {% load url from future %}
-        <div id="login">
-            {% if  user.is_authenticated %}
-                <p><a href="{% url 'profile' %}">Профиль</a></p>
-                <p><a href="{% url 'logout_view' %}">Выйти</a></p>
-            {% else %}
-                <p><a href="{% url 'login_view' %}">Вход</a></p>
-                <p><a href="{% url 'register' %}">Регистрация</a></p>
-            {% endif %}
-        </div>
-        <div id="start_game">
-            <a href="{% url 'game_wait' %}">Играть!</a>
-        </div>
-        {% block ratingblock %} {% endblock %}
-   </div>
-   <div id="rightcol">
-        <div id="hello">
-            {% if  user.is_authenticated %}
-                <h3> Вы зашли под пользователем: {{ user.username }}. </h3>
-            {% endif %}
-        </div>
-        <div id="main">
-            {% block main %}{% endblock %}
-        </div>
-   </div>
+    <table id= "main_table" width = "100%">
+    <tr>
+        <td class ="column_1">
+            <div id="goto_main">
+                    <a href="/">
+                        <img src="{% static 'balda_game/images/logo.png' %}" height="40%" width="90%">
+                    </a>
+                </div>
+            <div>
+        </td>
+        <td id="center_column">
+           <!-- <div id="rightcol"> -->
+            <div id="hello">
+                {% if  user.is_authenticated %}
+                     Вы зашли под пользователем: {{ user.username }}.
+                {% endif %}
+            </div>
+        </td>
+        <td class ="column_3">
 
+        </td>
+    </tr>
 
+    <tr>
+        <td class ="column_1">
+            <div id="goto_main">
+                </div>
+                {% load url from future %}
+                <div id="login">
+                    {% if  user.is_authenticated %}
+                        <p><a href="{% url 'profile' %}">Профиль</a></p>
+                        <p><a href="{% url 'logout_view' %}">Выйти</a></p>
+                    {% else %}
+                        <p><a href="{% url 'login_view' %}">Вход</a></p>
+                        <p><a href="{% url 'register' %}">Регистрация</a></p>
+                    {% endif %}
+                </div>
+                <div id="start_game">
+                    <a href="{% url 'game_wait' %}">Играть!</a>
+                </div>
+            <div>
+        </td>
+        <td id="center_column">
+           <!-- <div id="rightcol"> -->
+            <div id="main">
+                {% block main %}{% endblock %}
+            </div>
+           <!--</div>-->
+        </td>
+        <td class ="column_3">
+           <div>
+                {% block ratingblock %} {% endblock %}
+           </div>
+        </td>
+    </tr> </table>
+    <!-- Yandex.Metrika informer -->
+    <a href="https://metrika.yandex.ru/stat/?id=30619362&amp;from=informer"
+    target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/30619362/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+    style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:30619362,lang:'ru'});return false}catch(e){}"/></a>
+    <!-- /Yandex.Metrika informer -->
 
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter30619362 = new Ya.Metrika({id:30619362,
+                        clickmap:true,
+                        trackLinks:true,
+                        accurateTrackBounce:true});
+            } catch(e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+    </script>
+    <noscript><div><img src="//mc.yandex.ru/watch/30619362" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 </body>
 
 </html>

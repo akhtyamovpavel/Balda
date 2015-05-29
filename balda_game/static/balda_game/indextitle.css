@@ -9,23 +9,39 @@ body {
     margin: 15px;
 }
 
-#leftcol { /* Левая колонка */
-  float: left; /* Обтекание справа */
-  width: 200px; /* Ширина колонки */
+#main_table tr {
+    margin-top: 40px;
 }
 
-#rightcol { /* Правая колонка */
-  margin-left: 225px; /* Отступ слева */
+.column_1 {
+    width: 20%;
+    vertical-align: top;
+}
+
+.column_3 {
+    width: 20%;
+    vertical-align: top;
+}
+
+#center_column {
+    width: 60%;
+    vertical-align: top;
+}
+
+#hello {
+    margin-top: 4%;
+    font-size: 20px;
 }
 
 .rating_field {
+    margin-top: 3%;
     border: 3px solid;
     border-radius: 5px;
 }
 
 .rating_field .rating_head
 {
-    background-color: darkgrey;
+    background-color: darkorange;
 }
 
 .rating_field td {
@@ -44,16 +60,9 @@ body {
     width: 7em;
 }
 
-
-
 #rating_table {
-    margin-top: 200px;
-    position: relative;
-}
-
-#rating_table .rating_name {
-    font-size: 20px;
-    margin-left: 80px;
+    margin-top: 1%;
+    text-align: left;
 }
 
 #main {
@@ -67,11 +76,5 @@ body {
 tr{
     margin-bottom: 10px;
     margin-top: 10px;
-}
-
-.cell {
-    /*background: url("/images/box.png") no-repeat right bottom;*/
-    width: 30px;
-    height: 30px;
 }
 

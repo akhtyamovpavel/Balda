@@ -10,26 +10,29 @@
     display: none;
 }
 
+.first_player {
+    width: 20%;
+    margin-right: 2%;
+}
+
+#middle {
+    width: 60%;
+}
+
+.second_player {
+    margin-left: 2%;
+    width: 20%;
+}
+
 .current_word {
     margin-top: 20px;
     pointer-events: none;
-}
-
-.first_player {
-    width: 200px;
-}
-
-.middle {
-    width: 300px;
 }
 
 td {
     vertical-align: top;
 }
 
-.second_player {
-    width: 200px;
-}
 
 table {
     border-spacing: 10px 15px;

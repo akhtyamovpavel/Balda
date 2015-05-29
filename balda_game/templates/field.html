@@ -8,13 +8,16 @@
     <style type="text/css">
         .cell {
             background: url("{% static 'balda_game/images/tree_back.jpg' %}");
+            width:  70px;
+            height: 70px;
+            font-size: 25pt;
         }
     </style>
 
 {% endblock %}
 
 {% block field %}
-    <table class="game">
+    <table id="game" align="center">
     <tr>
         <form id="game_space" action="{% url 'commit_word' game_id %}">
             <td class="first_player">
@@ -49,8 +52,9 @@
                         {% endfor %}
                     </div>
                     <p>
-                    <button id="reset">Reset</button>
-                    <button id="commit">Commit</button> <!-- TODO make post form via AJAX -->
+                        <button id="commit">Сделать ход</button>
+                        <button id="reset">Стереть</button>
+                     <!-- TODO make post form via AJAX -->
                     </p>
                 </div>
             </td>
