@@ -53,6 +53,7 @@ def register(request):
             user1.draws = 0
             user1.rating = 1500
             user1.user = new_user
+            user1.was_online = datetime.datetime.now()
             user1.save()
             user = UserPlayer.objects.create
             return HttpResponseRedirect('/')
@@ -73,7 +74,9 @@ def login_view(request):
                 login(request, user)
                 return HttpResponseRedirect('/')
             else:
-                return render(request, 'login.html', {"message": "Wrong login or password"})
+                return render(request, 'login.html', {"message": "Wrong username or password"})
+        else:
+            return render(request, 'login.html', {"message": "Wrong username or password"})
     else:
         return render(request, 'login.html', {})
 

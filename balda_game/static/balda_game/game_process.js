@@ -19,6 +19,7 @@ $(document).ready(function() {
             }
         }
     });
+
     var timer = null;
     function simple_timer(sec, block, direction) {
         var time    = sec;
@@ -190,7 +191,7 @@ $(document).ready(function() {
             isYourMove = false;
             clearTimeout(timer);
             timer = null;
-            timer_block.innerHTML = "02:00";
+            timer_block.innerHTML = "01:00";
         } else {
             isYourMove = true;
             if (timer == null) {
@@ -214,8 +215,8 @@ $(document).ready(function() {
 
         $(".user_id_first").text(player1);
         $(".user_id_second").text(player2);
-        $(".score_first").text(score1);
-        $(".score_second").text(score2);
+        $(".score_first").text("Score:" + score1);
+        $(".score_second").text("Score: " + score2);
 
         var tag = $('<ul class=words_first>');
         for (var i = 0; i < firstWords.length; ++i) {

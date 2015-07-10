@@ -1,6 +1,7 @@
+*.sqlite3
 *.pyc
 .idea/
 /src/*.txt
 log/
 results/
-*.sqlite3
+

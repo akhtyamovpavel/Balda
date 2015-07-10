@@ -4,72 +4,102 @@
 <html>
 <head lang="en">
 
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/base-min.css">
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css" href="{% static 'balda_game/indextitle.css' %}" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'balda_game/indextitle.css' %}" /> -->
+
+    <link href="{% static 'balda_game/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'balda_game/style.css' %}" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'balda_game/js/bootstrap.js' %}"></script>
+
 
     {% block js_files %} {% endblock %}
     {% block js_rating_files %} {% endblock %}
     {% block css_files %} {% endblock %}
+
+
+
     <title>Balda site</title>
 </head>
 <body>
-    <table id= "main_table" width = "100%">
-    <tr>
-        <td class ="column_1">
-            <div id="goto_main">
-                    <a href="/">
-                        <img src="{% static 'balda_game/images/logo.png' %}" height="40%" width="90%">
-                    </a>
+
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div id="balda-navbar">
+                <div class="navbar-header">
+                    <a class="navbar" href="/">
+                            <img src="{% static 'balda_game/images/logo.png' %}" height="100%" width="90%">
+                        </a>
                 </div>
-            <div>
-        </td>
-        <td id="center_column">
-           <!-- <div id="rightcol"> -->
-            <div id="hello">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="{% url 'game_wait' %}">Играть!</a>
+                    </li>
+
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if  user.is_authenticated %}
+                        <li><a href="{% url 'profile' %}">Профиль</a></li>
+                        <li><a href="{% url 'logout_view' %}"><span class="glyphicon glyphicon-log-out"> Выйти</span></a></li>
+                    {% else %}
+                        <li><a href="{% url 'login_view' %}"><span class="glyphicon glyphicon-log-in"> Вход</span> </a></li>
+                        <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"> Регистрация</span></a></li>
+                    {% endif %}
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-3 col-md-3 col-xs-4">
+            <div id="goto_main">
+
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-xs-4">
+          <div id="hello">
                 {% if  user.is_authenticated %}
                      Вы зашли под пользователем: {{ user.username }}.
                 {% endif %}
             </div>
-        </td>
-        <td class ="column_3">
+        </div>
+        <div class="col-lg-3 col-md-3 col-xs-4"></div>
+      </div>
+      <div class="row">
+        <div class="main-row">
 
-        </td>
-    </tr>
+          <div class="col-lg-3 col-md-3 col-xs-4">
 
-    <tr>
-        <td class ="column_1">
-            <div id="goto_main">
-                </div>
-                {% load url from future %}
-                <div id="login">
-                    {% if  user.is_authenticated %}
-                        <p><a href="{% url 'profile' %}">Профиль</a></p>
-                        <p><a href="{% url 'logout_view' %}">Выйти</a></p>
-                    {% else %}
-                        <p><a href="{% url 'login_view' %}">Вход</a></p>
-                        <p><a href="{% url 'register' %}">Регистрация</a></p>
-                    {% endif %}
-                </div>
-                <div id="start_game">
-                    <a href="{% url 'game_wait' %}">Играть!</a>
-                </div>
-            <div>
-        </td>
-        <td id="center_column">
-           <!-- <div id="rightcol"> -->
-            <div id="main">
-                {% block main %}{% endblock %}
-            </div>
-           <!--</div>-->
-        </td>
-        <td class ="column_3">
-           <div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-xs-4">
+              <div id="main">
+                  {% block main %}{% endblock %}
+              </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-xs-4">
                 {% block ratingblock %} {% endblock %}
-           </div>
-        </td>
-    </tr> </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Yandex.Metrika informer -->
     <a href="https://metrika.yandex.ru/stat/?id=30619362&amp;from=informer"
     target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/30619362/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
@@ -102,6 +132,8 @@
     </script>
     <noscript><div><img src="//mc.yandex.ru/watch/30619362" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
+
+
 </body>
 
 </html>

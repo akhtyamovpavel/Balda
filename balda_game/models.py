@@ -17,6 +17,7 @@ class UserPlayer(models.Model):
 
     rating = models.IntegerField()
 
+    was_online = models.DateField()
 
     def __str__(self):
         return self.user.username + " Wins: " + str(self.wins) + " Draws: " + str(self.draws) \

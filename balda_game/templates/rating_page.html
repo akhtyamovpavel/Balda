@@ -12,25 +12,27 @@
 {% block ratingblock %}
 <div >
     <div id="rating_table">
-        <div class="rating_name">
-            Rating
-        </div>
-        <table class="rating_field">
-            <thead class="rating_head">
-                <tr>
-                    <td class="rating_place">Place </td>
-                    <td class="rating_user">User </td>
-                    <td class="rating_quantity">Rating </td>
-                </tr>
-            </thead>
+        <div class="panel" style="background-color: #f0ad4e">
+            <div class="panel-heading">
+                <h2 class="panel-title">Rating</h2>
+            </div>
+            <table class="table table-striped table-bordered rating_field">
+                <thead class="rating_head">
+                    <tr style="background-color: #f0ad4e; border-radius: 5px" >
+                        <td class="rating_place">Place </td>
+                        <td class="rating_user">User </td>
+                        <td class="rating_quantity">Rating </td>
+                    </tr>
+                </thead>
 
-            <tbody class="rating_table_body">
-                <tr>
-                    <td>1</td>
-                    <td>Test</td>
-                    <td>9999</td>
-                </tr>
-            </tbody>
-        </table>
+                <tbody class="rating_table_body">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}

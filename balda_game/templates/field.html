@@ -8,30 +8,31 @@
     <style type="text/css">
         .cell {
             background: url("{% static 'balda_game/images/tree_back.jpg' %}");
-            width:  70px;
-            height: 70px;
-            font-size: 25pt;
+            width:  40px;
+            height: 40px;
+            font-size: 22pt;
         }
     </style>
 
 {% endblock %}
 
 {% block field %}
-    <table id="game" align="center">
-    <tr>
+    <div class="row">
         <form id="game_space" action="{% url 'commit_word' game_id %}">
-            <td class="first_player">
+
+            <div class="col-lg-2 col-md-2 col-xs-2 first_player">
                 <div class="user_id_first">User 1</div>
+                <br/>
                 <div class="score_first">Score 1</div>
                 <ul class="words_first">
                     <li>МАМА(4)</li>
                     <li>ПАПА(4)</li>
                 </ul>
-            </td>
+            </div>
+            <div class="col-lg-6 col-md-6 col-xs-6 middle">
+                <div class="times" style="margin: 0 auto"> Time to end </div>
 
-            <td class="middle">
-                <div class="times"> Time to end </div>
-                <table id="field_up">
+                <table id="field_up" style="margin: 0 auto;">
                     {% for row in field %}
                         <tr>
                             {% for item in row %}
@@ -44,29 +45,36 @@
                     {% endfor %}
                 </table>
 
+                <br/>
+
                 <div id="control_panel">
-                    <input type="text" name="word" class="current_word">
+
+                    <input type="text" name="word" class="current_word" placeholder="Word" style="width: 80%; margin: 0 auto;">
+                    <br/>
                     <div id="letters_panel">
                         {% for letter in lang_list %}
                             <button class="letter_button"> {{ letter }} </button>
                         {% endfor %}
                     </div>
+
+                    <br/>
                     <p>
-                        <button id="commit">Сделать ход</button>
-                        <button id="reset">Стереть</button>
+                        <button id="commit" class="btn btn-success">Сделать ход</button>
+                        <button id="reset" class="btn btn-danger">Стереть</button>
                      <!-- TODO make post form via AJAX -->
                     </p>
                 </div>
-            </td>
-            <td class="second_player">
+            </div>
+            <div class="col-lg-2 col-md-2 col-xs-2 second_player">
                 <div class="user_id_second">User 2</div>
+                <br/>
                 <div class="score_second">Score 2</div>
                 <ul class="words_second">
                     <li>БАБА(4)</li>
                     <li>ДЕДА(4)</li>
                 </ul>
-            </td>
+            </div>
+
         </form>
-    </tr>
-    </table>
+    </div>
 {% endblock %}
