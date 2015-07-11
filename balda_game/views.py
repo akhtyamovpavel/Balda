@@ -1,5 +1,6 @@
 import datetime
 import json
+
 from django.conf import settings
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -9,12 +10,17 @@ from django.core.cache import cache
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, redirect
 
+
+
+
+
+
 # Create your views here.
-from balda_game.CellState import SPARE, FIXED
-from balda_game.GameManagerProcessor import GameProcessor
-from balda_game.Letter import Coordinates
-from balda_game.Packer import pack_game_message_with_action, deserialize_int, deserialize_list
-from balda_game.SingletonDictionary import dictionary
+from balda_game.lib.field.CellState import SPARE, FIXED
+from balda_game.lib.GameManagerProcessor import GameProcessor
+from balda_game.lib.field.Letter import Coordinates
+from balda_game.lib.Packer import pack_game_message_with_action, deserialize_int, deserialize_list
+from balda_game.lib.dictionary.SingletonDictionary import dictionary
 from balda_game.lang.RussianLanguage import RussianLanguage
 from balda_game.models import UserPlayer
 

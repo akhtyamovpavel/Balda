@@ -59,3 +59,9 @@ class UserPlayer(models.Model):
         else:
             return False
 
+#class GameModel(models.Model):
+#
+    # firstUser = models.OneToOneField(User)
+    # secondUser = models.OneToOneField(User)
+
+
