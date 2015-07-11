@@ -7,6 +7,8 @@ import datetime
 from django.conf import settings
 
 # Create your models here.
+from balda_game.lib.field.Letter import CellLetter
+
 
 class UserPlayer(models.Model):
 
@@ -59,9 +61,40 @@ class UserPlayer(models.Model):
         else:
             return False
 
-#class GameModel(models.Model):
-#
-    # firstUser = models.OneToOneField(User)
-    # secondUser = models.OneToOneField(User)
+class ListMoveModel(models.Model):
+
+    x_cell = models.IntegerField()
+    y_cell = models.IntegerField()
+    letter = models.IntegerField()
+
+    is_added = models.BooleanField()
+
+    def __init__(self):
+        super(ListMoveModel, self).__init__()
+        self.is_added = False
+
+    def set_letter(self, cell_letter: CellLetter):
+        self.x_cell = cell_letter.x
+        self.y_cell = cell_letter.y
+        self.letter = cell_letter.letter
+
+    def get_letter(self):
+        return CellLetter(self.x_cell, self.y_cell, self.letter)
+
+class GameModel(models.Model):
+
+    first_user = models.ForeignKey(User, related_name="first_user")
+    second_user = models.OneToOneField(User, related_name="second_user")
+
+    first_score = models.IntegerField()
+    second_score = models.IntegerField()
+
+    is_extra_won = models.NullBooleanField()
+    extra_winner = models.IntegerField()
+
+    move_table = models.ForeignKey(ListMoveModel)
+
+    def __str__(self):
+        return self.id
 
 
