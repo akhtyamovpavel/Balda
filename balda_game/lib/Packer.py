@@ -15,9 +15,9 @@ def pack_game_message_with_action(game_id, user, action='none'):
 
 
     user_player = 1
+
     if user == first_player:
         user_player = 0
-
     if GameProcessor.is_game_ended(game_id):
         action='end'
         GameProcessor.end_game(game_id)
@@ -38,7 +38,6 @@ def pack_game_message_with_action(game_id, user, action='none'):
                    "words2": words2
                    }
 
-    print(json_result)
     return json.dumps(json_result)
 
 
@@ -47,4 +46,5 @@ def deserialize_int(value):
 
 def deserialize_list(list_value):
     return [int(value) for value in list_value]
+
 

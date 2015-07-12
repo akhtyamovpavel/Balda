@@ -7,6 +7,7 @@ import datetime
 from django.conf import settings
 
 # Create your models here.
+from balda_game.lib.JSONlib import serialize_game_log_to_json
 from balda_game.lib.field.Letter import CellLetter
 
 
@@ -61,26 +62,6 @@ class UserPlayer(models.Model):
         else:
             return False
 
-class ListMoveModel(models.Model):
-
-    x_cell = models.IntegerField()
-    y_cell = models.IntegerField()
-    letter = models.IntegerField()
-
-    is_added = models.BooleanField()
-
-    def __init__(self):
-        super(ListMoveModel, self).__init__()
-        self.is_added = False
-
-    def set_letter(self, cell_letter: CellLetter):
-        self.x_cell = cell_letter.x
-        self.y_cell = cell_letter.y
-        self.letter = cell_letter.letter
-
-    def get_letter(self):
-        return CellLetter(self.x_cell, self.y_cell, self.letter)
-
 class GameModel(models.Model):
 
     first_user = models.ForeignKey(User, related_name="first_user")
@@ -92,9 +73,21 @@ class GameModel(models.Model):
     is_extra_won = models.NullBooleanField()
     extra_winner = models.IntegerField()
 
-    move_table = models.ForeignKey(ListMoveModel)
+    field_size = models.IntegerField()
+    first_word = models.TextField()
+    game_log = models.TextField()
+
+    def __init__(self):
+        super(GameModel, self).__init__()
+        self.field_size = 5
+        self.is_extra_won = False
 
     def __str__(self):
         return self.id
 
+    def set_game_log(self, list_moves):
+        self.game_log = serialize_game_log_to_json(list_moves)
+
+    def set_first_word(self, first_word):
+        self.first_word = first_word
 

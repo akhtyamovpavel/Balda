@@ -5,21 +5,24 @@ __author__ = 'akhtyamovpavel'
 class Move:
 
     def __init__(self):
-        self.added_letter = CellLetter()
-        self.word_structure = list()
+        self._added_letter = CellLetter()
+        self._word_structure = list()
 
     def get_added_letter(self):
-        return self.added_letter
+        return self._added_letter
+
+    def set_added_letter(self, added_letter):
+        self._added_letter = added_letter
 
     def set_word_structure(self, word_structure):
-        self.word_structure = word_structure
+        self._word_structure = word_structure
 
-    def get_word_structure(self, word_structure):
-        return self.word_structure
+    def get_word_structure(self):
+        return self._word_structure
 
     def get_word(self):
         word = ""
-        for cell_letter in self.word_structure:
+        for cell_letter in self._word_structure:
             word += cell_letter.letter
         return word
 

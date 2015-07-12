@@ -1,7 +1,7 @@
 import json
 
 from balda_game.lib.field.CellState import FIXED, PINNED, SPARE
-from balda_game.lib.field import FieldState
+from balda_game.lib.field.FieldState import FieldState
 from balda_game.lib.dictionary.SingletonDictionary import dictionary
 from balda_game.models import UserPlayer
 

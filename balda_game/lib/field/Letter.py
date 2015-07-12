@@ -12,6 +12,9 @@ class CellLetter:
         self.y = y
         self.letter = letter
 
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y and self.letter == other.letter
+
 class Coordinates:
     def __init__(self, x = 0, y = 0):
         self.x = x
