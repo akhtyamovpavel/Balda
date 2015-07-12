@@ -1,7 +1,7 @@
 import random
 import string
 from django.test import TestCase
-from balda_game.lib.Packer import deserialize_cell_letter_from_json, \
+from balda_game.lib.JSONlib import deserialize_cell_letter_from_json, \
     deserialize_word_from_json, serialize_word_to_json, deserialize_move_from_json, serialize_move_to_json
 from balda_game.lib.JSONlib import serialize_cell_letter_to_json, deserialize_cell_letter_from_json, \
     serialize_word_to_json, serialize_move_to_json, deserialize_word_from_json, deserialize_move_from_json

@@ -23,7 +23,6 @@ def serialize_move_to_json(move: Move):
         "added_letter": serialize_cell_letter_to_json(move.get_added_letter()),
         "word": serialize_word_to_json(move.get_word_structure())
     }
-    print(json_word)
     return json.dumps(json_word)
 
 
