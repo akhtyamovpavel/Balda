@@ -1,5 +1,5 @@
 from balda_game.lib.field.CellState import FIXED, SPARE
-from balda_game.lib.field import CellState
+from balda_game.lib.field.CellState import CellState
 
 __author__ = 'akhtyamovpavel'
 

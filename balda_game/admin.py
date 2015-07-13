@@ -5,3 +5,4 @@ from django.contrib import admin
 import balda_game.models
 
 admin.site.register(balda_game.models.UserPlayer)
+admin.site.register(balda_game.models.GameModel)

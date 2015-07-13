@@ -41,12 +41,13 @@ def run_game(request):
 
 def start_game(request, game_id):
     field = [[['.', SPARE] for i in range(5)] for j in range(5)]
-    #TODO check for errors
+    # TODO check for errors
     word = GameProcessor.list_first_words.get(int(game_id))
     GameProcessor.start_game(int(game_id))
     field[2] = [[letter, FIXED] for letter in word]
     lang_list = RussianLanguage().get_list()
     return render(request, 'field.html', {'field': field, 'game_id': game_id, 'lang_list': lang_list})
+
 
 def register(request):
     if request.method == 'POST':
@@ -86,10 +87,12 @@ def login_view(request):
     else:
         return render(request, 'login.html', {})
 
+
 @login_required
 def logout_view(request):
     logout(request)
     return redirect('/')
+
 
 @login_required
 def profile(request):
@@ -101,8 +104,9 @@ def profile(request):
 def game_wait(request):
     GameProcessor.add_player(request.user)
     now = datetime.datetime.now()
-    cache.set('wait_%s' %(request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
+    cache.set('wait_%s' % (request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
     return render(request, 'game_wait.html', {})
+
 
 @login_required
 def wait_query(request):
@@ -114,6 +118,7 @@ def wait_query(request):
 
     return HttpResponse(json.dumps(json_result), content_type="application/json")
 
+
 @login_required
 def get_field(request, game_id):
     game_id = deserialize_int(game_id)
@@ -121,6 +126,7 @@ def get_field(request, game_id):
     cache.set('seen_%d_%s' % (game_id, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
     json_result = pack_game_message_with_action(game_id, request.user)
     return HttpResponse(json.dumps(json_result), content_type="application/json")
+
 
 @login_required
 def commit_word(request, game_id):
@@ -144,6 +150,7 @@ def commit_word(request, game_id):
         return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
                             content_type="application/json")
     return HttpResponse(pack_game_message_with_action(game_id, request.user, 'ok'), content_type="application/json")
+
 
 def give_up(request, game_id):
     game_id = deserialize_int(game_id)
@@ -170,8 +177,7 @@ def load_best(request):
     users = UserPlayer.objects.order_by('-rating')[:10]
     result = []
     for i in range(len(users)):
-        result.append({"place": i+1, "user": users[i].user.username, "rating": users[i].rating })
+        result.append({"place": i + 1, "user": users[i].user.username, "rating": users[i].rating})
     objects = {"field": result}
-    
 
     return HttpResponse(json.dumps(objects), content_type="application/json")

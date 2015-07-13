@@ -3,16 +3,15 @@ import json
 from balda_game.lib.field.CellState import FIXED, PINNED, SPARE
 from balda_game.lib.field.FieldState import FieldState
 from balda_game.lib.dictionary.SingletonDictionary import dictionary
-from balda_game.models import UserPlayer
+from balda_game.models import UserPlayer, GameModel
 
 __author__ = 'akhtyamovpavel'
-
 
 FIRST_PLAYER = 0
 SECOND_PLAYER = 1
 
-class GameManagerProcess:
 
+class GameManagerProcess:
     list_waiting_players = set()
 
     mapped_players = dict()
@@ -22,7 +21,6 @@ class GameManagerProcess:
     mapped_games = dict()
     list_first_words = dict()
 
-
     field_states = dict()
     current_moves = dict()
     first_players = dict()
@@ -31,6 +29,8 @@ class GameManagerProcess:
     scores = dict()
     number_of_spare_cells = dict()
     ended_games = set()
+
+    game_logs = dict()
 
     first_player_words = dict()
     second_player_words = dict()
@@ -45,11 +45,21 @@ class GameManagerProcess:
             return self.mapped_games[user]
         else:
             for player in self.list_waiting_players:
-                #TODO fix these rule for ending game
+                # TODO fix these rule for ending game
                 if user.username != player.username and self.mapped_players.get(player) is None:
+                    game_log_structure = GameModel()
+                    game_log_structure.first_user = user
+                    game_log_structure.second_user = player
+                    game_log_structure.first_score = 0
+                    game_log_structure.second_score = 0
+                    game_log_structure.status = 'wait'
+                    game_log_structure.field_size = 5
+                    game_log_structure.is_extra_won = False
+                    game_log_structure.save()
+
                     self.mapped_players[player] = user
                     self.mapped_players[user] = player
-                    self.cnt += 1
+                    self.cnt = game_log_structure.id
                     self.list_games[self.cnt] = (user, player)
                     self.mapped_games[user] = self.cnt
                     self.mapped_games[player] = self.cnt
@@ -60,9 +70,16 @@ class GameManagerProcess:
         return -1
 
     def start_game(self, game_id):
+
         if self.field_states.get(game_id) is None:
             dictionary.setup_connection(game_id)
             word = self.list_first_words[game_id]
+
+            game_log_structure = GameModel.objects.get(pk=game_id)
+            game_log_structure.first_word = word
+            game_log_structure.status = 'play'
+
+            game_log_structure.save()
 
             dictionary.pin_first_word(game_id, word)
             self.field_states[game_id] = FieldState(5, 5, word)
@@ -71,7 +88,6 @@ class GameManagerProcess:
             self.number_of_spare_cells[game_id] = 20
             self.first_player_words[game_id] = []
             self.second_player_words[game_id] = []
-
 
     def get_first_word_for_game(self, game_id):
         return self.list_first_words[game_id]
@@ -90,7 +106,6 @@ class GameManagerProcess:
             return True
         return self.number_of_spare_cells.get(game_id) == 0
 
-
     def get_field(self, game_id):
         field_state = self.field_states.get(game_id)
         list_fields = []
@@ -101,7 +116,7 @@ class GameManagerProcess:
         return json.dumps(list_fields)
 
     def get_list_of_words(self, game_id):
-        return (self.first_player_words.get(game_id), self.second_player_words.get(game_id))
+        return self.first_player_words.get(game_id), self.second_player_words.get(game_id)
 
     def check_for_connection(self, game_id):
         first_user, second_user = self.get_players(game_id)
@@ -112,12 +127,9 @@ class GameManagerProcess:
         if not player2.online_in_game(game_id):
             self.give_up(game_id, second_user)
 
-
-
     def give_up(self, game_id, user):
         self.end_game(game_id, user)
         self.number_of_spare_cells[game_id] = 0
-
 
     def recalculate_rating(self, user1, user2, won_user=None):
         """
@@ -142,39 +154,51 @@ class GameManagerProcess:
             points1 = 0.0
             points2 = 1.0
         K = 20.0
-        expectation1 = 1./(1. + pow(10., (rating2 - rating1) / 400.))
-        expectation2 = 1./(1. + pow(10., (rating1 - rating2) / 400.))
+        expectation1 = 1. / (1. + pow(10., (rating2 - rating1) / 400.))
+        expectation2 = 1. / (1. + pow(10., (rating1 - rating2) / 400.))
 
-        new_rating1 = rating1 + K*(points1 - expectation1)
-        new_rating2 = rating2 + K*(points2 - expectation2)
+        new_rating1 = rating1 + K * (points1 - expectation1)
+        new_rating2 = rating2 + K * (points2 - expectation2)
 
         player1.rating = int(new_rating1)
         player2.rating = int(new_rating2)
         player1.save()
         player2.save()
 
-
-
-    def end_game(self, game_id, given_up_user = None):
+    def end_game(self, game_id, given_up_user=None):
         first_player, second_player = self.get_players(game_id)
-        if game_id in self.ended_games:
+
+        game_log_structure = GameModel.objects.get(pk=game_id)
+
+        # if game_id in self.ended_games:
+        #     return
+
+        if game_log_structure.status == 'end':
             return
+
+        first_score, second_score = self.scores.get(game_id)
+        game_log_structure.first_score = first_score
+        game_log_structure.second_score = second_score
+
         if given_up_user is not None:
+            game_log_structure.is_extra_won = True
+
             lost_user = None
             win_user = None
             if first_player == given_up_user:
                 lost_user = UserPlayer.objects.get(user=first_player)
                 win_user = UserPlayer.objects.get(user=second_player)
+                game_log_structure.extra_winner = second_player
                 # TODO Elo rating system
             else:
                 lost_user = UserPlayer.objects.get(user=second_player)
                 win_user = UserPlayer.objects.get(user=first_player)
+                game_log_structure.extra_winner = first_player
             lost_user.loses += 1
             win_user.wins += 1
             lost_user.save()
             win_user.save()
         else:
-            first_score, second_score = self.scores.get(game_id)
             lost_user = None
             win_user = None
             draw1_user = None
@@ -198,6 +222,7 @@ class GameManagerProcess:
                 draw2_user.draws += 1
                 draw1_user.save()
                 draw2_user.save()
+
         self.recalculate_rating(first_player, second_player, win_user)
         self.ended_games.add(game_id)
         self.list_waiting_players.remove(first_player)
@@ -206,6 +231,9 @@ class GameManagerProcess:
         self.mapped_games.pop(second_player)
         self.mapped_players.pop(first_player)
         self.mapped_players.pop(second_player)
+
+        game_log_structure.status = 'end'
+        game_log_structure.save()
 
     def check_board_consistency(self, game_id, pinned_height, pinned_width, word, heights, widths):
         field_state = self.field_states.get(game_id)
@@ -234,7 +262,7 @@ class GameManagerProcess:
         field_state.set_state(pinned_height, pinned_width, FIXED, pinned_letter)
         score1, score2 = self.scores.get(game_id)
 
-        #check for hacks
+        # check for hacks
         if self.number_of_spare_cells.get(game_id) is None:
             return False
         if self.number_of_spare_cells.get(game_id) == 0:
@@ -245,7 +273,6 @@ class GameManagerProcess:
             return False
         if second_player == user and self.current_moves.get(game_id) != SECOND_PLAYER:
             return False
-
 
         if first_player == user:
             score1 += score
@@ -265,8 +292,6 @@ class GameManagerProcess:
         self.number_of_spare_cells[game_id] = self.number_of_spare_cells.get(game_id) - 1
         # print(self.number_of_spare_cells.get(game_id))
         return True
-
-
 
 
 GameProcessor = GameManagerProcess()
