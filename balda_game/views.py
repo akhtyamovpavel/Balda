@@ -181,3 +181,9 @@ def load_best(request):
     objects = {"field": result}
 
     return HttpResponse(json.dumps(objects), content_type="application/json")
+
+
+def cancel_game_request(request):
+    result = GameProcessor.cancel_game_request(request.user)
+
+    return HttpResponse(json.dumps({'isGameCancelled': result}), content_type="application/json")

@@ -1,7 +1,7 @@
 /**
  * Created by akhtyamovpavel on 27.04.15.
  */
-(function() {
+$(document).ready(function() {
     function onWait() {
         $.get('/wait_query').done(function(data) {
             var value = data.game;
@@ -11,6 +11,19 @@
         });
     }
 
+    $("#quit").click(function(e) {
+        if (e.preventDefault()) {
+            e.preventDefault();
+        }
+
+        $.get('/cancel_game_request').done(function(data) {
+            var isGameCancelled = data.isGameCancelled;
+            if (isGameCancelled) {
+                window.location.replace("/");
+            }
+        });
+    });
+
     onWait();
-    setInterval(onWait, 3000);
-})();
+    setInterval(onWait, 100000);
+});

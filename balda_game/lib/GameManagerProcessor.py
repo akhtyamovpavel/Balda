@@ -293,5 +293,12 @@ class GameManagerProcess:
         # print(self.number_of_spare_cells.get(game_id))
         return True
 
+    def cancel_game_request(self, user):
+        if self.mapped_players.get(user) is None:
+            self.list_waiting_players.remove(user)
+            return True
+        else:
+            return False
+
 
 GameProcessor = GameManagerProcess()
