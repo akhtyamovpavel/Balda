@@ -36,7 +36,6 @@
 </head>
 <body>
 
-
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div id="balda-navbar">
@@ -54,7 +53,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if  user.is_authenticated %}
-                        <li><a href="{% url 'profile' %}">Профиль</a></li>
+                        <li><a href="{% url 'profile' %}">Вы вошли как {{ user.username }}</a></li>
                         <li><a href="{% url 'logout_view' %}"><span class="glyphicon glyphicon-log-out"> Выйти</span></a></li>
                     {% else %}
                         <li><a href="{% url 'login_view' %}"><span class="glyphicon glyphicon-log-in"> Вход</span> </a></li>
@@ -74,21 +73,16 @@
             </div>
         </div>
         <div class="col-lg-6 col-md-6 col-xs-4">
-          <div id="hello">
-                {% if  user.is_authenticated %}
-                     Вы зашли под пользователем: {{ user.username }}.
-                {% endif %}
-            </div>
+
         </div>
         <div class="col-lg-3 col-md-3 col-xs-4"></div>
       </div>
       <div class="row">
         <div class="main-row">
 
-          <div class="col-lg-3 col-md-3 col-xs-4">
 
-          </div>
-          <div class="col-lg-6 col-md-6 col-xs-4">
+
+          <div class="col-lg-9 col-md-9 col-xs-8">
               <div id="main">
                   {% block main %}{% endblock %}
               </div>
@@ -100,38 +94,69 @@
       </div>
     </div>
 
-    <!-- Yandex.Metrika informer -->
-    <a href="https://metrika.yandex.ru/stat/?id=30619362&amp;from=informer"
-    target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/30619362/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
-    style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:30619362,lang:'ru'});return false}catch(e){}"/></a>
-    <!-- /Yandex.Metrika informer -->
+    <div class="navbar-fixed-bottom row-fluid foot">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 sitemap">
+                        <h4>Меню сайта</h4>
+                        <a href="/">Главная</a>
+                        <br/>
+                        <a href="game_wait.html">Играть</a>
+                        <br/>
+                        <a href="profile.html">Профиль</a>
+                </div>
 
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">
-    (function (d, w, c) {
-        (w[c] = w[c] || []).push(function() {
-            try {
-                w.yaCounter30619362 = new Ya.Metrika({id:30619362,
-                        clickmap:true,
-                        trackLinks:true,
-                        accurateTrackBounce:true});
-            } catch(e) { }
-        });
+                <div class="col-md-4 contacts">
+                    <h4>Контакты</h4>
+                    <a href="//github.com/akhtyamovpavel/Balda" target="_blank">GitHub</a>
+                    <br/>
+                    <a href="//vk.com/akhtyamovpavel" target="_blank">VK</a>
+                    <br/>
+                    <a href="mailto:akhtyamovpavel@gmail.com" target="_blank">E-mail</a>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 yandex-metrics">
+                                    <!-- Yandex.Metrika informer -->
+                    <a href="https://metrika.yandex.ru/stat/?id=30619362&amp;from=informer"
+                    target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/30619362/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
+                    style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:30619362,lang:'ru'});return false}catch(e){}"/></a>
+                    <!-- /Yandex.Metrika informer -->
 
-        var n = d.getElementsByTagName("script")[0],
-            s = d.createElement("script"),
-            f = function () { n.parentNode.insertBefore(s, n); };
-        s.type = "text/javascript";
-        s.async = true;
-        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+                    <!-- Yandex.Metrika counter -->
+                    <script type="text/javascript">
+                    (function (d, w, c) {
+                        (w[c] = w[c] || []).push(function() {
+                            try {
+                                w.yaCounter30619362 = new Ya.Metrika({id:30619362,
+                                        clickmap:true,
+                                        trackLinks:true,
+                                        accurateTrackBounce:true});
+                            } catch(e) { }
+                        });
 
-        if (w.opera == "[object Opera]") {
-            d.addEventListener("DOMContentLoaded", f, false);
-        } else { f(); }
-    })(document, window, "yandex_metrika_callbacks");
-    </script>
-    <noscript><div><img src="//mc.yandex.ru/watch/30619362" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+                        var n = d.getElementsByTagName("script")[0],
+                            s = d.createElement("script"),
+                            f = function () { n.parentNode.insertBefore(s, n); };
+                        s.type = "text/javascript";
+                        s.async = true;
+                        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+                        if (w.opera == "[object Opera]") {
+                            d.addEventListener("DOMContentLoaded", f, false);
+                        } else { f(); }
+                    })(document, window, "yandex_metrika_callbacks");
+                    </script>
+                    <noscript><div><img src="//mc.yandex.ru/watch/30619362" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+                    <!-- /Yandex.Metrika counter -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
 
 
 </body>

@@ -1,3 +1,19 @@
+
+
+footer {
+  	background: #7e7e7e;
+  	color: #dbdbdb;
+  	font-size: 11px;
+
+
+}
+
+footer .container {
+    height: 110px;
+    padding: 10px 0;
+
+}
+
 #balda-navbar {
     height: 80px;
 }
@@ -9,6 +25,26 @@
 
 .main-row {
 	height: 500px;
+}
 
 
+.foot {
+    height: 150px;
+    background-color: #f7e1b5;
+
+}
+
+.sitemap {
+    height: 100px;
+    padding-top: 10px;
+
+}
+
+.contacts {
+    height: 100px;
+    padding-top: 10px;
+}
+
+.yandex-metrics {
+    padding-top: 20px;
 }

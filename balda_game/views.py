@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, redirect
 
@@ -22,7 +23,7 @@ from balda_game.lib.field.Letter import Coordinates
 from balda_game.lib.Packer import pack_game_message_with_action, deserialize_int, deserialize_list
 from balda_game.lib.dictionary.SingletonDictionary import dictionary
 from balda_game.lang.RussianLanguage import RussianLanguage
-from balda_game.models import UserPlayer
+from balda_game.models import UserPlayer, GameModel
 
 
 def index(request):
@@ -40,6 +41,15 @@ def run_game(request):
 
 
 def start_game(request, game_id):
+    game_model = None
+    try:
+        game_model = GameModel.objects.get(pk=int(game_id))
+    except ObjectDoesNotExist as e:
+        return render(request, 'not_started_game.html', {})
+
+    if game_model.status == 'end':
+        return render(request, 'ended_game.html', {'game_log' : game_model})
+
     field = [[['.', SPARE] for i in range(5)] for j in range(5)]
     # TODO check for errors
     word = GameProcessor.list_first_words.get(int(game_id))
@@ -185,5 +195,4 @@ def load_best(request):
 
 def cancel_game_request(request):
     result = GameProcessor.cancel_game_request(request.user)
-
     return HttpResponse(json.dumps({'isGameCancelled': result}), content_type="application/json")

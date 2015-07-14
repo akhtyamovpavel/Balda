@@ -1,0 +1,60 @@
+{% extends "rating_page.html" %}
+
+
+{% load staticfiles %}
+{% block js_files %}
+    <script src="{% static 'balda_game/end_game_script.js' %}"></script>
+{% endblock %}
+
+
+
+{% block main %}
+    <div class="row">
+        <div style="text-align: center;"><h1 style="margin: 0 auto"> Game {{ game_log.id }} ended</h1></div>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+    <div class="row">
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+            <div style="text-align: center">
+                <h2>
+                    {{ game_log.first_user.username }}
+                </h2>
+            </div>
+        </div>
+
+
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            <div style="text-align: center; font-weight: bold;"><h2>VS</h2></div>
+        </div>
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+            <div style="text-align: center;">
+                <h2>
+                    {{ game_log.second_user.username }}
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div style="text-align: center;"><h2>Score</h2></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div style="text-align: center">
+                <h1>
+                    {{ game_log.first_score }}
+                </h1>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div style="text-align: center">
+                <h1>
+                    {{ game_log.second_score }}
+                </h1>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
