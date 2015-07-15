@@ -28,4 +28,6 @@ urlpatterns = patterns('',
     url(r'^commit_word/(?P<game_id>\d+)/$', views.commit_word, name='commit_word'),
     url(r'^get_field/(?P<game_id>\d+)', views.get_field, name='get_field'),
     url(r'^give_up/(?P<game_id>\d+)', views.give_up, name='give_up'),
+
+    url(r'^play_with_bot/$', views.play_with_bot, name='play_with_bot'),
 )

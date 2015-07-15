@@ -64,9 +64,14 @@ class Dictionary():
         self.close_connection()
         return first_word
 
-    # TODO This method is buggy, need to rewrite in pool way
-    def connect_to_bot(self, bot):
-        self.send_dictionary.connect(bot.setup_dictionary)
+    def get_words(self):
+        self.init_dictionary()
+        cursor = self.db.cursor()
+        cursor.execute(GET_WORDS_QUERY)
+        return [row[0] for row in cursor]
+
+    def get_used_words(self, game_id):
+        return self.used_words.get(game_id)
 
 
     def is_word_correct_built(self, _x_list_, _y_list_, _changed_cell_):

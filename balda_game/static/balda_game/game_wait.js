@@ -24,6 +24,17 @@ $(document).ready(function() {
         });
     });
 
+    $("#play-with-bot").click(function(e) {
+        if (e.preventDefault()) {
+            e.preventDefault();
+        }
+
+        $.get('/play_with_bot/').done(function(data) {
+            var gameId = data.game;
+            window.location.replace("/game/"+gameId.toString())
+        });
+    });
+
     onWait();
     setInterval(onWait, 100000);
 });

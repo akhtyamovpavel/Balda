@@ -17,9 +17,9 @@ from django.shortcuts import render, redirect
 
 
 # Create your views here.
+from balda_game.lib.bot.Level import Level
 from balda_game.lib.field.CellState import SPARE, FIXED
-from balda_game.lib.GameManagerProcessor import GameProcessor
-from balda_game.lib.field.Letter import Coordinates
+from balda_game.lib.GameProcessor import GameProcessor
 from balda_game.lib.Packer import pack_game_message_with_action, deserialize_int, deserialize_list
 from balda_game.lib.dictionary.SingletonDictionary import dictionary
 from balda_game.lang.RussianLanguage import RussianLanguage
@@ -143,6 +143,7 @@ def commit_word(request, game_id):
     game_id = deserialize_int(game_id)
     now = datetime.datetime.now()
     cache.set('seen_%d_%s' % (game_id, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
+
     pinned_height = deserialize_int(request.POST.get('pinned_height', False))
     pinned_width = deserialize_int(request.POST.get('pinned_width', False))
     word = request.POST.get('word', False)
@@ -150,16 +151,23 @@ def commit_word(request, game_id):
     widths = deserialize_list(request.POST.getlist('widths[]', []))
     pinned_letter = request.POST.get('pinned_letter', False)
     flag = True
-    if not GameProcessor.check_board_consistency(game_id, pinned_height, pinned_width, word, heights, widths):
+    # if not GameProcessor.check_board_consistency(game_id, pinned_height, pinned_width, word, heights, widths):
+    #     return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
+    #                         content_type="application/json")
+    # if not dictionary.check_word(game_id, heights, widths, Coordinates(pinned_height, pinned_width), word):
+    #     return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
+    #                         content_type="application/json")
+    # if not GameProcessor.change_move(request.user, game_id, word, pinned_height, pinned_width, pinned_letter):
+    #     return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
+    #                         content_type="application/json")
+    #
+
+    if not GameProcessor.commit_word(game_id, pinned_height, pinned_width,
+                                     pinned_letter, word, heights, widths, request.user):
         return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
                             content_type="application/json")
-    if not dictionary.check_word(game_id, heights, widths, Coordinates(pinned_height, pinned_width), word):
-        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
-                            content_type="application/json")
-    if not GameProcessor.change_move(request.user, game_id, word, pinned_height, pinned_width, pinned_letter):
-        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
-                            content_type="application/json")
-    return HttpResponse(pack_game_message_with_action(game_id, request.user, 'ok'), content_type="application/json")
+    else:
+        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'ok'), content_type="application/json")
 
 
 def give_up(request, game_id):
@@ -196,3 +204,10 @@ def load_best(request):
 def cancel_game_request(request):
     result = GameProcessor.cancel_game_request(request.user)
     return HttpResponse(json.dumps({'isGameCancelled': result}), content_type="application/json")
+
+
+def play_with_bot(request):
+    game_id = GameProcessor.add_bot(request.user, Level.EASY)
+
+    json_result = {'game': game_id}
+    return HttpResponse(json.dumps(json_result), content_type="application/json")

@@ -1,8 +1,11 @@
 import json
 
+from balda_game.lib.bot.Bot import Bot
+from balda_game.lib.bot.Level import Level, get_bot_by_level, is_bot
 from balda_game.lib.field.CellState import FIXED, PINNED, SPARE
 from balda_game.lib.field.FieldState import FieldState
 from balda_game.lib.dictionary.SingletonDictionary import dictionary
+from balda_game.lib.field.Letter import Coordinates
 from balda_game.models import UserPlayer, GameModel
 
 __author__ = 'akhtyamovpavel'
@@ -11,7 +14,7 @@ FIRST_PLAYER = 0
 SECOND_PLAYER = 1
 
 
-class GameManagerProcess:
+class GameManagerProcessor:
     list_waiting_players = set()
 
     mapped_players = dict()
@@ -32,13 +35,29 @@ class GameManagerProcess:
 
     game_logs = dict()
 
+    bots = dict()
+
     first_player_words = dict()
     second_player_words = dict()
 
     cnt = 0
 
+    bot_status = dict()
+
     def add_player(self, user):
         self.list_waiting_players.add(user)
+
+    def init_game_model(self, first_user, second_user):
+        game_log_structure = GameModel()
+        game_log_structure.first_user = first_user
+        game_log_structure.second_user = second_user
+        game_log_structure.first_score = 0
+        game_log_structure.second_score = 0
+        game_log_structure.status = 'wait'
+        game_log_structure.field_size = 5
+        game_log_structure.is_extra_won = False
+        game_log_structure.save()
+        return game_log_structure.id
 
     def add_waiting_player(self, user):
         if not self.mapped_players.get(user) is None:
@@ -47,19 +66,9 @@ class GameManagerProcess:
             for player in self.list_waiting_players:
                 # TODO fix these rule for ending game
                 if user.username != player.username and self.mapped_players.get(player) is None:
-                    game_log_structure = GameModel()
-                    game_log_structure.first_user = user
-                    game_log_structure.second_user = player
-                    game_log_structure.first_score = 0
-                    game_log_structure.second_score = 0
-                    game_log_structure.status = 'wait'
-                    game_log_structure.field_size = 5
-                    game_log_structure.is_extra_won = False
-                    game_log_structure.save()
-
                     self.mapped_players[player] = user
                     self.mapped_players[user] = player
-                    self.cnt = game_log_structure.id
+                    self.cnt = self.init_game_model(user, player)
                     self.list_games[self.cnt] = (user, player)
                     self.mapped_games[user] = self.cnt
                     self.mapped_games[player] = self.cnt
@@ -68,6 +77,22 @@ class GameManagerProcess:
 
                     return self.cnt
         return -1
+
+    def add_bot(self, user, level: Level):
+
+        game_log_structure = GameModel()
+        game_log_structure.first_user = user
+        self.cnt = self.init_game_model(user, get_bot_by_level(level))
+        cnt = self.cnt
+        # TODO make method of class
+        word = dictionary.get_first_word(5)
+        self.list_first_words[cnt] = word
+
+        new_bot = Bot(self, cnt)
+        new_bot.set_level(level)
+
+        self.bots[cnt] = new_bot
+        return cnt
 
     def start_game(self, game_id):
 
@@ -106,7 +131,7 @@ class GameManagerProcess:
             return True
         return self.number_of_spare_cells.get(game_id) == 0
 
-    def get_field(self, game_id):
+    def get_json_field(self, game_id):
         field_state = self.field_states.get(game_id)
         list_fields = []
         for i in range(5):
@@ -115,6 +140,9 @@ class GameManagerProcess:
                 list_fields.append({"height_level": i, "width_level": j, "letter": letter, "cell_state": state})
         return json.dumps(list_fields)
 
+    def get_field(self, game_id):
+        return self.field_states.get(game_id)
+
     def get_list_of_words(self, game_id):
         return self.first_player_words.get(game_id), self.second_player_words.get(game_id)
 
@@ -122,9 +150,29 @@ class GameManagerProcess:
         first_user, second_user = self.get_players(game_id)
         player1 = UserPlayer.objects.get(user=first_user)
         player2 = UserPlayer.objects.get(user=second_user)
-        if not player1.online_in_game(game_id):
+
+        if is_bot(first_user) and self.get_current_player(game_id) == FIRST_PLAYER and self.bot_status.get(
+                game_id) == 'wait':
+            bot = self.bots.get(game_id)
+            self.bot_status[game_id] = 'play'
+            if not bot.run_process():
+                self.give_up(game_id, first_user)
+                return
+            self.bots[game_id] = bot
+            self.bot_status[game_id] = 'wait'
+        elif not player1.online_in_game(game_id):
             self.give_up(game_id, first_user)
-        if not player2.online_in_game(game_id):
+
+        if is_bot(second_user) and self.get_current_player(game_id) == SECOND_PLAYER and self.bot_status.get(
+                game_id) == 'wait':
+            bot = self.bots.get(game_id)
+            self.bot_status[game_id] = 'play'
+            if not bot.run_process():
+                self.give_up(game_id, second_user)
+                return
+            self.bots[game_id] = bot
+            self.bot_status[game_id] = 'wait'
+        elif not player2.online_in_game(game_id):
             self.give_up(game_id, second_user)
 
     def give_up(self, game_id, user):
@@ -235,6 +283,15 @@ class GameManagerProcess:
         game_log_structure.status = 'end'
         game_log_structure.save()
 
+    def commit_word(self, game_id, pinned_height, pinned_width, pinned_letter, word, heights, widths, user):
+        if not self.check_board_consistency(game_id, pinned_height, pinned_width, word, heights, widths):
+            return False
+        if not dictionary.check_word(game_id, heights, widths, Coordinates(pinned_height, pinned_width), word):
+            return False
+        if not self.change_move(user, game_id, word, pinned_height, pinned_width, pinned_letter):
+            return False
+        return True
+
     def check_board_consistency(self, game_id, pinned_height, pinned_width, word, heights, widths):
         field_state = self.field_states.get(game_id)
         flag = True
@@ -301,4 +358,3 @@ class GameManagerProcess:
             return False
 
 
-GameProcessor = GameManagerProcess()
