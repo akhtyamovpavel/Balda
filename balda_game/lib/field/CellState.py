@@ -17,6 +17,9 @@ class CellState:
     def get_cell(self):
         return [self._state_, self._letter_]
 
+    def get_letter(self):
+        return self._letter_
+
 
 
     def set_cell(self, state, letter=None):

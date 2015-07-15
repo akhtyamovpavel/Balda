@@ -84,6 +84,10 @@ class GameManagerProcessor:
         game_log_structure.first_user = user
         self.cnt = self.init_game_model(user, get_bot_by_level(level))
         cnt = self.cnt
+
+        self.list_games[cnt] = (user, get_bot_by_level(level))
+        self.mapped_games[user] = self.cnt
+        self.mapped_players[user] = get_bot_by_level(level)
         # TODO make method of class
         word = dictionary.get_first_word(5)
         self.list_first_words[cnt] = word
@@ -92,6 +96,7 @@ class GameManagerProcessor:
         new_bot.set_level(level)
 
         self.bots[cnt] = new_bot
+        self.bot_status[cnt] = 'wait'
         return cnt
 
     def start_game(self, game_id):
@@ -110,7 +115,7 @@ class GameManagerProcessor:
             self.field_states[game_id] = FieldState(5, 5, word)
             self.current_moves[game_id] = FIRST_PLAYER
             self.scores[game_id] = (0, 0)
-            self.number_of_spare_cells[game_id] = 20
+            self.number_of_spare_cells[game_id] = 4
             self.first_player_words[game_id] = []
             self.second_player_words[game_id] = []
 
@@ -151,27 +156,36 @@ class GameManagerProcessor:
         player1 = UserPlayer.objects.get(user=first_user)
         player2 = UserPlayer.objects.get(user=second_user)
 
-        if is_bot(first_user) and self.get_current_player(game_id) == FIRST_PLAYER and self.bot_status.get(
-                game_id) == 'wait':
-            bot = self.bots.get(game_id)
-            self.bot_status[game_id] = 'play'
-            if not bot.run_process():
-                self.give_up(game_id, first_user)
-                return
-            self.bots[game_id] = bot
-            self.bot_status[game_id] = 'wait'
+        if is_bot(first_user):
+            if self.get_current_player(game_id) == FIRST_PLAYER and self.bot_status.get(
+                    game_id) == 'wait':
+                bot = self.bots.get(game_id)
+                self.bot_status[game_id] = 'play'
+                if not bot.run_process():
+                    self.give_up(game_id, first_user)
+                    return
+                self.bots[game_id] = bot
+                self.bot_status[game_id] = 'wait'
+                if self.number_of_spare_cells.get(game_id) == 0:
+                    self.end_game(game_id)
+                    return
         elif not player1.online_in_game(game_id):
             self.give_up(game_id, first_user)
 
-        if is_bot(second_user) and self.get_current_player(game_id) == SECOND_PLAYER and self.bot_status.get(
-                game_id) == 'wait':
-            bot = self.bots.get(game_id)
-            self.bot_status[game_id] = 'play'
-            if not bot.run_process():
-                self.give_up(game_id, second_user)
-                return
-            self.bots[game_id] = bot
-            self.bot_status[game_id] = 'wait'
+        if is_bot(second_user):
+            if self.get_current_player(game_id) == SECOND_PLAYER and self.bot_status.get(
+                    game_id) == 'wait':
+                bot = self.bots.get(game_id)
+                self.bot_status[game_id] = 'play'
+                if not bot.run_process():
+                    self.give_up(game_id, second_user)
+                    return
+                self.bots[game_id] = bot
+                self.bot_status[game_id] = 'wait'
+                if self.number_of_spare_cells.get(game_id) == 0:
+                    print("Game ended")
+                    self.end_game(game_id)
+                    return
         elif not player2.online_in_game(game_id):
             self.give_up(game_id, second_user)
 
@@ -214,6 +228,7 @@ class GameManagerProcessor:
         player2.save()
 
     def end_game(self, game_id, given_up_user=None):
+        print("End game chosen")
         first_player, second_player = self.get_players(game_id)
 
         game_log_structure = GameModel.objects.get(pk=game_id)
@@ -273,12 +288,18 @@ class GameManagerProcessor:
 
         self.recalculate_rating(first_player, second_player, win_user)
         self.ended_games.add(game_id)
-        self.list_waiting_players.remove(first_player)
-        self.list_waiting_players.remove(second_player)
-        self.mapped_games.pop(first_player)
-        self.mapped_games.pop(second_player)
-        self.mapped_players.pop(first_player)
-        self.mapped_players.pop(second_player)
+        if not is_bot(first_player):
+            self.list_waiting_players.remove(first_player)
+        if not is_bot(second_player):
+            self.list_waiting_players.remove(second_player)
+        if not is_bot(first_player):
+            self.mapped_games.pop(first_player)
+        if not is_bot(second_player):
+            self.mapped_games.pop(second_player)
+        if not is_bot(first_player):
+            self.mapped_players.pop(first_player)
+        if not is_bot(second_player):
+            self.mapped_players.pop(second_player)
 
         game_log_structure.status = 'end'
         game_log_structure.save()
@@ -356,5 +377,3 @@ class GameManagerProcessor:
             return True
         else:
             return False
-
-

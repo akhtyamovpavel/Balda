@@ -17,7 +17,7 @@ from django.shortcuts import render, redirect
 
 
 # Create your views here.
-from balda_game.lib.bot.Level import Level
+from balda_game.lib.bot.Level import Level, is_bot
 from balda_game.lib.field.CellState import SPARE, FIXED
 from balda_game.lib.GameProcessor import GameProcessor
 from balda_game.lib.Packer import pack_game_message_with_action, deserialize_int, deserialize_list
@@ -194,8 +194,11 @@ def view_profile(request, username):
 def load_best(request):
     users = UserPlayer.objects.order_by('-rating')[:10]
     result = []
+    cnt = 0
     for i in range(len(users)):
-        result.append({"place": i + 1, "user": users[i].user.username, "rating": users[i].rating})
+        if not is_bot(users[i].user) and users[i].wins + users[i].draws + users[i].loses > 0:
+            result.append({"place": cnt + 1, "user": users[i].user.username, "rating": users[i].rating})
+            cnt += 1
     objects = {"field": result}
 
     return HttpResponse(json.dumps(objects), content_type="application/json")

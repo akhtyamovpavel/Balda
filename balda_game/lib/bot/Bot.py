@@ -1,4 +1,4 @@
-from random import Random
+import random
 from balda_game.lib.bot.Bor import Bor, PRE_VERTEX, NOT_FOUND
 from balda_game.lib.bot.Level import get_bot_by_level, Level
 from balda_game.lib.bot.Word import Word
@@ -7,7 +7,6 @@ from balda_game.lib.field.Letter import CellLetter, Coordinates
 from balda_game.lib.lang.RussianLanguage import RussianLanguage
 
 __author__ = 'akhtyamovpavel'
-
 
 EASY = 1
 MEDIUM = 2
@@ -19,7 +18,6 @@ DEFAULT_HEIGHT = 5
 
 
 class Bot:
-
     def __init__(self, parent, game_id, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT):
 
         self.game_id = game_id
@@ -28,12 +26,11 @@ class Bot:
         self.__height__ = height
         self.__moves__ = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
-        self.__level__ = Level.EASY #default value
+        self.__level__ = Level.EASY  # default value
         self.__bor_vocabulary__ = Bor()
         self.__not_allowed_words__ = set()
         self.parent = parent
         self.setup_dictionary_for_bot()
-
 
     def setup_dictionary_for_bot(self):
         word_list = dictionary.get_words()
@@ -46,14 +43,14 @@ class Bot:
         return max(len(variant.__possible_word__) for variant in variants)
 
     def allowed_variants(self, variants, not_allowed_word):
-        return [variant for variant in variants if variant not in self.__not_allowed_words__ and variant != not_allowed_word]
+        return [variant for variant in variants if
+                variant not in self.__not_allowed_words__ and variant != not_allowed_word]
 
     def easy_index_word(self, variants):
         print("easy")
         size = len(variants)
-        random = Random()
-        random_number = int(size * random.random())
-        return min(random_number, size - 1)
+        random_number = random.randint(0, size - 1)
+        return random_number
 
     def medium_index_word(self, variants):
         print("medium")
@@ -134,10 +131,8 @@ class Bot:
                 return cnt
         return -1
 
-
     def set_level(self, difficulty):
         self.__level__ = difficulty
-
 
     def run_process(self):
         field = self.parent.get_field(self.game_id)
@@ -150,7 +145,7 @@ class Bot:
 
         for i in range(1, self.__height__ + 1):
             for j in range(1, self.__width__ + 1):
-                tmp, symbols[i][j] = field[i - 1][j - 1].get_letter_state()
+                symbols[i][j] = field.get_letter(i - 1, j - 1)
 
         variants = self.possible_variants(symbols)
 
@@ -170,46 +165,40 @@ class Bot:
         if id == -1:
             return False
 
-        #TODO Make board
+        # TODO Make board
         while not is_committed:
             cnt = 0
             for coordinate in variants[id].__coordinates__:
-                x = coordinate.x - 1
-                y = coordinate.y - 1
-                if self.__board__[x][y] == '.':
+                x = coordinate.x
+                y = coordinate.y
+                if symbols[x][y] == '.':
                     print(cnt)
-                    used_x = x
-                    used_y = y
+                    used_x = x - 1
+                    used_y = y - 1
                     c = variants[id].__possible_word__[cnt]
                 cnt += 1
 
-
-
-
-            heigths = [coordinate.x - 1 for coordinate in variants[id].__coordinates__]
-            widths = [coordinate.y - 1 for coordinate in variants[id].__coordinates]
-
+            heights = [coordinate.x - 1 for coordinate in variants[id].__coordinates__]
+            widths = [coordinate.y - 1 for coordinate in variants[id].__coordinates__]
 
             if self.parent.commit_word(self.game_id, pinned_height=used_x, pinned_width=used_y, pinned_letter=c,
-                                         heights=heigths, widths=widths, word=variants[id].__possible_word__,
-                                         user=get_bot_by_level(self.__level__)):
+                                       heights=heights, widths=widths, word=variants[id].__possible_word__,
+                                       user=get_bot_by_level(self.__level__)):
                 return True
 
             variants.pop(id)
 
-            if self.__level__ == EASY:
+            if self.__level__ == Level.EASY:
                 id = self.easy_index_word(variants)
-            elif self.__level__ == MEDIUM:
+            elif self.__level__ == Level.MEDIUM:
                 id = self.medium_index_word(variants)
-            elif self.__level__ == HARD:
+            elif self.__level__ == Level.HARD:
                 id = self.hard_index_word(variants)
             else:
                 id = self.hardest_index_word(variants, symbols[:])
 
             if id == -1:
                 return False
-
-
 
     def not_belong(self, not_allowed_words, check_in):
         for word in not_allowed_words:
@@ -253,8 +242,8 @@ class Bot:
                 if table[xx][yy] != '.':
                     if self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[xx][yy]) != NOT_FOUND:
                         self.dfs(table, words, xx, yy,
-                            self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[xx][yy]),
-                            cur_used, cur_string, cur_coords, used_empty)
+                                 self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[xx][yy]),
+                                 cur_used, cur_string, cur_coords, used_empty)
                 else:
                     self.dfs(table, words, xx, yy, cur_position, cur_used, cur_string, cur_coords, used_empty)
 
@@ -262,7 +251,6 @@ class Bot:
                 cur_coords.pop()
 
         cur_used[x][y] = False
-
 
     def possible_variants(self, table):
         N = len(table) - 2
@@ -275,12 +263,13 @@ class Bot:
                 cur_coordinates = list()
                 cur_string = str()
                 cur_position = 0
-                if table[i][j] != '-' and self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[i][j]) != -1:
+                if table[i][j] != '-' and self.__bor_vocabulary__.bor_vertices[cur_position].find_children(
+                        table[i][j]) != -1:
                     self.dfs(table, words, i, j,
                              self.__bor_vocabulary__.bor_vertices[cur_position].find_children(table[i][j]),
                              cur_used, cur_string, cur_coordinates, False)
                 elif table[i][j] == '-':
-                        self.dfs(table, words, i, j, PRE_VERTEX, cur_used, cur_string, cur_coordinates, False)
+                    self.dfs(table, words, i, j, PRE_VERTEX, cur_used, cur_string, cur_coordinates, False)
 
         corrects = list()
 
@@ -288,6 +277,3 @@ class Bot:
             corrects.append(word)
 
         return corrects
-
-
-

@@ -13,18 +13,14 @@ CHECK_WORD_QUERY = "SELECT word FROM Words WHERE (id = root_id AND word = ?)"
 
 
 class Dictionary():
-
     sz = 100
-
 
     pool_dictionary = dict()
     used_words = dict()
 
-
     def __init__(self):
         super(Dictionary, self).__init__()
         self.db = QtSql.QSqlDatabase()
-
 
         self.random = Random()
 
@@ -36,7 +32,6 @@ class Dictionary():
 
     def load_dictionary(self):
         pass
-
 
     def setup_connection(self, game_id):
         pool_size = len(self.pool_dictionary)
@@ -60,7 +55,7 @@ class Dictionary():
             if len(word) == width:
                 first_word_list.append(word)
         print(len(first_word_list))
-        first_word = first_word_list[int(self.random.random()*len(first_word_list))]
+        first_word = first_word_list[int(self.random.random() * len(first_word_list))]
         self.close_connection()
         return first_word
 
@@ -73,7 +68,6 @@ class Dictionary():
     def get_used_words(self, game_id):
         return self.used_words.get(game_id)
 
-
     def is_word_correct_built(self, _x_list_, _y_list_, _changed_cell_):
         if len(_x_list_) == 0:
             return False
@@ -82,7 +76,6 @@ class Dictionary():
         for i in range(1, len(_x_list_)):
             if abs(_x_list_[i] - _x_list_[i - 1]) + abs(_y_list_[i] - _y_list_[i - 1]) != 1:
                 _is_approved_ = False
-
 
         for i in range(len(_x_list_)):
             if _x_list_[i] == _changed_cell_.x and _y_list_[i] == _changed_cell_.y:
@@ -112,8 +105,6 @@ class Dictionary():
         value = self.is_word_good(word, number_id)
         self.close_connection()
         return value
-
-
 
     def is_word_good(self, word, number_id):
         self.init_dictionary()

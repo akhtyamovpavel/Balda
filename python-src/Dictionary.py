@@ -15,6 +15,8 @@ class Dictionary(QtCore.QObject):
     __send_dictionary__ = QtCore.Signal(list)
     __send_used_words__ = QtCore.Signal(set)
 
+
+
     def __init__(self):
         super(Dictionary, self).__init__()
         self.__set_of_words__ = set()

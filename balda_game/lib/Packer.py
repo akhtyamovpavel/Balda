@@ -7,10 +7,12 @@ __author__ = 'akhtyamovpavel'
 
 def pack_game_message_with_action(game_id, user, action='none'):
     game_id = int(game_id)
+
+    GameProcessor.check_for_connection(game_id)
+
     field_pack = GameProcessor.get_json_field(game_id)
     current_player = GameProcessor.get_current_player(game_id)
 
-    GameProcessor.check_for_connection(game_id)
     first_player, second_player = GameProcessor.get_players(game_id)
 
 

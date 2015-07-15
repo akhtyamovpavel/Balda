@@ -20,3 +20,6 @@ class FieldState:
 
     def get_letter_state(self, height_level, width_level):
         return self._board_[height_level][width_level].get_cell()
+
+    def get_letter(self, height_level, width_level):
+        return self._board_[height_level][width_level].get_letter()
