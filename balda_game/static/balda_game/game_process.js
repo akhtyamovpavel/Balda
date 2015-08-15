@@ -187,15 +187,20 @@ $(document).ready(function() {
         // TODO know player order
 
         var timer_block = document.getElementsByClassName('times')[0];
-        if (value == false) {
-            isYourMove = false;
-            clearTimeout(timer);
+        if (data.bot === true) {
             timer = null;
-            timer_block.innerHTML = "01:00";
+            simple_timer(60, timer_block, false);
         } else {
-            isYourMove = true;
-            if (timer == null) {
-                simple_timer(60, timer_block, false);
+            if (value == false) {
+                isYourMove = false;
+                clearTimeout(timer);
+                timer = null;
+                timer_block.innerHTML = "01:00";
+            } else {
+                isYourMove = true;
+                if (timer == null) {
+                    simple_timer(60, timer_block, false);
+                }
             }
         }
 

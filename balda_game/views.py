@@ -167,7 +167,7 @@ def commit_word(request, game_id):
         return HttpResponse(pack_game_message_with_action(game_id, request.user, 'reset'),
                             content_type="application/json")
     else:
-        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'ok'), content_type="application/json")
+        return HttpResponse(pack_game_message_with_action(game_id, request.user, 'ok', GameProcessor.is_bot_game(game_id)), content_type="application/json")
 
 
 def give_up(request, game_id):

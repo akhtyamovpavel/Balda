@@ -5,7 +5,7 @@ from balda_game.lib.GameProcessor import GameProcessor
 __author__ = 'akhtyamovpavel'
 
 
-def pack_game_message_with_action(game_id, user, action='none'):
+def pack_game_message_with_action(game_id, user, action='none', bot_play = False):
     game_id = int(game_id)
 
     GameProcessor.check_for_connection(game_id)
@@ -37,7 +37,8 @@ def pack_game_message_with_action(game_id, user, action='none'):
                    "player1": player1.username,
                    "player2": player2.username,
                    "words1": words1,
-                   "words2": words2
+                   "words2": words2,
+                   "bot": bot_play
                    }
 
     return json.dumps(json_result)

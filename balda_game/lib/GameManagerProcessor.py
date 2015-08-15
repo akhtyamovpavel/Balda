@@ -1,4 +1,5 @@
 import json
+from threading import Timer
 
 from balda_game.lib.bot.Bot import Bot
 from balda_game.lib.bot.Level import Level, get_bot_by_level, is_bot
@@ -28,6 +29,7 @@ class GameManagerProcessor:
     current_moves = dict()
     first_players = dict()
     second_players = dict()
+    timers = dict()
 
     scores = dict()
     number_of_spare_cells = dict()
@@ -59,6 +61,8 @@ class GameManagerProcessor:
         game_log_structure.save()
         return game_log_structure.id
 
+    def is_bot_game(self, game_id):
+        return self.bots.get(game_id) is not None
     def add_waiting_player(self, user):
         if not self.mapped_players.get(user) is None:
             return self.mapped_games[user]
@@ -99,6 +103,15 @@ class GameManagerProcessor:
         self.bot_status[cnt] = 'wait'
         return cnt
 
+    def on_give_up_event(self, game_id):
+        print(game_id)
+        current_player = self.current_moves[game_id]
+        first_player, second_player = self.get_players(game_id)
+        if current_player == FIRST_PLAYER:
+            self.give_up(game_id, first_player)
+        else:
+            self.give_up(game_id, second_player)
+
     def start_game(self, game_id):
 
         if self.field_states.get(game_id) is None:
@@ -115,9 +128,13 @@ class GameManagerProcessor:
             self.field_states[game_id] = FieldState(5, 5, word)
             self.current_moves[game_id] = FIRST_PLAYER
             self.scores[game_id] = (0, 0)
-            self.number_of_spare_cells[game_id] = 4
+            self.number_of_spare_cells[game_id] = 20
             self.first_player_words[game_id] = []
             self.second_player_words[game_id] = []
+
+            # TODO: sync timers with client
+            self.timers[game_id] = Timer(60.0, self.on_give_up_event, [game_id])
+            self.timers[game_id].start()
 
     def get_first_word_for_game(self, game_id):
         return self.list_first_words[game_id]
@@ -369,6 +386,9 @@ class GameManagerProcessor:
         self.scores[game_id] = (score1, score2)
         self.number_of_spare_cells[game_id] = self.number_of_spare_cells.get(game_id) - 1
         # print(self.number_of_spare_cells.get(game_id))
+        self.timers.get(game_id).cancel()
+        self.timers[game_id] = Timer(60.0, self.on_give_up_event, [game_id])
+        self.timers[game_id].start()
         return True
 
     def cancel_game_request(self, user):
