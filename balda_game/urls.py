@@ -20,7 +20,7 @@ urlpatterns = patterns('',
 
     url(r'^load_best/$', views.load_best, name='load_best'),
 
-    #GameProcess Links
+    # GameProcess Links
     url(r'^game_wait/$', views.game_wait, name='game_wait'),
 
     url(r'^cancel_game_request', views.cancel_game_request, name='cancel_game_request'),

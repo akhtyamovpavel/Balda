@@ -24,6 +24,7 @@ from balda_game.lib.Packer import pack_game_message_with_action, deserialize_int
 from balda_game.lib.dictionary.SingletonDictionary import dictionary
 from balda_game.lang.RussianLanguage import RussianLanguage
 from balda_game.models import UserPlayer, GameModel
+from balda_game.forms.CreationUserForm import CreationUserForm
 
 
 def index(request):
@@ -61,20 +62,11 @@ def start_game(request, game_id):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CreationUserForm(request.POST)
         if form.is_valid():
-            new_user = form.save()
-            user1 = UserPlayer()
-            user1.wins = 0
-            user1.loses = 0
-            user1.draws = 0
-            user1.rating = 1500
-            user1.user = new_user
-            user1.was_online = datetime.datetime.now()
-            user1.save()
-            user = UserPlayer.objects.create
+            form.save()
             return HttpResponseRedirect('/')
-    form = UserCreationForm()
+    form = CreationUserForm()
     return render(request, "register.html", {
         'form': form
     })

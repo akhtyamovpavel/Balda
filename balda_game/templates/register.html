@@ -8,8 +8,36 @@
     <div class="center">
         <form action="" method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" class="button" value="Register">
+            <div class="row">
+              
+                <div class="col-md-8">
+                    <label for="{{ form.username.id_for_label}} ">Логин (обязательно)</label>
+                    {{form.username}}
+                </div>
+                <div class="col-md-8">
+                    <label for="{{ form.first_name.id_for_label}} ">Имя</label>
+                    {{form.first_name}}
+                </div>
+                <div class="col-md-8">
+                    <label for="{{ form.last_name.id_for_label}} ">Фамилия</label>
+                    {{form.last_name}}
+                </div>
+                <div class="col-md-8">
+                    <label for="{{ form.password1.id_for_label}} ">Пароль</label>
+                    {{form.password1}}
+                </div>
+                <div class="col-md-8">
+                    <label for="{{ form.password2.id_for_label}} ">Повторите пароль</label>
+                    {{form.password2}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <input type="submit" class="btn btn-primary" value="Register">
+                </div>
+            </div>
+            
+            
         </form>
     </div>
 {% endblock %}
