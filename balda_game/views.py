@@ -12,10 +12,6 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, redirect
 
 
-
-
-
-
 # Create your views here.
 from balda_game.lib.bot.Level import Level, is_bot
 from balda_game.lib.field.CellState import SPARE, FIXED
@@ -25,6 +21,7 @@ from balda_game.lib.dictionary.SingletonDictionary import dictionary
 from balda_game.lang.RussianLanguage import RussianLanguage
 from balda_game.models import UserPlayer, GameModel
 from balda_game.forms.CreationUserForm import CreationUserForm
+from balda_game.forms.EditProfileForm import EditProfileForm
 
 
 def index(request):
@@ -49,7 +46,7 @@ def start_game(request, game_id):
         return render(request, 'not_started_game.html', {})
 
     if game_model.status == 'end':
-        return render(request, 'ended_game.html', {'game_log' : game_model})
+        return render(request, 'ended_game.html', {'game_log': game_model})
 
     field = [[['.', SPARE] for i in range(5)] for j in range(5)]
     # TODO check for errors
@@ -106,7 +103,8 @@ def profile(request):
 def game_wait(request):
     GameProcessor.add_player(request.user)
     now = datetime.datetime.now()
-    cache.set('wait_%s' % (request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
+    cache.set('wait_%s' %
+              (request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
     return render(request, 'game_wait.html', {})
 
 
@@ -116,7 +114,8 @@ def wait_query(request):
     json_result = {'game': value}
     if value > 0:
         now = datetime.datetime.now()
-        cache.set('seen_%d_%s' % (value, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
+        cache.set('seen_%d_%s' % (value, request.user.username),
+                  now, settings.USER_LAST_SEEN_TIMEOUT)
 
     return HttpResponse(json.dumps(json_result), content_type="application/json")
 
@@ -125,7 +124,8 @@ def wait_query(request):
 def get_field(request, game_id):
     game_id = deserialize_int(game_id)
     now = datetime.datetime.now()
-    cache.set('seen_%d_%s' % (game_id, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
+    cache.set('seen_%d_%s' % (game_id, request.user.username),
+              now, settings.USER_LAST_SEEN_TIMEOUT)
     json_result = pack_game_message_with_action(game_id, request.user)
     return HttpResponse(json.dumps(json_result), content_type="application/json")
 
@@ -134,7 +134,8 @@ def get_field(request, game_id):
 def commit_word(request, game_id):
     game_id = deserialize_int(game_id)
     now = datetime.datetime.now()
-    cache.set('seen_%d_%s' % (game_id, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
+    cache.set('seen_%d_%s' % (game_id, request.user.username),
+              now, settings.USER_LAST_SEEN_TIMEOUT)
 
     pinned_height = deserialize_int(request.POST.get('pinned_height', False))
     pinned_width = deserialize_int(request.POST.get('pinned_width', False))
@@ -165,7 +166,8 @@ def commit_word(request, game_id):
 def give_up(request, game_id):
     game_id = deserialize_int(game_id)
     now = datetime.datetime.now()
-    cache.set('seen_%d_%s' % (game_id, request.user.username), now, settings.USER_LAST_SEEN_TIMEOUT)
+    cache.set('seen_%d_%s' % (game_id, request.user.username),
+              now, settings.USER_LAST_SEEN_TIMEOUT)
     GameProcessor.give_up(game_id, request.user)
     json_result = pack_game_message_with_action(game_id, request.user)
     return HttpResponse(json.dumps(json_result), content_type="application/json")
@@ -189,7 +191,8 @@ def load_best(request):
     cnt = 0
     for i in range(len(users)):
         if not is_bot(users[i].user) and users[i].wins + users[i].draws + users[i].loses > 0:
-            result.append({"place": cnt + 1, "user": users[i].user.username, "rating": users[i].rating})
+            result.append(
+                {"place": cnt + 1, "user": users[i].user.username, "rating": users[i].rating})
             cnt += 1
     objects = {"field": result}
 
@@ -206,3 +209,10 @@ def play_with_bot(request):
 
     json_result = {'game': game_id}
     return HttpResponse(json.dumps(json_result), content_type="application/json")
+
+
+@login_required
+def edit_profile_page(request):
+    form = EditProfileForm(instance=request.user.userplayer)
+    print(form['first_name'].value())
+    return render(request, 'edit_profile_page.html', {'form': form})

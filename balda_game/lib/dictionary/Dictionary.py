@@ -2,7 +2,6 @@ from os import getcwd
 from random import Random
 from functools import wraps
 import unittest
-from PySide import QtCore, QtSql
 from sqlite3 import connect
 
 __author__ = 'akhtyamovpavel'
@@ -20,7 +19,6 @@ class Dictionary():
 
     def __init__(self):
         super(Dictionary, self).__init__()
-        self.db = QtSql.QSqlDatabase()
 
         self.random = Random()
 

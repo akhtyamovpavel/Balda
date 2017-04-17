@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from balda import postgres_settings
+from balda import secret_key
 from django.conf.global_settings import CACHES
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -19,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'p$%jt3k!0^rne1llbaljjd77xc4v0f!i^az592ldbe3%a&=s&m'
+SECRET_KEY = secret_key.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'balda_game',
 )
 
@@ -50,6 +53,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'middleware.ActiveUserMiddleware.ActiveUserMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 )
 
 CACHES = {
@@ -63,7 +67,7 @@ CACHES = {
 USER_ONLINE_TIMEOUT = 60
 USER_ONLINE_GAME_TIMEOUT = 60
 
-USER_LAST_SEEN_TIMEOUT = 60 * 60 *24 *7
+USER_LAST_SEEN_TIMEOUT = 60 * 60 * 24 *7
 
 
 ROOT_URLCONF = 'balda.urls'
@@ -74,13 +78,26 @@ WSGI_APPLICATION = 'balda.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+DATABASES = postgres_settings.DATABASES
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+# print(TEMPLATE_DIRS)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

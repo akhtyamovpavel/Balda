@@ -4,5 +4,6 @@
 /src/*.txt
 log/
 results/
-/balda/settings.py
+/balda/postgres_settings.py
+/balda/secret_key.py
 
